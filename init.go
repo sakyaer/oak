@@ -2,16 +2,15 @@ package oak
 
 import (
 	"image"
-	"os"
 	"path/filepath"
 
 	"bitbucket.org/oakmoundstudio/oak/audio"
 	"bitbucket.org/oakmoundstudio/oak/collision"
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/event"
+	"bitbucket.org/oakmoundstudio/oak/file"
 	"bitbucket.org/oakmoundstudio/oak/mouse"
 	"bitbucket.org/oakmoundstudio/oak/render"
-	"golang.org/x/exp/shiny/driver"
 )
 
 var (
@@ -62,7 +61,7 @@ var (
 
 	eb *event.EventBus
 
-	wd, _    = os.Getwd()
+	wd, _    = file.Getwd()
 	imageDir string
 	audioDir string
 
@@ -112,7 +111,7 @@ func Init(firstScene string) {
 	SeedRNG(DEFAULT_SEED)
 
 	go LoadAssets()
-	go driver.Main(lifecycleLoop)
+	InitDriver()
 	go DebugConsole(debugResetCh, skipSceneCh)
 
 	// <-initCh

@@ -8,7 +8,6 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -16,6 +15,7 @@ import (
 	"sync"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"bitbucket.org/oakmoundstudio/oak/file"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 var (
 	// Form ...main/core.go/assets/images,
 	// the image directory.
-	wd, _ = os.Getwd()
+	wd, _ = file.Getwd()
 	dir   = filepath.Join(
 		wd,
 		"assets",
@@ -42,7 +42,7 @@ func loadPNG(directory, fileName string) *image.RGBA {
 
 	loadLock.Lock()
 	if _, ok := loadedImages[fileName]; !ok {
-		imgFile, err := os.Open(filepath.Join(directory, fileName))
+		imgFile, err := file.Open(filepath.Join(directory, fileName))
 		if err != nil {
 			log.Fatal(err)
 		}

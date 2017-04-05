@@ -8,9 +8,10 @@ import (
 )
 
 var (
-	ViewPos       = image.Point{}
-	useViewBounds = false
-	viewBounds    Rect
+	ViewPos        = image.Point{}
+	useViewBounds  = false
+	viewBounds     Rect
+	viewportLocked = true
 )
 
 type Rect struct {

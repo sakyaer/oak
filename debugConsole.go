@@ -1,3 +1,5 @@
+//+build !js
+
 package oak
 
 import (
@@ -17,8 +19,7 @@ import (
 )
 
 var (
-	viewportLocked = true
-	cheats         = make(map[string]func([]string))
+	cheats = make(map[string]func([]string))
 )
 
 func AddCheat(s string, fn func([]string)) {

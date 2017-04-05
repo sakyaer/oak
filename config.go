@@ -3,10 +3,10 @@ package oak
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"bitbucket.org/oakmoundstudio/oak/file"
 )
 
 var (
@@ -63,7 +63,7 @@ type Font struct {
 }
 
 func LoadConf(fileName string) (err error) {
-	wd, err := os.Getwd()
+	wd, err := file.Getwd()
 	if err != nil {
 		return err
 	}

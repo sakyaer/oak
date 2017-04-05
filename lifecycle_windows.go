@@ -1,12 +1,17 @@
 // This can likely build on more than windows but we haven't tested it
 
-// +build windows
+// +build windows,!js
 
 package oak
 
 import (
+	"golang.org/x/exp/shiny/driver"
 	"golang.org/x/exp/shiny/screen"
 )
+
+func InitDriver() {
+	go driver.Main(lifecycleLoop)
+}
 
 func WindowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
 	return s.NewWindow(&screen.NewWindowOptions{

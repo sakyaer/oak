@@ -1,4 +1,5 @@
 //+build !nolog
+//+build !js
 
 // Package dlog provides logging functions with
 // caller file and line information,
