@@ -1,4 +1,4 @@
-//+build !js
+//+build js
 
 package render
 
@@ -14,16 +14,16 @@ import (
 // alpha channel.
 func ShinyDraw(buff draw.Image, img image.Image, x, y int) {
 	draw.Draw(buff, buff.Bounds(),
-		img, image.Point{-x, -y}, draw.Over)
+		img, image.Point{x, y}, draw.Over)
 }
 
 // draw.Src will overwrite pixels beneath the given image regardless of
 // the new image's alpha.
 func ShinyOverwrite(buff draw.Image, img image.Image, x, y int) {
 	draw.Draw(buff, buff.Bounds(),
-		img, image.Point{-x, -y}, draw.Src)
+		img, image.Point{x, y}, draw.Src)
 }
 
 func ShinySet(buff draw.Image, c color.Color, x, y int) {
-	buff.Set(-x, -y, c)
+	buff.Set(x, y, c)
 }
