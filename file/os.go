@@ -3,9 +3,8 @@
 package file
 
 import "os"
-import "io"
 
-func Open(s string) (io.ReadCloser, error) {
+func Open(s string) (File, error) {
 	return os.Open(s)
 }
 

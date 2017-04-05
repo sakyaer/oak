@@ -24,6 +24,16 @@ type Audio interface {
 	GetFrequency() (uint32, error)
 }
 
+type PosAudio struct {
+	Audio
+	X, Y *int
+}
+
+type PosAudioF struct {
+	Audio
+	X, Y *float64
+}
+
 func InitWinAudio() {
 }
 

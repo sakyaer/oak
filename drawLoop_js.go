@@ -3,6 +3,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"time"
@@ -26,8 +27,10 @@ var (
 // 5. draw the buffer's data at the viewport's position to the screen.
 // 6. publish the screen to display in window.
 func DrawLoopNoFPS() {
+	fmt.Println("DrawLoop waiting")
 	<-drawChannel
 	for {
+		fmt.Println("Draw Loop")
 		dlog.Verb("Draw Loop")
 	drawSelect:
 		select {

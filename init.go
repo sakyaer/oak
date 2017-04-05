@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 	"path/filepath"
 
@@ -114,11 +115,13 @@ func Init(firstScene string) {
 	InitDriver()
 	go DebugConsole(debugResetCh, skipSceneCh)
 
-	// <-initCh
+	fmt.Println("Initch")
+	//<-initCh
 	// // This is the only time oak closes a channel
 	// // This should probably change
-	// close(initCh)
+	//close(initCh)
 
 	// Loop through scenes
+	fmt.Println("Init end")
 	SceneLoop(firstScene)
 }

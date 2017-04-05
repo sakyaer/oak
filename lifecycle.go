@@ -2,6 +2,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 	"time"
 
@@ -29,6 +30,7 @@ var (
 func lifecycleLoop(s screen.Screen) {
 	screenControl = s
 	var err error
+	fmt.Println("Lifecycle enter")
 
 	// The world buffer represents the total space that is conceptualized by the engine
 	// and able to be drawn to. Space outside of this area will appear as smeared
@@ -65,14 +67,17 @@ func lifecycleLoop(s screen.Screen) {
 	// Initiate the first scene
 	//initCh <- true
 
-	if conf.ShowFPS {
-		go DrawLoopFPS()
-	} else {
-		go DrawLoopNoFPS()
-	}
-
 	go BindingLoop()
-	LogicLoop(frameCh)
+	fmt.Println("Lifecycle end")
+	go LogicLoop(frameCh)
+
+	if conf.ShowFPS {
+		fmt.Println("Starting draw")
+		DrawLoopFPS()
+	} else {
+		fmt.Println("Starting draw")
+		DrawLoopNoFPS()
+	}
 
 }
 

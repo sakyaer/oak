@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 
 	"bitbucket.org/oakmoundstudio/oak/collision"
@@ -22,11 +23,13 @@ func SceneLoop(firstScene string) {
 	result := new(SceneResult)
 
 	dlog.Info("First Scene Start")
+	fmt.Println("First scene start")
 
 	drawChannel <- true
 	drawChannel <- true
 
 	for {
+		fmt.Println("Scene start")
 		ViewPos = image.Point{0, 0}
 		updateScreen(0, 0)
 		useViewBounds = false

@@ -3,7 +3,6 @@ package render
 import (
 	"image"
 	"image/color"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 
@@ -11,6 +10,7 @@ import (
 	"golang.org/x/image/font"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"bitbucket.org/oakmoundstudio/oak/file"
 )
 
 var (
@@ -141,7 +141,7 @@ func FontColor(s string) image.Image {
 
 func LoadFont(fontFile string) *truetype.Font {
 	if _, ok := loadedFonts[fontFile]; !ok {
-		fontBytes, err := ioutil.ReadFile(filepath.Join(fontdir, fontFile))
+		fontBytes, err := file.ReadFile(filepath.Join(fontdir, fontFile))
 		if err != nil {
 			dlog.Error(err.Error())
 			return nil

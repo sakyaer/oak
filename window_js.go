@@ -16,8 +16,7 @@ import (
 )
 
 type JSWindow struct {
-	ctx         *js.Object
-	jsImageData *js.Object
+	ctx *js.Object
 }
 
 func (jsc *JSWindow) Release() {
@@ -50,14 +49,10 @@ func (jsc *JSWindow) NextEvent() interface{} {
 
 func (jsc *JSWindow) Upload(dp image.Point, src screen.Buffer, sr image.Rectangle) {
 	rgba := src.RGBA()
-
+	fmt.Println(len(rgba.Pix))
 	jsUint8 := js.Global.Get("Uint8ClampedArray").New(rgba.Pix)
-	jsc.jsImageData = js.Global.Get("ImageData").New(jsUint8, sr.Max.X, sr.Max.Y)
-
-	fmt.Println(jsUint8)
-	fmt.Println(jsc.jsImageData)
-
-	jsc.ctx.Call("putImageData", jsc.jsImageData, dp.X, dp.Y)
+	fmt.Println(sr)
+	jsc.ctx.Call("putImageData", js.Global.Get("ImageData").New(jsUint8, sr.Max.X, sr.Max.Y), dp.X, dp.Y)
 }
 
 func (jsc *JSWindow) Fill(dr image.Rectangle, src color.Color, op draw.Op) {

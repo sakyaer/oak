@@ -2,7 +2,6 @@ package oak
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"path/filepath"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
@@ -146,7 +145,7 @@ func loadOakConfig(fileName string) (oakConfig, error) {
 
 	dlog.Error("Loading config:", fileName)
 
-	confFile, err := ioutil.ReadFile(fileName)
+	confFile, err := file.ReadFile(fileName)
 	if err != nil {
 		dlog.Error(err)
 		return oakConfig{}, err

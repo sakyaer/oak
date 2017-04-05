@@ -26,11 +26,41 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"path/filepath"
+	"time"
+
+	"os"
 
 	"github.com/gopherjs/gopherjs/js"
 )
+
+type fileInfo struct {
+	size int64
+}
+
+func (fi fileInfo) Name() string {
+	return "js_dummy"
+}
+
+func (fi fileInfo) Size() int64 {
+	return fi.size
+}
+
+func (fi fileInfo) Mode() os.FileMode {
+	return 0
+}
+
+func (fi fileInfo) ModTime() time.Time {
+	return time.Time{}
+}
+
+func (fi fileInfo) IsDir() bool {
+	return false
+}
+
+func (fi fileInfo) Sys() interface{} {
+	return nil
+}
 
 type file struct {
 	*bytes.Reader
@@ -40,28 +70,38 @@ func (f *file) Close() error {
 	return nil
 }
 
-func Open(path string) (io.ReadCloser, error) {
+func (f *file) Stat() (os.FileInfo, error) {
+	fi := fileInfo{f.Size()}
+	return fi, nil
+}
+
+func Open(path string) (File, error) {
+	fmt.Println("Open JS")
 	var err error
 	var content *js.Object
-	ch := make(chan bool)
+	ch := make(chan struct{})
 
 	req := js.Global.Get("XMLHttpRequest").New()
 	req.Call("open", "GET", path, true)
 	req.Set("responseType", "arraybuffer")
 	req.Call("addEventListener", "load", func() {
+		defer close(ch)
+		fmt.Println("UHHH")
 		status := req.Get("status").Int()
 		if 200 <= status && status < 400 {
 			content = req.Get("response")
 			return
 		}
 		err = errors.New(fmt.Sprintf("http error: %d", status))
-		ch <- true
 	})
 	req.Call("addEventListener", "error", func() {
+		defer close(ch)
+		fmt.Println("error")
 		err = errors.New(fmt.Sprintf("XMLHttpRequest error: %s", req.Get("statusText").String()))
-		ch <- true
 	})
 	req.Call("send")
+
+	fmt.Println("Waiting on channel")
 	<-ch
 	if err != nil {
 		return nil, err
@@ -69,6 +109,7 @@ func Open(path string) (io.ReadCloser, error) {
 
 	data := js.Global.Get("Uint8Array").New(content).Interface().([]uint8)
 	f := &file{bytes.NewReader(data)}
+	fmt.Println("Open JS END")
 	return f, nil
 }
 
