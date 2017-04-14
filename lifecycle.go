@@ -58,27 +58,24 @@ func lifecycleLoop(s screen.Screen) {
 
 	eb = event.GetEventBus()
 
-	frameCh := make(chan bool)
-
-	go FrameLoop(frameCh, int64(FrameRate))
 	go KeyHoldLoop()
 	go InputLoop()
 
 	// Initiate the first scene
 	//initCh <- true
 
-	go BindingLoop()
 	fmt.Println("Lifecycle end")
-	go LogicLoop(frameCh)
+	go LogicLoop()
 
 	if conf.ShowFPS {
 		fmt.Println("Starting draw")
-		DrawLoopFPS()
+		go DrawLoopFPS()
 	} else {
 		fmt.Println("Starting draw")
-		DrawLoopNoFPS()
+		go DrawLoopNoFPS()
 	}
 
+	event.ResolvePending()
 }
 
 // do runs f on the osLocked thread.
@@ -90,37 +87,27 @@ func osLockedFunc(f func()) {
 	}
 	<-done
 }
-func BindingLoop() {
-	// Handle bind and unbind signals for events
-	// (should be made to not use a busy loop eventually)
-	for {
-		for runEventLoop {
-			event.ResolvePending()
-		}
-	}
-}
 
-// Maintain a frame rate for logical operations
-func FrameLoop(frameCh chan bool, frameRate int64) {
-	c := time.Tick(time.Second / time.Duration(frameRate))
-	for range c {
-		frameCh <- true
-	}
-}
-
-func LogicLoop(frameCh chan bool) {
+func LogicLoop() chan bool {
 	// The logical loop.
 	// In order, it waits on receiving a signal to begin a logical frame.
 	// It then runs any functions bound to when a frame begins.
-	// It then runs any functions bound to when a frame ends.
 	// It then allows a scene to perform it's loop operation.
-	for {
-		for runEventLoop {
-			<-frameCh
-			<-eb.TriggerBack("EnterFrame", nil)
-			sceneCh <- true
+	ch := make(chan bool)
+	go func(doneCh chan bool) {
+		ticker := time.NewTicker(time.Second / time.Duration(int64(FrameRate)))
+		for {
+			select {
+			case <-ticker.C:
+				<-eb.TriggerBack("EnterFrame", nil)
+				sceneCh <- true
+			case <-doneCh:
+				ticker.Stop()
+				return
+			}
 		}
-	}
+	}(ch)
+	return ch
 }
 
 func GetScreen() *image.RGBA {

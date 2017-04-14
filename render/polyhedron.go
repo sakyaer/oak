@@ -4,152 +4,30 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"sort"
 
 	"bitbucket.org/oakmoundstudio/oak/physics"
+	"github.com/200sc/go-compgeo/dcel"
 )
-
-/////////////////////
-// Won't be in this package
-////////////////////
-
-// This really shouldn't be
-// X, Y Z but rather [0,1,2]
-// but
-type DCELPoint [3]float64
-
-func (dp DCELPoint) X() float64 {
-	return dp[0]
-}
-
-func (dp DCELPoint) Y() float64 {
-	return dp[1]
-}
-
-func (dp DCELPoint) Z() float64 {
-	return dp[2]
-}
-
-type DCELEdge struct {
-	// Origin is the vertex this edge starts at
-	Origin *DCELPoint
-	// Face is the index within Faces that this
-	// edge wraps around
-	Face *DCELFace
-	// Next and Prev are the edges following and
-	// preceding this edge that also wrap around
-	// Face
-	Next *DCELEdge
-	Prev *DCELEdge
-}
-
-type DCELFace struct {
-	Outer, Inner *DCELEdge
-}
-
-type DCEL struct {
-	Vertices []DCELPoint
-	// outEdges[0] is the (an) edge in HalfEdges whose
-	// orgin is Vertices[0]
-	OutEdges  []*DCELEdge
-	HalfEdges []DCELEdge
-	// The first value in a face is the outside component
-	// of the face, the second value is the inside component
-	Faces []DCELFace
-}
-
-// Twin is the edge that runs along this edge
-// towards Origin, around the opposing face
-//
-// So HalfEdges[e.Twin].Origin is where this
-// edge points to.
-// Mandate: twin edges come in pairs
-// if i is even, then, i+1 is its pair,
-// and otherwise i-i is its pair.
-func (d *DCEL) EdgeTwin(i int) int {
-	if i%2 == 0 {
-		return i + 1
-	}
-	return i - 1
-}
-
-// FullEdge returns the ith edge in the form of its
-// two vertices
-func (d *DCEL) FullEdge(i int) [2]*DCELPoint {
-	e := d.HalfEdges[i]
-	e2 := d.HalfEdges[d.EdgeTwin(i)]
-	return [2]*DCELPoint{
-		e.Origin,
-		e2.Origin}
-}
-
-// Max functions iterate through vertices
-// to find the maximum value along a given axis
-// in the DCEL
-
-func (d *DCEL) MaxX() float64 {
-	return d.Max(0)
-}
-
-func (d *DCEL) MaxY() float64 {
-	return d.Max(1)
-}
-
-func (d *DCEL) MaxZ() float64 {
-	return d.Max(2)
-}
-
-func (d *DCEL) Max(i int) (x float64) {
-	for _, p := range d.Vertices {
-		if p[i] > x {
-			x = p[i]
-		}
-	}
-	return x
-}
-
-func (d *DCEL) MinX() float64 {
-	return d.Min(0)
-}
-
-func (d *DCEL) MinY() float64 {
-	return d.Min(1)
-}
-
-func (d *DCEL) MinZ() float64 {
-	return d.Min(2)
-}
-
-func (d *DCEL) Min(i int) (x float64) {
-	x = math.Inf(1)
-	for _, p := range d.Vertices {
-		if p[i] < x {
-			x = p[i]
-		}
-	}
-	return x
-}
-
-///////////////////////
 
 type Polyhedron struct {
 	Sprite
-	DCEL
+	dcel.DCEL
 	Center physics.Vector
 }
 
 func NewCuboid(x, y, z, w, h, d float64) *Polyhedron {
-	p := new(Polyhedron)
-	p.SetPos(x, y)
-
-	dc := DCEL{}
+	px := x
+	py := y
+	dc := dcel.DCEL{}
 	// Is there a smart way to loop through this?
 	// verts
 	x = w
 	y = h
 	z = -d
-	dc.Vertices = make([]DCELPoint, 8)
-	dc.HalfEdges = make([]DCELEdge, 24)
-	dc.OutEdges = make([]*DCELEdge, 8)
+	dc.Vertices = make([]*dcel.Point, 8)
+	dc.HalfEdges = make([]*dcel.Edge, 24)
+	dc.OutEdges = make([]*dcel.Edge, 8)
 	for i := 0; i < 8; i++ {
 		// Set coordinates of this vertex
 		if x == 0 {
@@ -168,7 +46,7 @@ func NewCuboid(x, y, z, w, h, d float64) *Polyhedron {
 			z += d
 		}
 
-		dc.Vertices[i] = DCELPoint{x, y, z}
+		dc.Vertices[i] = dcel.NewPoint(x, y, z)
 	}
 	corners := []int{0, 3, 5, 6}
 	// These edges, except for the ones
@@ -185,22 +63,32 @@ func NewCuboid(x, y, z, w, h, d float64) *Polyhedron {
 		}
 		m := 0
 		for j := edge; j < edge+6; j += 2 {
-			dc.HalfEdges[j] = DCELEdge{
-				Origin: &dc.Vertices[i],
+			dc.HalfEdges[j] = &dcel.Edge{
+				Origin: dc.Vertices[i],
 			}
-			dc.OutEdges[i] = &dc.HalfEdges[j]
-			dc.HalfEdges[j+1] = DCELEdge{
-				Origin: &dc.Vertices[addEdgesK[m]],
+			dc.OutEdges[i] = dc.HalfEdges[j]
+			dc.HalfEdges[j+1] = &dcel.Edge{
+				Origin: dc.Vertices[addEdgesK[m]],
 			}
-			dc.OutEdges[addEdgesK[m]] = &dc.HalfEdges[j+1]
+			dc.OutEdges[addEdgesK[m]] = dc.HalfEdges[j+1]
 			m++
 		}
 		// 6 edges per corner
 		edge += 6
 	}
+	// Set Twins
+	for i := range dc.HalfEdges {
+		dc.HalfEdges[i].Twin = dc.HalfEdges[dcel.EdgeTwin(i)]
+	}
 	// We're ignoring prev, next, face for now
 	// because this is way harder than it should be
-	p.DCEL = dc
+	return NewPolyhedronFromDCEL(&dc, px, py)
+}
+
+func NewPolyhedronFromDCEL(dc *dcel.DCEL, x, y float64) *Polyhedron {
+	p := new(Polyhedron)
+	p.SetPos(x, y)
+	p.DCEL = *dc
 	p.Update()
 	p.Center = physics.NewVector(p.X+(1+p.MaxX())/2, p.Y+(1+p.MaxY())/2)
 	return p
@@ -208,8 +96,9 @@ func NewCuboid(x, y, z, w, h, d float64) *Polyhedron {
 
 func (p *Polyhedron) Update() {
 
+	p.clearNegativePoints()
+
 	// Reset p's rgba
-	// Todo: define a better buffer than 5
 	maxX := p.MaxX() + 1
 	maxY := p.MaxY() + 1
 	rect := image.Rect(0, 0, int(maxX), int(maxY))
@@ -229,37 +118,116 @@ func (p *Polyhedron) Update() {
 
 	red := color.RGBA{255, 0, 0, 255}
 	gray := color.RGBA{160, 160, 160, 255}
+	blue := color.RGBA{0, 0, 255, 255}
+
+	// Eventually:
+	// For all Faces, Edges, and Vertices, sort by z value
+	// and draw them high-to-low
+	zOrder := make([]interface{}, len(p.HalfEdges)/2+len(p.Faces)-1+len(p.Vertices))
 
 	// Step 1: draw all edges
 	// Given the edge twin mandate, we can just use
 	// every other halfEdge.
 	//fmt.Println(p.DCEL)
 	for i := 0; i < len(p.HalfEdges); i += 2 {
-		points := p.FullEdge(i)
+		points, err := p.FullEdge(i)
+		if err != nil {
+			continue
+		}
 		// draw a line from points[0] to points[1]
-		// fmt.Println("Drawing from ", points[0][0], points[0][1], "to",
-		// 	points[1][0], points[1][1])
-		drawLineOnto(rgba, int(points[0][0]), int(points[0][1]),
-			int(points[1][0]), int(points[1][1]), gray)
+		//fmt.Println("Drawing from ", points[0][0], points[0][1], "to",
+		//points[1][0], points[1][1])
+		zOrder = append(zOrder, points)
+		// drawLineOnto(rgba, int(points[0][0]), int(points[0][1]),
+		// 	int(points[1][0]), int(points[1][1]), gray)
 	}
 
 	// Step 2: draw all vertices
 	for _, v := range p.Vertices {
-		rgba.Set(int(v[0]), int(v[1]), red)
+		zOrder = append(zOrder, v)
+		//rgba.Set(int(v[0]), int(v[1]), red)
+	}
+
+	for i := 1; i < len(p.Faces); i++ {
+		f := p.Faces[i]
+		verts := f.Vertices()
+		max_z := math.MaxFloat64 * -1
+		phys_verts := make([]physics.Vector, len(verts))
+		for i, v := range verts {
+			phys_verts[i] = physics.NewVector(v[0], v[1])
+			if v[2] > max_z {
+				max_z = v[2]
+			}
+		}
+		poly, err := NewPolygon(phys_verts)
+		if err != nil {
+			continue
+		}
+		fpoly := facePolygon{
+			poly,
+			max_z,
+		}
+		zOrder = append(zOrder, fpoly)
+	}
+
+	// This is very hacky
+	sort.Slice(zOrder, func(i, j int) bool {
+		z1 := 0.0
+		z2 := 0.0
+		switch v := zOrder[i].(type) {
+		case facePolygon:
+			z1 = v.z
+		case dcel.Point:
+			z1 = v[2] + .002
+		case [2]*dcel.Point:
+			z1 = math.Max(v[0][2], v[1][2]) + .001
+		}
+		switch v := zOrder[j].(type) {
+		case facePolygon:
+			z2 = v.z
+		case dcel.Point:
+			z2 = v[2] + .002
+		case [2]*dcel.Point:
+			z2 = math.Max(v[0][2], v[1][2]) + .001
+		}
+		return z1 < z2
+	})
+
+	for _, item := range zOrder {
+		switch v := item.(type) {
+		case facePolygon:
+			for x := v.Rect.minX; x < v.Rect.maxX; x++ {
+				for y := v.Rect.minY; y < v.Rect.maxY; y++ {
+					if v.Contains(x, y) {
+						rgba.Set(int(x), int(y), blue)
+					}
+				}
+			}
+		case dcel.Point:
+			rgba.Set(int(v[0]), int(v[1]), red)
+		case [2]*dcel.Point:
+			drawLineOnto(rgba, int(v[0][0]), int(v[0][1]),
+				int(v[1][0]), int(v[1][1]), gray)
+		}
 	}
 
 	p.SetRGBA(rgba)
+}
+
+type facePolygon struct {
+	*Polygon
+	z float64
 }
 
 func (p *Polyhedron) RotZ(theta float64) {
 	st := math.Sin(theta)
 	ct := math.Cos(theta)
 
-	for i, v := range p.Vertices {
-		p.Vertices[i][0] = v[0]*ct - v[1]*st
-		p.Vertices[i][1] = v[1]*ct + v[0]*st
+	for _, v := range p.Vertices {
+		v0 := v[0]*ct - v[1]*st
+		v[1] = v[1]*ct + v[0]*st
+		v[0] = v0
 	}
-	p.clearNegativePoints()
 	p.Update()
 }
 
@@ -267,11 +235,11 @@ func (p *Polyhedron) RotX(theta float64) {
 	st := math.Sin(theta)
 	ct := math.Cos(theta)
 
-	for i, v := range p.Vertices {
-		p.Vertices[i][1] = v[1]*ct - v[2]*st
-		p.Vertices[i][2] = v[2]*ct + v[1]*st
+	for _, v := range p.Vertices {
+		v1 := v[1]*ct - v[2]*st
+		v[2] = v[2]*ct + v[1]*st
+		v[1] = v1
 	}
-	p.clearNegativePoints()
 	p.Update()
 }
 
@@ -279,11 +247,20 @@ func (p *Polyhedron) RotY(theta float64) {
 	st := math.Sin(theta)
 	ct := math.Cos(theta)
 
-	for i, v := range p.Vertices {
-		p.Vertices[i][0] = v[0]*ct - v[2]*st
-		p.Vertices[i][2] = v[2]*ct + v[0]*st
+	for _, v := range p.Vertices {
+		v0 := v[0]*ct - v[2]*st
+		v[2] = v[2]*ct + v[0]*st
+		v[0] = v0
 	}
-	p.clearNegativePoints()
+	p.Update()
+}
+
+func (p *Polyhedron) Scale(factor float64) {
+	for i, v := range p.Vertices {
+		p.Vertices[i][0] = v[0] * factor
+		p.Vertices[i][1] = v[1] * factor
+		p.Vertices[i][2] = v[2] * factor
+	}
 	p.Update()
 }
 
@@ -304,4 +281,14 @@ func (p *Polyhedron) clearNegativePoints() {
 // Utilities
 func (p *Polyhedron) String() string {
 	return "Polyhedron"
+}
+
+func (p *Polyhedron) ShiftX(x float64) {
+	p.Center.X += x
+	p.Sprite.ShiftX(x)
+}
+
+func (p *Polyhedron) ShiftY(y float64) {
+	p.Center.Y += y
+	p.Sprite.ShiftY(y)
 }
