@@ -4,6 +4,7 @@ package oak
 
 import (
 	"errors"
+	"fmt"
 	"image"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -13,6 +14,7 @@ import (
 type JSScreen struct{}
 
 func (jss *JSScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
+	fmt.Println("New JS Buffer")
 	rect := image.Rect(0, 0, p.X, p.Y)
 	rgba := image.NewRGBA(rect)
 	buffer := &JSBuffer{
@@ -22,6 +24,7 @@ func (jss *JSScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
 	return buffer, nil
 }
 func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, error) {
+	fmt.Println("New JS Window")
 	jsc := new(JSWindow)
 
 	document := js.Global.Get("document")
@@ -33,5 +36,6 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 }
 
 func (jss *JSScreen) NewTexture(p image.Point) (screen.Texture, error) {
+	fmt.Println("New JS Texture")
 	return nil, errors.New("Not supported on JS")
 }

@@ -1,6 +1,7 @@
 package render
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"path/filepath"
@@ -49,6 +50,7 @@ func (fg *FontGenerator) Generate() *Font {
 			fg.File = defaultFontFile
 		} else {
 			_, curFile, _, _ := runtime.Caller(1)
+			fmt.Println("curfile", curFile)
 			dir = filepath.Join(filepath.Dir(curFile), "default_assets", "font")
 			fg.File = "luxisr.ttf"
 		}
@@ -62,6 +64,8 @@ func (fg *FontGenerator) Generate() *Font {
 	if fg.Color == nil {
 		fg.Color = defaultColor
 	}
+
+	fmt.Println("Making a font at", dir, fg.File)
 
 	return &Font{
 		FontGenerator: *fg,

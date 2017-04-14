@@ -3,7 +3,6 @@
 package oak
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -16,7 +15,9 @@ import (
 )
 
 type JSWindow struct {
-	ctx *js.Object
+	ctx     *js.Object
+	jsUint8 *js.Object
+	imgData *js.Object
 }
 
 func (jsc *JSWindow) Release() {
@@ -48,11 +49,12 @@ func (jsc *JSWindow) NextEvent() interface{} {
 // Uploader
 
 func (jsc *JSWindow) Upload(dp image.Point, src screen.Buffer, sr image.Rectangle) {
-	rgba := src.RGBA()
-	fmt.Println(len(rgba.Pix))
-	jsUint8 := js.Global.Get("Uint8ClampedArray").New(rgba.Pix)
-	fmt.Println(sr)
-	jsc.ctx.Call("putImageData", js.Global.Get("ImageData").New(jsUint8, sr.Max.X, sr.Max.Y), dp.X, dp.Y)
+	//fmt.Println("len", len(rgba.Pix))
+	jsc.jsUint8 = js.Global.Get("Uint8ClampedArray").New(src.RGBA().Pix, sr.Max.X, sr.Max.Y)
+	//fmt.Println("Source", sr)
+	jsc.imgData = js.Global.Get("ImageData").New(jsc.jsUint8, sr.Max.X, sr.Max.Y)
+	jsc.ctx.Call("putImageData", jsc.imgData, dp.X, dp.Y)
+	//runtime.GC()
 }
 
 func (jsc *JSWindow) Fill(dr image.Rectangle, src color.Color, op draw.Op) {

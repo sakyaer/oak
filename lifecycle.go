@@ -58,8 +58,8 @@ func lifecycleLoop(s screen.Screen) {
 
 	eb = event.GetEventBus()
 
-	go KeyHoldLoop()
-	go InputLoop()
+	//go KeyHoldLoop()
+	//go InputLoop()
 
 	// Initiate the first scene
 	//initCh <- true
@@ -100,7 +100,7 @@ func LogicLoop() chan bool {
 				sceneCh <- true
 			case <-doneCh:
 				ticker.Stop()
-				return
+				break
 			}
 		}
 	}(ch)
