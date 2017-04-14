@@ -64,9 +64,6 @@ func lifecycleLoop(s screen.Screen) {
 	// Initiate the first scene
 	//initCh <- true
 
-	fmt.Println("Lifecycle end")
-	go LogicLoop()
-
 	if conf.ShowFPS {
 		fmt.Println("Starting draw")
 		go DrawLoopFPS()
