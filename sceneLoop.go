@@ -62,6 +62,7 @@ func SceneLoop(firstScene string) {
 		dlog.Info("~~~~~~~~Scene End~~~~~~~~~~")
 
 		// We don't want enterFrames going off between scenes
+		logicTicker <- true
 		close(logicTicker)
 		prevScene = CurrentScene
 
