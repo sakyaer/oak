@@ -7,8 +7,19 @@ import (
 
 type Doodad struct {
 	Point
-	R   render.Renderable
-	CID event.CID
+	event.CID
+	R render.Renderable
+}
+
+func NewDoodad(x, y float64, r render.Renderable, CID event.CID) Doodad {
+	if r != nil {
+		r.SetPos(x, y)
+	}
+	return Doodad{
+		Point: NewPoint(x, y),
+		R:     r,
+		CID:   CID,
+	}
 }
 
 func (d *Doodad) Init() event.CID {
@@ -45,7 +56,6 @@ func (d *Doodad) SetPos(x, y float64) {
 	d.R.SetPos(x, y)
 }
 
-
 func (d *Doodad) String() string {
 	s := "Doodad: \nP{ "
 	s += d.Point.String()
@@ -56,4 +66,3 @@ func (d *Doodad) String() string {
 	s += " }"
 	return s
 }
-

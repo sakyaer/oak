@@ -1,44 +1,65 @@
+<<<<<<< HEAD
 //+build windows,!js
+=======
+//+build windows
+>>>>>>> master
 
 package audio
 
 import (
-	"math/rand"
 	"time"
+
+	"github.com/200sc/go-dist/intrange"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 )
 
+// GetActiveWavChannel returns a channel on the default font.
+// see font.GetActiveWavChannel
+func GetActiveWavChannel(freq intrange.Range, fileNames ...string) (chan ChannelSignal, error) {
+	return defFont.GetActiveWavChannel(freq, fileNames...)
+}
+
+// GetActiveWavChannel returns a channel that will block until its frequency
+// rotates around. This means that continually sending on ChannelSignal will
+// probably cause the game to freeze or substantially slow down. For this reason
+// ActiveWavChannels are meant to be used for cases where the user knows they will
+// not be sending on the ActiveWavChannel more often than the frequency they send
+// in.
 // Audio channels serve one purpose: handling audio effects
 // which come in at very high or unpredictable frequencies
 // while limiting the number of concurrent ongoing audio effects
 // from any one source. All channels will only play once per a given
-// frequency range, calculated on each iteration as a range on frequency
-// and a random value in addition to frequency.
+// frequency range.
+func (f *Font) GetActiveWavChannel(freq intrange.Range, fileNames ...string) (chan ChannelSignal, error) {
 
-func GetActivePosWavChannel(frequency, freqRand int, fileNames ...string) (chan [3]int, error) {
-
-	sounds, err := GetSounds(fileNames...)
+	datas, err := GetSounds(fileNames...)
 	if err != nil {
 		return nil, err
 	}
 
-	soundCh := make(chan [3]int)
+	sounds := make([]*Audio, len(datas))
+	for i, d := range datas {
+		sounds[i] = &Audio{d, f, nil, nil}
+	}
+
+	soundCh := make(chan ChannelSignal)
 	go func() {
+		// Todo: When a scene ends, we need to clear all of these goroutines out
 		for {
-			delay := time.Duration(rand.Intn(freqRand) + frequency)
+			delay := time.Duration(freq.Poll())
 			<-time.After(delay * time.Millisecond)
 			// Every once in a while, after some delay,
 			// we play an audio that slipped through the
 			// above routine.
-			a := <-soundCh
-			sound := sounds[a[0]]
-			var err error
-			if usingEars {
-				err = PlayPositional(sound, float64(a[1]), float64(a[2]))
-			} else {
-				err = sound.Play()
+			signal := <-soundCh
+			sound := sounds[signal.GetIndex()]
+			usePos, x, y := signal.GetPos()
+			if usePos {
+				sound.X = &x
+				sound.Y = &y
 			}
+			err := sound.Play()
 			if err != nil {
 				dlog.Error(err)
 			}
@@ -47,32 +68,13 @@ func GetActivePosWavChannel(frequency, freqRand int, fileNames ...string) (chan 
 	return soundCh, nil
 }
 
-func GetActiveWavChannel(frequency, freqRand int, fileNames ...string) (chan int, error) {
-
-	sounds, err := GetSounds(fileNames...)
-	if err != nil {
-		return nil, err
-	}
-
-	soundCh := make(chan int)
-	go func() {
-		for {
-			delay := time.Duration(rand.Intn(freqRand) + frequency)
-			<-time.After(delay * time.Millisecond)
-			// Every once in a while, after some delay,
-			// we play an audio that slipped through the
-			// above routine.
-			a := <-soundCh
-			err := sounds[a].Play()
-			if err != nil {
-				dlog.Error(err)
-			}
-		}
-	}()
-	return soundCh, nil
+// GetWavChannel calls GetWavChannel on the default sound font.
+// see font.GetWavChannel
+func GetWavChannel(freq intrange.Range, fileNames ...string) (chan ChannelSignal, error) {
+	return defFont.GetWavChannel(freq, fileNames...)
 }
 
-// Non-Active channels will attempt to steal most sends sent to the output
+// GetWavChannel channels will attempt to steal most sends sent to the output
 // audio channel. This will allow a game to constantly send on a channel and
 // obtain an output rate of near the sent in frequency instead of locking
 // or requiring buffered channel usage.
@@ -83,26 +85,9 @@ func GetActiveWavChannel(frequency, freqRand int, fileNames ...string) (chan int
 // here will let the EnterFrame code which detects the walking status to
 // send on the walking audio channel constantly without worrying about
 // triggering too many sounds.
+func (f *Font) GetWavChannel(freq intrange.Range, fileNames ...string) (chan ChannelSignal, error) {
 
-func GetPosWavChannel(frequency, freqRand int, fileNames ...string) (chan [3]int, error) {
-
-	soundCh, err := GetActivePosWavChannel(frequency, freqRand, fileNames...)
-	if err != nil {
-		return nil, err
-	}
-	// This routine serves to steal almost every
-	// attempt to play audio
-	go func() {
-		for {
-			<-soundCh
-		}
-	}()
-	return soundCh, nil
-}
-
-func GetWavChannel(frequency, freqRand int, fileNames ...string) (chan int, error) {
-
-	soundCh, err := GetActiveWavChannel(frequency, freqRand, fileNames...)
+	soundCh, err := f.GetActiveWavChannel(freq, fileNames...)
 	if err != nil {
 		return nil, err
 	}

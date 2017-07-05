@@ -9,17 +9,11 @@ import (
 	"bitbucket.org/oakmoundstudio/oak/physics"
 )
 
-//Rate of scrool
-//Sprite to draw to
-//List of things to scroll
-
 //Needs have a start/stop on the ScrollBox : Pause
 //needs bool to track
 
 //scrollrate = some unit of ScrollBox px per ms  takes that and transforms to duration
 //nextscroll = time
-
-//This will only scroll x for now
 
 type ScrollBox struct {
 	*Sprite
@@ -38,7 +32,7 @@ func NewScrollBox(rs []Renderable, milliPerPixelX, milliPerPixelY, width, height
 	s.View = physics.NewVector(float64(width), float64(height))
 
 	s.SetScrollRate(milliPerPixelX, milliPerPixelY)
-	s.reappear = physics.NewVector(-1*s.dirX*s.View.X, -1*s.dirY*s.View.Y)
+	s.reappear = physics.NewVector(-1*s.dirX*s.View.X(), -1*s.dirY*s.View.Y())
 
 	s.nextScrollX = time.Now().Add(s.scrollRateX)
 	s.nextScrollY = time.Now().Add(s.scrollRateY)
@@ -66,12 +60,12 @@ func (s *ScrollBox) update() {
 		pixelsMovedX := int64(time.Since(s.nextScrollX))/int64(s.scrollRateX) + 1
 		s.nextScrollX = time.Now().Add(s.scrollRateX)
 
-		newS := NewEmptySprite(s.Sprite.X, s.Sprite.Y, int(s.View.X), int(s.View.Y))
+		newS := NewEmptySprite(s.Sprite.X(), s.Sprite.Y(), int(s.View.X()), int(s.View.Y()))
 		newS.SetLayer(s.Sprite.GetLayer())
 		for _, m := range s.Rs {
 			m.ShiftX(-1 * s.dirX * float64(pixelsMovedX))
-			if (s.dirX == 1 && m.GetX() <= s.reappear.X) || (s.dirX == -1 && m.GetX() >= s.reappear.X) {
-				m.ShiftX(-1 * s.reappear.X) //Hope that delta is not higher than reappear...
+			if (s.dirX == 1 && m.GetX() <= s.reappear.X()) || (s.dirX == -1 && m.GetX() >= s.reappear.X()) {
+				m.ShiftX(-1 * s.reappear.X()) //Hope that delta is not higher than reappear...
 			}
 
 		}
@@ -82,12 +76,12 @@ func (s *ScrollBox) update() {
 		pixelsMovedY := int64(time.Since(s.nextScrollY))/int64(s.scrollRateY) + 1
 		s.nextScrollY = time.Now().Add(s.scrollRateY)
 
-		newS := NewEmptySprite(s.Sprite.X, s.Sprite.Y, int(s.View.X), int(s.View.Y))
+		newS := NewEmptySprite(s.Sprite.X(), s.Sprite.Y(), int(s.View.X()), int(s.View.Y()))
 		newS.SetLayer(s.Sprite.GetLayer())
 		for _, m := range s.Rs {
 			m.ShiftY(-1 * s.dirY * float64(pixelsMovedY))
-			if (s.dirY == 1 && m.GetY() <= s.reappear.Y) || (s.dirY == -1 && m.GetY() >= s.reappear.Y) {
-				m.ShiftY(-1 * s.reappear.Y) //Hope that delta is not higher than reappear...
+			if (s.dirY == 1 && m.GetY() <= s.reappear.Y()) || (s.dirY == -1 && m.GetY() >= s.reappear.Y()) {
+				m.ShiftY(-1 * s.reappear.Y()) //Hope that delta is not higher than reappear...
 			}
 		}
 		*s.Sprite = *newS
@@ -140,7 +134,7 @@ func (s *ScrollBox) SetScrollRate(milliPerPixelX, milliPerPixelY int) {
 func (s *ScrollBox) AddRenderable(rs ...Renderable) {
 	for _, r := range rs {
 		switch r.(type) {
-		case *Text, *IntText:
+		case *Text:
 			r.SetPos(r.GetX()*-1, r.GetY()*-1)
 		}
 		s.Rs = append(s.Rs, r)
@@ -152,13 +146,13 @@ func (s *ScrollBox) drawRenderables() {
 	for _, r := range s.Rs {
 		r.DrawOffset(s.GetRGBA(), -2*r.GetX(), -2*r.GetY())
 		if s.scrollRateY != 0 {
-			r.DrawOffset(s.GetRGBA(), -2*r.GetX(), -2*r.GetY()+s.reappear.Y)
+			r.DrawOffset(s.GetRGBA(), -2*r.GetX(), -2*r.GetY()+s.reappear.Y())
 		}
 		if s.scrollRateX != 0 {
-			r.DrawOffset(s.GetRGBA(), -2*r.GetX()+s.reappear.X, -2*r.GetY())
+			r.DrawOffset(s.GetRGBA(), -2*r.GetX()+s.reappear.X(), -2*r.GetY())
 		}
 		if s.scrollRateX != 0 && s.scrollRateY != 0 {
-			r.DrawOffset(s.GetRGBA(), -2*r.GetX()+s.reappear.X, -2*r.GetY()+s.reappear.Y)
+			r.DrawOffset(s.GetRGBA(), -2*r.GetX()+s.reappear.X(), -2*r.GetY()+s.reappear.Y())
 		}
 	}
 }

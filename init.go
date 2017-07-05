@@ -19,7 +19,8 @@ var (
 	// The init channel communicates between
 	// initializing goroutines for when significant
 	// steps in initialization have been reached
-	initCh = make(chan bool)
+	// initCh = make(chan bool)
+	// currently unused
 
 	//
 	transitionCh = make(chan bool)
@@ -40,7 +41,7 @@ var (
 
 	// The draw channel recieves a signal when
 	// drawing should cease (or resume)
-	drawChannel = make(chan bool)
+	drawCh = make(chan bool)
 
 	// The debug reset channel represents
 	// when the debug console should forget the
@@ -49,27 +50,32 @@ var (
 
 	// The viewport channel controls when new
 	// viewport positions should be drawn
-	viewportChannel = make(chan [2]int)
+	viewportCh = make(chan [2]int)
 
-	runEventLoop         bool
 	debugResetInProgress bool
 
-	ScreenWidth  int
+	// ScreenWidth is the width of the screen
+	ScreenWidth int
+	// ScreenHeight is the height of the screen
 	ScreenHeight int
-	WorldWidth   int
-	WorldHeight  int
-	FrameRate    int
 
-	eb *event.EventBus
+	// FrameRate is the current logical frame rate.
+	// Changing this won't directly effect frame rate, that
+	// requires changing the LogicTicker, but it will take
+	// effect next scene
+	FrameRate int
 
-	wd, _    = file.Getwd()
-	imageDir string
-	audioDir string
+	// DrawFrameRate is the unused equivalent to FrameRate
+	DrawFrameRate int
+
+	eb *event.Bus
 
 	// GlobalFirstScene is returned by the first
 	// loading scene
 	globalFirstScene string
-	CurrentScene     string
+
+	// CurrentScene is the scene currently running in oak
+	CurrentScene string
 
 	zeroPoint = image.Point{0, 0}
 )
@@ -86,29 +92,25 @@ func Init(firstScene string) {
 	dlog.SetStringDebugLevel(conf.Debug.Level)
 	dlog.SetDebugFilter(conf.Debug.Filter)
 
+	dlog.Info("Oak Init Start")
+
 	ScreenWidth = conf.Screen.Width
 	ScreenHeight = conf.Screen.Height
-	WorldWidth = conf.World.Width
-	WorldHeight = conf.World.Height
 	FrameRate = conf.FrameRate
+	DrawFrameRate = conf.DrawFrameRate
 
-	imageDir = filepath.Join(wd,
-		conf.Assets.AssetPath,
-		conf.Assets.ImagePath)
-	audioDir = filepath.Join(wd,
-		conf.Assets.AssetPath,
-		conf.Assets.AudioPath)
+	wd, _ := os.Getwd()
 
 	render.SetFontDefaults(wd, conf.Assets.AssetPath, conf.Assets.FontPath,
 		conf.Font.Hinting, conf.Font.Color, conf.Font.File, conf.Font.Size,
 		conf.Font.DPI)
 	// END of loading variables from configuration
-	render.InitDrawHeap()
 
 	collision.Init()
 	mouse.Init()
 	audio.InitWinAudio()
 
+<<<<<<< HEAD
 	SeedRNG(DEFAULT_SEED)
 
 	go LoadAssets()
@@ -124,4 +126,23 @@ func Init(firstScene string) {
 	// Loop through scenes
 	fmt.Println("Init end")
 	SceneLoop(firstScene)
+=======
+	SeedRNG(DefaultSeed)
+
+	imageDir := filepath.Join(wd,
+		conf.Assets.AssetPath,
+		conf.Assets.ImagePath)
+	audioDir := filepath.Join(wd,
+		conf.Assets.AssetPath,
+		conf.Assets.AudioPath)
+
+	dlog.Info("Init Scene Loop")
+	go sceneLoop(firstScene)
+	dlog.Info("Init asset load")
+	go loadAssets(imageDir, audioDir)
+	dlog.Info("Init Console")
+	go debugConsole(debugResetCh, skipSceneCh)
+	dlog.Info("Init Main Driver")
+	driver.Main(lifecycleLoop)
+>>>>>>> master
 }

@@ -12,7 +12,7 @@ import (
 	"bitbucket.org/oakmoundstudio/oak/timing"
 )
 
-func SceneLoop(firstScene string) {
+func sceneLoop(firstScene string) {
 	var prevScene string
 
 	sceneMap[firstScene].active = true
@@ -24,8 +24,10 @@ func SceneLoop(firstScene string) {
 	dlog.Info("First Scene Start")
 	fmt.Println("First scene start")
 
-	drawChannel <- true
-	drawChannel <- true
+	drawCh <- true
+	drawCh <- true
+
+	dlog.Verb("Draw Channel Activated")
 
 	for {
 		fmt.Println("Scene start")
@@ -33,33 +35,34 @@ func SceneLoop(firstScene string) {
 		updateScreen(0, 0)
 		useViewBounds = false
 
-		dlog.Info("~~~~~~~~~~~Scene Start~~~~~~~~~")
+		dlog.Info("Scene Start", CurrentScene)
 		go func() {
+			dlog.Info("Starting scene in goroutine", CurrentScene)
 			sceneMap[CurrentScene].start(prevScene, result.NextSceneInput)
 			transitionCh <- true
 		}()
 		sceneTransition(result)
 		// Post transition, begin loading animation
-		drawChannel <- true
+		dlog.Info("Starting load animation")
+		drawCh <- true
+		dlog.Info("Getting Transition Signal")
 		<-transitionCh
+		dlog.Info("Resume Drawing")
 		// Send a signal to resume (or begin) drawing
-		drawChannel <- true
+		drawCh <- true
 
+		dlog.Info("Looping Scene")
 		cont := true
-		logicTicker := LogicLoop()
+		logicTicker := logicLoop()
 		for cont {
 			select {
-			// The quit channel represents a signal
-			// for the engine to stop.
-			case <-quitCh:
-				return
 			case <-sceneCh:
 				cont = sceneMap[CurrentScene].loop()
 			case <-skipSceneCh:
 				cont = false
 			}
 		}
-		dlog.Info("~~~~~~~~Scene End~~~~~~~~~~")
+		dlog.Info("Scene End", CurrentScene)
 
 		// We don't want enterFrames going off between scenes
 		logicTicker <- true
@@ -67,7 +70,7 @@ func SceneLoop(firstScene string) {
 		prevScene = CurrentScene
 
 		// Send a signal to stop drawing
-		drawChannel <- true
+		drawCh <- true
 
 		// Reset any ongoing delays
 	delayLabel:
@@ -78,20 +81,24 @@ func SceneLoop(firstScene string) {
 				break delayLabel
 			}
 		}
+
+		dlog.Verb("Resetting Engine")
 		// Reset transient portions of the engine
 		// We start by clearing the event bus to
 		// remove most ongoing code
-		event.ResetEventBus()
+		event.ResetBus()
 		// We follow by clearing collision areas
 		// because otherwise collision function calls
 		// on non-entities (i.e. particles) can still
 		// be triggered and attempt to access an entity
 		// Todo:
+		dlog.Verb("Event Bus Reset")
 		collision.Clear()
 		mouse.Clear()
 		event.ResetEntities()
-		render.ResetDrawHeap()
+		render.ResetDrawStack()
 		render.PreDraw()
+		dlog.Verb("Engine Reset")
 
 		// Todo: Add in customizable loading scene between regular scenes
 
@@ -102,7 +109,7 @@ func SceneLoop(firstScene string) {
 			result = new(SceneResult)
 		}
 
-		eb = event.GetEventBus()
+		eb = event.GetBus()
 		if !debugResetInProgress {
 			debugResetInProgress = true
 			go func() {

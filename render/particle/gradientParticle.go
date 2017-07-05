@@ -5,29 +5,27 @@ import (
 	"image/color"
 	"image/draw"
 
-	"bitbucket.org/oakmoundstudio/oak/physics"
 	"bitbucket.org/oakmoundstudio/oak/render"
 )
 
-// A particle is a colored pixel at a given position, moving in a certain direction.
-// After a while, it will dissipate.
+// A GradientParticle has a gradient from one color to another
 type GradientParticle struct {
-	*BaseParticle
-	startColor  color.Color
-	endColor    color.Color
+	ColorParticle
 	startColor2 color.Color
 	endColor2   color.Color
-	size        int
 }
 
+// Draw redirectes to DrawOffset
 func (gp *GradientParticle) Draw(buff draw.Image) {
 	gp.DrawOffset(buff, 0, 0)
 }
 
+// DrawOffset redirectes to DrawOffsetGen
 func (gp *GradientParticle) DrawOffset(buff draw.Image, xOff, yOff float64) {
 	gp.DrawOffsetGen(gp.GetBaseParticle().Src.Generator, buff, xOff, yOff)
 }
 
+// DrawOffsetGen draws a particle with it's generator's variables
 func (gp *GradientParticle) DrawOffsetGen(generator Generator, buff draw.Image, xOff, yOff float64) {
 
 	gen := generator.(*GradientGenerator)
@@ -56,7 +54,7 @@ func (gp *GradientParticle) DrawOffsetGen(generator Generator, buff draw.Image, 
 
 	for i := 0; i < gp.size; i++ {
 		for j := 0; j < gp.size; j++ {
-			if gen.Shape(i, j, gp.size) {
+			if gen.Shape.In(i, j, gp.size) {
 				progress := gen.ProgressFunction(i, j, gp.size, gp.size)
 				c := color.RGBA64{
 					uint16OnScale(r, r2, progress),
@@ -71,18 +69,5 @@ func (gp *GradientParticle) DrawOffsetGen(generator Generator, buff draw.Image, 
 
 	halfSize := float64(gp.size / 2)
 
-	render.ShinyDraw(buff, img, int((xOff+gp.Pos.X)-halfSize), int((yOff+gp.Pos.Y)-halfSize))
-}
-
-func (gp *GradientParticle) GetBaseParticle() *BaseParticle {
-	return gp.BaseParticle
-}
-
-func (gp *GradientParticle) GetPos() physics.Vector {
-	fSize := float64(gp.size)
-	return physics.NewVector(gp.Pos.X-fSize/2, gp.Pos.Y-fSize/2)
-}
-func (gp *GradientParticle) GetSize() (float64, float64) {
-	fSize := float64(gp.size)
-	return fSize, fSize
+	render.ShinyDraw(buff, img, int((xOff+gp.X())-halfSize), int((yOff+gp.Y())-halfSize))
 }

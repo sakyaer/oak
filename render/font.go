@@ -12,7 +12,11 @@ import (
 	"golang.org/x/image/font"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
+<<<<<<< HEAD
 	"bitbucket.org/oakmoundstudio/oak/file"
+=======
+	"bitbucket.org/oakmoundstudio/oak/fileutil"
+>>>>>>> master
 )
 
 var (
@@ -132,6 +136,9 @@ func parseFontHinting(hintType string) (faceHinting font.Hinting) {
 		faceHinting = font.HintingFull
 	default:
 		dlog.Error("Unable to parse font hinting, ", hintType)
+		fallthrough
+	case "":
+		// Don't warn about undefined hinting
 		faceHinting = font.HintingNone
 	}
 	return faceHinting
@@ -153,7 +160,11 @@ func FontColor(s string) image.Image {
 
 func LoadFont(dir string, fontFile string) *truetype.Font {
 	if _, ok := loadedFonts[fontFile]; !ok {
+<<<<<<< HEAD
 		fontBytes, err := file.ReadFile(filepath.Join(dir, fontFile))
+=======
+		fontBytes, err := fileutil.ReadFile(filepath.Join(dir, fontFile))
+>>>>>>> master
 		if err != nil {
 			dlog.Error(err.Error())
 			return nil

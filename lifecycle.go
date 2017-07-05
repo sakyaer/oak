@@ -4,7 +4,7 @@ package oak
 import (
 	"fmt"
 	"image"
-	"time"
+	"sync"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/event"
@@ -13,21 +13,22 @@ import (
 )
 
 var (
-	worldBuffer   screen.Buffer
 	winBuffer     screen.Buffer
 	screenControl screen.Screen
 	windowControl screen.Window
 
 	windowRect     image.Rectangle
-	windowUpdateCH = make(chan bool)
+	windowUpdateCh = make(chan bool)
 
 	osCh = make(chan func())
+
+	initControl = sync.Mutex{}
+
+	lifecycleInit bool
 )
 
-//func init() {
-//	runtime.LockOSThread()
-//}
 func lifecycleLoop(s screen.Screen) {
+<<<<<<< HEAD
 	screenControl = s
 	var err error
 	fmt.Println("Lifecycle enter")
@@ -38,22 +39,34 @@ func lifecycleLoop(s screen.Screen) {
 	worldBuffer, err = screenControl.NewBuffer(image.Point{WorldWidth, WorldHeight})
 	if err != nil {
 		dlog.Error(err)
+=======
+	initControl.Lock()
+	if lifecycleInit {
+		dlog.Error("Started lifecycle twice, aborting second call")
+>>>>>>> master
 		return
 	}
-	defer worldBuffer.Release()
+	lifecycleInit = true
+	initControl.Unlock()
+	dlog.Info("Init Lifecycle")
+
+	screenControl = s
+	var err error
 
 	// The window buffer represents the subsection of the world which is available to
 	// be shown in a window.
+	dlog.Info("Creating window buffer")
 	winBuffer, err = screenControl.NewBuffer(image.Point{ScreenWidth, ScreenHeight})
 	if err != nil {
 		dlog.Error(err)
 		return
 	}
-	defer winBuffer.Release()
 
 	// The window controller handles incoming hardware or platform events and
-	// publishes image data to the screen.
+	// publishes image data to the screen.\
+	dlog.Info("Creating window controller")
 	changeWindow(ScreenWidth, ScreenHeight)
+<<<<<<< HEAD
 	defer windowControl.Release()
 
 	eb = event.GetEventBus()
@@ -117,32 +130,45 @@ func GetWorld() *image.RGBA {
 
 func SetWorldSize(x, y int) {
 	worldBuffer, _ = screenControl.NewBuffer(image.Point{x, y})
+=======
+
+	dlog.Info("Getting event bus")
+	eb = event.GetBus()
+
+	dlog.Info("Starting draw loop")
+	go drawLoop()
+	dlog.Info("Starting key hold loop")
+	go keyHoldLoop()
+	dlog.Info("Starting input loop")
+	go inputLoop()
+
+	dlog.Info("Starting event handler")
+	go event.ResolvePending()
+	// The quit channel represents a signal
+	// for the engine to stop.
+	<-quitCh
+	return
+>>>>>>> master
 }
 
 func changeWindow(width, height int) {
-	//windowFlag := windowControl != nil
-	//if windowFlag {
-	//	windowUpdateCH <- true
-	//	windowControl.Publish()
-	//	windowControl.Release()
-	//}
 	// The window controller handles incoming hardware or platform events and
 	// publishes image data to the screen.
-	wC, err := WindowController(screenControl, width, height)
+	wC, err := windowController(screenControl, width, height)
 	if err != nil {
 		dlog.Error(err)
 		panic(err)
 	}
 	windowControl = wC
 	windowRect = image.Rect(0, 0, width, height)
-
-	//if windowFlag {
-	//	eFilter = gesture.EventFilter{EventDeque: windowControl}
-	//	windowUpdateCH <- true
-	//}
 }
 
+// ChangeWindow sets the width and height of the game window. But it doesn't.
 func ChangeWindow(width, height int) {
-	//osLockedFunc(func() { changeWindow(width, height) })
 	windowRect = image.Rect(0, 0, width, height)
+}
+
+// GetScreen returns the current screen as an rgba buffer
+func GetScreen() *image.RGBA {
+	return winBuffer.RGBA()
 }

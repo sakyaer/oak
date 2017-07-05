@@ -6,22 +6,27 @@ import (
 	"bitbucket.org/oakmoundstudio/oak/event"
 )
 
-type CollisionPhase struct {
+// A Phase is a struct that other structs who want to use PhaseCollision
+// should be composed of
+type Phase struct {
 	OnCollisionS *Space
 	// If allocating maps becomes an issue
 	// we can have two constant maps that we
 	// switch between on alternating frames
-	Touching map[int]bool
+	Touching map[Label]bool
 }
 
-func (cp *CollisionPhase) getCollisionPhase() *CollisionPhase {
+func (cp *Phase) getCollisionPhase() *Phase {
 	return cp
 }
 
 type collisionPhase interface {
-	getCollisionPhase() *CollisionPhase
+	getCollisionPhase() *Phase
 }
 
+// PhaseCollision binds to the entity behind the space's CID so that it will
+// recieve CollisionStart and CollisionStop events, appropriately when
+// entities begin to collide or stop colliding with the space.
 func PhaseCollision(s *Space) error {
 	switch t := event.GetEntity(int(s.CID)).(type) {
 	case collisionPhase:
@@ -39,7 +44,7 @@ func phaseCollisionEnter(id int, nothing interface{}) int {
 
 	// check hits
 	hits := Hits(oc.OnCollisionS)
-	newTouching := map[int]bool{}
+	newTouching := map[Label]bool{}
 
 	// if any are new, trigger on collision
 	for _, h := range hits {

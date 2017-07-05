@@ -2,12 +2,24 @@ package entities
 
 import (
 	"bitbucket.org/oakmoundstudio/oak/event"
-	"strconv"
+	"bitbucket.org/oakmoundstudio/oak/physics"
+	"bitbucket.org/oakmoundstudio/oak/render"
 )
 
 type Moving struct {
 	Solid
-	moving
+	vMoving
+}
+
+func NewMoving(x, y, w, h float64, r render.Renderable, cid event.CID, friction float64) Moving {
+	return Moving{
+		Solid: NewSolid(x, y, w, h, r, cid),
+		vMoving: vMoving{
+			Delta:    physics.NewVector(0, 0),
+			Speed:    physics.NewVector(0, 0),
+			Friction: friction,
+		},
+	}
 }
 
 func (m *Moving) Init() event.CID {
@@ -16,42 +28,30 @@ func (m *Moving) Init() event.CID {
 	return cID
 }
 
-func (m *Moving) String() string {
-	st := "Moving: \n{"
-	st += m.Solid.String()
-	st += "} \n" + m.moving.String()
-	return st
+func (m *Moving) ShiftVector(v physics.Vector) {
+	m.Solid.ShiftPos(v.X(), v.Y())
 }
 
-type moving struct {
-	DX, DY, SpeedX, SpeedY float64
+func (m *Moving) ApplyFriction(outsideFriction float64) {
+	//Absolute friction is 1
+	frictionScaler := 1 - (m.Friction * outsideFriction)
+	if frictionScaler > 1 {
+		frictionScaler = 1
+	} else if frictionScaler < 0 {
+		frictionScaler = 0
+	}
+	m.Delta.Scale(frictionScaler)
+	if m.Delta.Magnitude() < .01 {
+		m.Delta.Zero()
+	}
 }
 
-func (m *moving) GetDX() float64 {
-	return m.DX
-}
-func (m *moving) GetDY() float64 {
-	return m.DY
-}
-func (m *moving) SetDXY(x, y float64) {
-	m.DX = x
-	m.DY = y
-}
-func (m *moving) GetSpeedX() float64 {
-	return m.SpeedX
-}
-func (m *moving) GetSpeedY() float64 {
-	return m.SpeedY
-}
-func (m *moving) SetSpeedXY(x, y float64) {
-	m.SpeedX = x
-	m.SpeedY = y
+type vMoving struct {
+	Delta    physics.Vector
+	Speed    physics.Vector
+	Friction float64
 }
 
-func (m *moving) String() string {
-	dx := strconv.FormatFloat(m.DX, 'f', 2, 32)
-	dy := strconv.FormatFloat(m.DY, 'f', 2, 32)
-	sx := strconv.FormatFloat(m.SpeedX, 'f', 2, 32)
-	sy := strconv.FormatFloat(m.SpeedY, 'f', 2, 32)
-	return "DX: " + dx + ", DY: " + dy + ", SX: " + sx + ", SY: " + sy
+func (v vMoving) GetDelta() physics.Vector {
+	return v.Delta
 }

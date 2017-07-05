@@ -5,7 +5,8 @@ package oak
 import (
 	"image"
 	"image/draw"
-	"time"
+
+	"runtime/debug"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/render"
@@ -15,6 +16,8 @@ import (
 
 var (
 	imageBlack = image.Black
+	// DrawTicker is an unused parallel to LogicTicker to set the draw framerate
+	DrawTicker *timing.DynamicTicker
 )
 
 // DrawLoop
@@ -25,121 +28,63 @@ var (
 // 4. run any functions bound to follow drawing.
 // 5. draw the buffer's data at the viewport's position to the screen.
 // 6. publish the screen to display in window.
-func DrawLoopNoFPS() {
-	<-drawChannel
-	tx, _ := screenControl.NewTexture(winBuffer.Bounds().Max)
+func drawLoop() {
+	<-drawCh
+
+	debug.SetPanicOnFault(true)
+
+	tx, err := screenControl.NewTexture(winBuffer.Bounds().Max)
+	if err != nil {
+		panic(err)
+	}
+
+	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
+	drawLoopPublish(tx)
+
+	DrawTicker = timing.NewDynamicTicker()
+	DrawTicker.SetTick(timing.FPSToDuration(DrawFrameRate))
+
+	dlog.Verb("Draw Loop Start")
 	for {
-		dlog.Verb("Draw Loop")
 	drawSelect:
 		select {
-		case <-windowUpdateCH:
-			<-windowUpdateCH
-		case <-drawChannel:
+		case <-windowUpdateCh:
+			<-windowUpdateCh
+		case <-drawCh:
 			dlog.Verb("Got something from draw channel")
-			<-drawChannel
+			<-drawCh
 			dlog.Verb("Starting loading")
 			for {
-				draw.Draw(worldBuffer.RGBA(), winBuffer.Bounds(), imageBlack, ViewPos, screen.Src)
-				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), worldBuffer.RGBA(), ViewPos, screen.Src)
-
-				if loadingR != nil {
-					loadingR.Draw(winBuffer.RGBA())
+				<-DrawTicker.C
+				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
+				if LoadingR != nil {
+					LoadingR.Draw(winBuffer.RGBA())
 				}
-				render.DrawStaticHeap(winBuffer.RGBA())
-
-				windowControl.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-				windowControl.Publish()
+				drawLoopPublish(tx)
 
 				select {
-				case <-drawChannel:
+				case <-drawCh:
 					break drawSelect
-				case viewPoint := <-viewportChannel:
+				case viewPoint := <-viewportCh:
 					dlog.Verb("Got something from viewport channel (waiting on draw)")
 					updateScreen(viewPoint[0], viewPoint[1])
 				default:
 				}
 			}
-		case viewPoint := <-viewportChannel:
+		case viewPoint := <-viewportCh:
 			dlog.Verb("Got something from viewport channel")
 			updateScreen(viewPoint[0], viewPoint[1])
-		default:
-			draw.Draw(worldBuffer.RGBA(), winBuffer.Bounds(), imageBlack, ViewPos, screen.Src)
-
+		case <-DrawTicker.C:
+			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
 			render.PreDraw()
-			render.DrawHeap(worldBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
-			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), worldBuffer.RGBA(), ViewPos, screen.Src)
-			render.DrawStaticHeap(winBuffer.RGBA())
-
-			tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-			windowControl.Scale(windowRect, tx, tx.Bounds(), screen.Src, nil)
-			//windowControl.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-			windowControl.Publish()
+			render.GlobalDrawStack.Draw(winBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
+			drawLoopPublish(tx)
 		}
 	}
 }
 
-const (
-	FPSSMOOTHING = .25
-)
-
-func DrawLoopFPS() {
-	<-drawChannel
-	lastTime := time.Now()
-	tx, _ := screenControl.NewTexture(winBuffer.Bounds().Max)
-	fps := 0
-	text := render.DefFont().NewIntText(&fps, 10, 20)
-	render.StaticDraw(text, 60000)
-	for {
-		dlog.Verb("Draw Loop")
-	drawSelect:
-		select {
-		case <-windowUpdateCH:
-			<-windowUpdateCH
-		case <-drawChannel:
-			dlog.Verb("Got something from draw channel")
-			<-drawChannel
-			dlog.Verb("Starting loading")
-			for {
-				draw.Draw(worldBuffer.RGBA(), winBuffer.Bounds(), imageBlack, ViewPos, screen.Src)
-				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), worldBuffer.RGBA(), ViewPos, screen.Src)
-
-				if loadingR != nil {
-					loadingR.Draw(winBuffer.RGBA())
-				}
-				render.DrawStaticHeap(winBuffer.RGBA())
-
-				windowControl.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-				windowControl.Publish()
-
-				select {
-				case <-drawChannel:
-					render.StaticDraw(text, 60000)
-					break drawSelect
-				case viewPoint := <-viewportChannel:
-					dlog.Verb("Got something from viewport channel (waiting on draw)")
-					updateScreen(viewPoint[0], viewPoint[1])
-				default:
-				}
-			}
-		case viewPoint := <-viewportChannel:
-			dlog.Verb("Got something from viewport channel")
-			updateScreen(viewPoint[0], viewPoint[1])
-		default:
-			draw.Draw(worldBuffer.RGBA(), winBuffer.Bounds(), imageBlack, ViewPos, screen.Src)
-
-			render.PreDraw()
-			render.DrawHeap(worldBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
-			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), worldBuffer.RGBA(), ViewPos, screen.Src)
-			render.DrawStaticHeap(winBuffer.RGBA())
-
-			// How we should do non-fullscreen scaling
-			tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-			windowControl.Scale(windowRect, tx, tx.Bounds(), screen.Src, nil)
-			//windowControl.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-			windowControl.Publish()
-
-			fps = int((timing.FPS(lastTime, time.Now()) * FPSSMOOTHING) + (float64(fps) * (1 - FPSSMOOTHING)))
-			lastTime = time.Now()
-		}
-	}
+func drawLoopPublish(tx screen.Texture) {
+	tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
+	windowControl.Scale(windowRect, tx, tx.Bounds(), screen.Src, nil)
+	windowControl.Publish()
 }

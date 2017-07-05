@@ -1,30 +1,27 @@
 package oak
 
 import (
-	"time"
-
 	"image"
+	"runtime"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	pmouse "bitbucket.org/oakmoundstudio/oak/mouse"
-	"golang.org/x/exp/shiny/gesture"
 	"golang.org/x/mobile/event/key"
 	"golang.org/x/mobile/event/lifecycle"
 	"golang.org/x/mobile/event/mouse"
-	"golang.org/x/mobile/event/paint"
 	"golang.org/x/mobile/event/size"
 )
 
-var (
-	eFilter gesture.EventFilter
-)
+// var (
+// 	eFilter gesture.EventFilter
+// )
 
-func InputLoop() {
-	eFilter = gesture.EventFilter{EventDeque: windowControl}
+func inputLoop() {
+	//eFilter = gesture.EventFilter{EventDeque: windowControl}
+	schedCt := 0
 	for {
-		e := eFilter.Filter(eFilter.EventDeque.NextEvent()) //Filters an event to see if it fits a defined gesture
-
-		switch e := e.(type) {
+		//e := eFilter.Filter(eFilter.EventDeque.NextEvent()) //Filters an event to see if it fits a defined gesture
+		switch e := windowControl.NextEvent().(type) {
 
 		// We only currently respond to death lifecycle events.
 		case lifecycle.Event:
@@ -32,6 +29,7 @@ func InputLoop() {
 				quitCh <- true
 				return
 			}
+			// ... this is where we would respond to window focus events
 
 		// Send key events
 		//
@@ -43,7 +41,7 @@ func InputLoop() {
 		case key.Event:
 			k := GetKeyBind(e.Code.String()[4:])
 			if e.Direction == key.DirPress {
-				dlog.Verb("--------------------", e.Code.String()[4:], k)
+				//dlog.Verb("--------------------", e.Code.String()[4:], k)
 				setDown(k)
 				eb.Trigger("KeyDown", k)
 				eb.Trigger("KeyDown"+k, nil)
@@ -68,12 +66,7 @@ func InputLoop() {
 		// Mouse events all recieve an x, y, and button string.
 		case mouse.Event:
 			button := pmouse.GetMouseButton(int32(e.Button))
-			dlog.Verb("Mouse direction ", e.Direction.String(), " Button ", button)
-			mevent := pmouse.MouseEvent{
-				X:      e.X / float32(windowRect.Max.X) * float32(ScreenWidth),
-				Y:      e.Y / float32(windowRect.Max.Y) * float32(ScreenHeight),
-				Button: button,
-			}
+			//dlog.Verb("Mouse direction ", e.Direction.String(), " Button ", button)
 			var eventName string
 			if e.Direction == mouse.DirPress {
 				setDown(button)
@@ -88,37 +81,50 @@ func InputLoop() {
 			} else {
 				eventName = "MouseDrag"
 			}
+			mevent := pmouse.Event{
+				X:      e.X / float32(windowRect.Max.X) * float32(ScreenWidth),
+				Y:      e.Y / float32(windowRect.Max.Y) * float32(ScreenHeight),
+				Button: button,
+				Event:  eventName,
+			}
+
 			pmouse.LastMouseEvent = mevent
 
 			eb.Trigger(eventName, mevent)
 			pmouse.Propagate(eventName+"On", mevent)
 
-		case gesture.Event:
-			eventName := "Gesture" + e.Type.String()
-			dlog.Verb(eventName)
-			eb.Trigger(eventName, pmouse.FromShinyGesture(e))
+		// Uncomment this if using the filter
+		// case gesture.Event:
+		// 	eventName := "Gesture" + e.Type.String()
+		// 	dlog.Verb(eventName)
+		// 	eb.Trigger(eventName, pmouse.FromShinyGesture(e))
 
 		// I don't really know what a paint event is to be honest.
 		// We hypothetically don't allow the user to manually resize
 		// their window, so we don't do anything special for such events.
 		case size.Event:
-			dlog.Verb("Got size event", e)
+			//dlog.Verb("Got size event", e)
 			windowRect = image.Rect(0, 0, e.WidthPx, e.HeightPx)
-		case paint.Event:
-			dlog.Verb("Got paint event", e)
 		case error:
 			dlog.Error(e)
 		}
-
-		// This is a hardcoded quit function bound to the escape key.
-		esc, dur := IsHeld("Escape")
-		if esc && dur > time.Second*1 {
-			dlog.Warn("Quiting oak from holding ESCAPE")
-			windowControl.Send(lifecycle.Event{
-				From:        0,
-				To:          0,
-				DrawContext: nil,
-			})
+		schedCt++
+		if schedCt > 1000 {
+			schedCt = 0
+			runtime.Gosched()
 		}
+		/*
+			//TODO: Reimplement outside of the input loop so that it doesnt slow down the input loop itself
+				// This is a hardcoded quit function bound to the escape key.
+				esc, dur := IsHeld("Escape")
+				if esc && dur > time.Second*1 {
+					dlog.Warn("Quiting oak from holding ESCAPE")
+					windowControl.Send(lifecycle.Event{
+						From:        0,
+						To:          0,
+						DrawContext: nil,
+					})
+				}
+		*/
 	}
 }

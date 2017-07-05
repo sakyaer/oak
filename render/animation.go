@@ -3,7 +3,6 @@ package render
 import (
 	"errors"
 	"image"
-	"image/color"
 	"image/draw"
 	"time"
 
@@ -15,9 +14,7 @@ import (
 type Sheet [][]*image.RGBA
 
 func (sh *Sheet) SubSprite(x, y int) *Sprite {
-	return &Sprite{
-		r: (*sh)[x][y],
-	}
+	return NewSprite(0, 0, (*sh)[x][y])
 }
 
 type Animation struct {
@@ -45,10 +42,7 @@ func NewAnimation(sheet_p *Sheet, fps float64, frames []int) (*Animation, error)
 
 	animation := Animation{
 		LayeredPoint: LayeredPoint{
-			Vector: physics.Vector{
-				X: 0.0,
-				Y: 0.0,
-			},
+			Vector: physics.NewVector(0, 0),
 		},
 		sheetPos:      0,
 		frameTime:     timing.FPSToNano(fps),
@@ -62,12 +56,19 @@ func NewAnimation(sheet_p *Sheet, fps float64, frames []int) (*Animation, error)
 	return &animation, nil
 }
 
-func (a_p *Animation) Copy() Modifiable {
+func (a *Animation) Copy() Modifiable {
 	newA := new(Animation)
-	*newA = *a_p
+	newA.LayeredPoint = a.LayeredPoint.Copy()
+	newA.sheetPos = a.sheetPos
+	newA.frameTime = a.frameTime
+	newA.frames = a.frames
+	newA.lastChange = a.lastChange
+	newA.playing = a.playing
+	newA.Interruptable = a.Interruptable
+	newA.cID = a.cID
 	// Manual deep copy of pointers
-	aSheet := *a_p.sheet
-	sheetPointer := new(Sheet)
+	aSheet := *a.sheet
+	newA.sheet = new(Sheet)
 	newSheet := make(Sheet, len(aSheet))
 	for x, col := range aSheet {
 		newSheet[x] = make([]*image.RGBA, len(aSheet[x]))
@@ -77,9 +78,7 @@ func (a_p *Animation) Copy() Modifiable {
 			newSheet[x][y] = newRGBA
 		}
 	}
-	*sheetPointer = newSheet
-	newA.sheet = sheetPointer
-	//newA.LayeredPoint = a_p.LayeredPoint
+	*newA.sheet = newSheet
 	return newA
 }
 
@@ -104,93 +103,31 @@ func (a *Animation) updateAnimation() {
 func (a *Animation) DrawOffset(buff draw.Image, xOff, yOff float64) {
 	a.updateAnimation()
 	img := a.GetRGBA()
-	ShinyDraw(buff, img, int(a.X+xOff), int(a.Y+yOff))
+	ShinyDraw(buff, img, int(a.X()+xOff), int(a.Y()+yOff))
 }
 
 func (a *Animation) Draw(buff draw.Image) {
 	a.updateAnimation()
 	img := a.GetRGBA()
-	ShinyDraw(buff, img, int(a.X), int(a.Y))
+	ShinyDraw(buff, img, int(a.X()), int(a.Y()))
 }
 
 func (a_p *Animation) GetRGBA() *image.RGBA {
 	return (*a_p.sheet)[a_p.frames[a_p.sheetPos][0]][a_p.frames[a_p.sheetPos][1]]
 }
 
-func (a *Animation) ApplyColor(c color.Color) Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = ApplyColor(rgba, c)
-		}
-	}
-	return a
+func (a *Animation) GetDims() (int, int) {
+	r := a.GetRGBA()
+	return r.Bounds().Max.X, r.Bounds().Max.Y
 }
 
-func (a *Animation) FillMask(img image.RGBA) Modifiable {
+func (a *Animation) Modify(ms ...Modification) Modifiable {
 	sheet := *a.sheet
 	for x, row := range sheet {
 		for y, rgba := range row {
-			sheet[x][y] = FillMask(rgba, img)
-		}
-	}
-	return a
-}
-
-func (a *Animation) ApplyMask(img image.RGBA) Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = ApplyMask(rgba, img)
-		}
-	}
-	return a
-}
-
-func (a *Animation) Rotate(degrees int) Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = Rotate(rgba, degrees)
-		}
-	}
-	return a
-}
-
-func (a *Animation) Scale(xRatio float64, yRatio float64) Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = Scale(rgba, xRatio, yRatio)
-		}
-	}
-	return a
-}
-
-func (a *Animation) FlipX() Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = FlipX(rgba)
-		}
-	}
-	return a
-}
-
-func (a *Animation) FlipY() Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = FlipY(rgba)
-		}
-	}
-	return a
-}
-func (a *Animation) Fade(alpha int) Modifiable {
-	sheet := *a.sheet
-	for x, row := range sheet {
-		for y, rgba := range row {
-			sheet[x][y] = Fade(rgba, alpha)
+			for _, m := range ms {
+				sheet[x][y] = m(rgba)
+			}
 		}
 	}
 	return a

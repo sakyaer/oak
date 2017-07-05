@@ -4,7 +4,8 @@ import (
 	"math"
 	"time"
 
-	"bitbucket.org/oakmoundstudio/oak/alg"
+	"github.com/200sc/go-dist/intrange"
+
 	"bitbucket.org/oakmoundstudio/oak/event"
 	"bitbucket.org/oakmoundstudio/oak/physics"
 	"bitbucket.org/oakmoundstudio/oak/render"
@@ -12,97 +13,106 @@ import (
 )
 
 const (
+	// RECYCLED refers to the life value given to particles ready to be reused
 	RECYCLED = -1000
+	//IGNORE_END refers to the life value given to particles that want to skip their source's end function.
+	IGNORE_END = RECYCLED / 2
 )
 
 // A Source is used to store and control a set of particles.
 type Source struct {
 	render.Layered
-	Generator Generator
-	particles [BLOCK_SIZE]Particle
-	nextPID   int
-	recycled  []int
-	cID       event.CID
-	pIDBlock  int
-	paused    bool
+	Generator  Generator
+	particles  [blockSize]Particle
+	nextPID    int
+	recycled   []int
+	CID        event.CID
+	pIDBlock   int
+	stackLevel int
+	paused     bool
+	EndFunc    func()
 }
 
-func NewSource(g Generator) *Source {
+// NewSource creates a new source
+func NewSource(g Generator, stackLevel int) *Source {
 	ps := new(Source)
 	ps.Generator = g
+	ps.stackLevel = stackLevel
 	ps.Init()
 	return ps
 }
 
+// Init allows a source to be considered as an entity, and initializes it
 func (ps *Source) Init() event.CID {
-	cID := event.NextID(ps)
-	cID.Bind(rotateParticles, "EnterFrame")
-	ps.cID = cID
-	ps.pIDBlock = Allocate(ps.cID)
+	CID := event.NextID(ps)
+	CID.Bind(rotateParticles, "EnterFrame")
+	ps.CID = CID
+	ps.pIDBlock = Allocate(ps.CID)
 	if ps.Generator.GetBaseGenerator().Duration != Inf {
-		go func(ps_p *Source, duration alg.IntRange) {
+		go func(ps_p *Source, duration intrange.Range) {
 			timing.DoAfter(time.Duration(duration.Poll())*time.Millisecond, func() {
 				ps_p.Stop()
 			})
 		}(ps, ps.Generator.GetBaseGenerator().Duration)
 	}
-	return cID
+	return CID
 }
 
-func (ps *Source) CycleParticles() {
-
+func (ps *Source) cycleParticles() bool {
 	pg := ps.Generator.GetBaseGenerator()
-
+	cycled := false
 	for i := 0; i < ps.nextPID; i++ {
 		p := ps.particles[i]
 		bp := p.GetBaseParticle()
 
 		// Ignore dead particles
 		if bp.Life > 0 {
+			cycled = true
 			bp.Life--
-
 			// Apply rotational acceleration
 			if pg.Rotation != nil {
 				bp.Vel = bp.Vel.Rotate(pg.Rotation.Poll())
 			}
 
-			if pg.SpeedDecay.X != 0 {
-				bp.Vel.X *= pg.SpeedDecay.X
-				if math.Abs(bp.Vel.X) < 0.2 {
-					bp.Vel.X = 0
+			if pg.SpeedDecay.X() != 0 {
+				bp.Vel = bp.Vel.SetX(bp.Vel.X() * pg.SpeedDecay.X())
+				if math.Abs(bp.Vel.X()) < 0.2 {
+					bp.Vel = bp.Vel.SetX(0)
 				}
 			}
-			if pg.SpeedDecay.Y != 0 {
-				bp.Vel.Y *= pg.SpeedDecay.Y
-				if math.Abs(bp.Vel.Y) < 0.2 {
-					bp.Vel.Y = 0
+			if pg.SpeedDecay.Y() != 0 {
+				bp.Vel = bp.Vel.SetY(bp.Vel.Y() * pg.SpeedDecay.Y())
+				if math.Abs(bp.Vel.Y()) < 0.2 {
+					bp.Vel = bp.Vel.SetY(0)
 				}
 			}
 
-			bp.Vel = bp.Vel.Add(pg.Gravity)
-			bp.Pos = bp.Pos.Add(bp.Vel)
-			bp.SetLayer(ps.Layer(bp.Pos))
+			bp.Vel.Add(pg.Gravity)
+			bp.Add(bp.Vel)
+			bp.SetLayer(ps.Layer(bp.GetPos()))
 			p.Cycle(ps.Generator)
 
 		} else if bp.Life != RECYCLED {
 			p.UnDraw()
-			if pg.EndFunc != nil {
+			cycled = true
+			if pg.EndFunc != nil && bp.Life > IGNORE_END {
 				pg.EndFunc(p)
 			}
 			// This relies on Life going down by 1 per frame
 			bp.Life = RECYCLED
-			ps.recycled = append(ps.recycled, bp.pID%BLOCK_SIZE)
+			ps.recycled = append(ps.recycled, bp.pID%blockSize)
 		}
 
 	}
+	return cycled
 }
 
-// Shorthand
+// Layer is shorthand for getting the base generator behind a source's layer
 func (ps *Source) Layer(v physics.Vector) int {
 	return ps.Generator.GetBaseGenerator().LayerFunc(v)
 }
 
-func (ps *Source) AddParticles() {
+func (ps *Source) addParticles() {
 	pg := ps.Generator.GetBaseGenerator()
 	// Regularly create particles (up until max particles)
 	newParticleCount := int(pg.NewPerFrame.Poll())
@@ -115,9 +125,10 @@ func (ps *Source) AddParticles() {
 		speed := pg.Speed.Poll()
 		startLife := pg.LifeSpan.Poll()
 
-		bp.Pos = physics.NewVector(
-			pg.X+floatFromSpread(pg.Spread.X),
-			pg.Y+floatFromSpread(pg.Spread.Y))
+		bp.LayeredPoint = render.NewLayeredPoint(
+			pg.X()+floatFromSpread(pg.Spread.X()),
+			pg.Y()+floatFromSpread(pg.Spread.Y()),
+			0)
 		bp.Vel = physics.NewVector(
 			speed*math.Cos(angle)*-1,
 			speed*math.Sin(angle)*-1)
@@ -125,7 +136,8 @@ func (ps *Source) AddParticles() {
 		bp.totalLife = startLife
 		ps.particles[ps.recycled[ri]] = ps.Generator.GenerateParticle(bp)
 
-		render.Draw(ps.particles[ps.recycled[ri]], ps.Layer(bp.Pos))
+		ps.particles[ps.recycled[ri]].SetLayer(ps.Layer(bp.GetPos()))
+		render.Draw(ps.particles[ps.recycled[ri]], ps.stackLevel)
 		ri++
 	}
 	newParticleCount -= len(ps.recycled)
@@ -133,7 +145,7 @@ func (ps *Source) AddParticles() {
 		ps.recycled = ps.recycled[ri:]
 	}
 
-	if ps.nextPID >= BLOCK_SIZE {
+	if ps.nextPID >= blockSize {
 		return
 	}
 	for i := 0; i < newParticleCount; i++ {
@@ -141,26 +153,29 @@ func (ps *Source) AddParticles() {
 		speed := pg.Speed.Poll()
 		startLife := pg.LifeSpan.Poll()
 
-		bp := &BaseParticle{
+		bp := &baseParticle{
+			LayeredPoint: render.NewLayeredPoint(
+				pg.X()+floatFromSpread(pg.Spread.X()),
+				pg.Y()+floatFromSpread(pg.Spread.Y()),
+				0,
+			),
 			Src: ps,
-			Pos: physics.NewVector(
-				pg.X+floatFromSpread(pg.Spread.X),
-				pg.Y+floatFromSpread(pg.Spread.Y)),
 			Vel: physics.NewVector(
 				speed*math.Cos(angle)*-1,
 				speed*math.Sin(angle)*-1),
 			Life:      startLife,
 			totalLife: startLife,
-			pID:       ps.nextPID + ps.pIDBlock*BLOCK_SIZE,
+			pID:       ps.nextPID + ps.pIDBlock*blockSize,
 		}
 
 		p := ps.Generator.GenerateParticle(bp)
 		ps.particles[ps.nextPID] = p
 		ps.nextPID++
-		if ps.nextPID >= BLOCK_SIZE {
+		if ps.nextPID >= blockSize {
 			return
 		}
-		render.Draw(p, ps.Layer(bp.Pos))
+		p.SetLayer(ps.Layer(bp.GetPos()))
+		render.Draw(p, ps.stackLevel)
 	}
 
 }
@@ -170,8 +185,8 @@ func (ps *Source) AddParticles() {
 func rotateParticles(id int, nothing interface{}) int {
 	ps := event.GetEntity(id).(*Source)
 	if !ps.paused {
-		ps.CycleParticles()
-		ps.AddParticles()
+		ps.cycleParticles()
+		ps.addParticles()
 	}
 	return 0
 }
@@ -181,12 +196,14 @@ func rotateParticles(id int, nothing interface{}) int {
 func clearParticles(id int, nothing interface{}) int {
 	ps := event.GetEntity(id).(*Source)
 	if !ps.paused {
-		if len(ps.particles) > 0 {
-			ps.CycleParticles()
+		if ps.cycleParticles() {
 		} else {
+			if ps.EndFunc != nil {
+				ps.EndFunc()
+			}
 			event.DestroyEntity(id)
 			Deallocate(ps.pIDBlock)
-			return event.UNBIND_EVENT
+			return event.UnbindEvent
 		}
 	}
 	return 0
@@ -195,10 +212,13 @@ func clearParticles(id int, nothing interface{}) int {
 // Stop manually stops a Source, if its duration is infinite
 // or if it should be stopped before expriring naturally.
 func (ps *Source) Stop() {
-	ps.cID.UnbindAllAndRebind([]event.Bindable{clearParticles}, []string{"EnterFrame"})
+	if ps == nil {
+		return
+	}
+	ps.CID.UnbindAllAndRebind([]event.Bindable{clearParticles}, []string{"EnterFrame"})
 }
 
-// Pausing a Source just stops the repetition
+// Pause on a Source just stops the repetition
 // of its rotation function, which moves, destroys,
 // ages and generates particles. Existing particles will
 // stay in place.
@@ -206,7 +226,7 @@ func (ps *Source) Pause() {
 	ps.paused = true
 }
 
-// Unpausing a Source rebinds it's rotate function.
+// UnPause on a source a Source rebinds it's rotate function.
 func (ps *Source) UnPause() {
 	ps.paused = false
 }
@@ -216,14 +236,17 @@ func (ps *Source) String() string {
 	return "ParticleSource"
 }
 
+// ShiftX shift's a source's underlying generator
 func (ps *Source) ShiftX(x float64) {
 	ps.Generator.ShiftX(x)
 }
 
+// ShiftY shift's a source's underlying generator (todo: consider if this shoud be composed)
 func (ps *Source) ShiftY(y float64) {
 	ps.Generator.ShiftY(y)
 }
 
+// SetPos sets a source's underlying generator
 func (ps *Source) SetPos(x, y float64) {
 	ps.Generator.SetPos(x, y)
 }

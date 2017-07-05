@@ -1,8 +1,13 @@
 package render
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/physics"
 	"strconv"
+
+	"bitbucket.org/oakmoundstudio/oak/physics"
+)
+
+const (
+	Undraw = -1000
 )
 
 type Layered struct {
@@ -10,6 +15,9 @@ type Layered struct {
 }
 
 func (ld *Layered) GetLayer() int {
+	if ld == nil {
+		return Undraw
+	}
 	return ld.layer
 }
 
@@ -18,7 +26,7 @@ func (ld *Layered) SetLayer(l int) {
 }
 
 func (ld *Layered) UnDraw() {
-	ld.layer = -1
+	ld.layer = Undraw
 }
 
 type LayeredPoint struct {
@@ -26,21 +34,49 @@ type LayeredPoint struct {
 	Layered
 }
 
+func NewLayeredPoint(x, y float64, l int) LayeredPoint {
+	return LayeredPoint{
+		Vector:  physics.NewVector(x, y),
+		Layered: Layered{l},
+	}
+}
+
+func (ldp *LayeredPoint) GetLayer() int {
+	if ldp == nil {
+		return Undraw
+	}
+	return ldp.Layered.GetLayer()
+}
+
+func (ldp *LayeredPoint) Copy() LayeredPoint {
+	ldp2 := LayeredPoint{}
+	ldp2.Vector = ldp.Vector.Copy()
+	ldp2.Layered = ldp.Layered
+	return ldp2
+}
+
 func (ldp *LayeredPoint) ShiftX(x float64) {
-	ldp.X += x
+	ldp.Vector.ShiftX(x)
 }
 func (ldp *LayeredPoint) ShiftY(y float64) {
-	ldp.Y += y
+	ldp.Vector.ShiftY(y)
 }
 
 func (ldp *LayeredPoint) SetPos(x, y float64) {
-	ldp.X = x
-	ldp.Y = y
+	ldp.Vector.SetPos(x, y)
+}
+
+func (ldp *LayeredPoint) GetDims() (int, int) {
+	// We use 6,6 here because our polygon containment library has a bug where it
+	// will misreport artificially small dimensions. This function is expected to
+	// only be used to determine whether something is onscreen to be drawn.
+	// Todo: write own polygon containment library
+	return 6, 6
 }
 
 func (ldp *LayeredPoint) String() string {
-	x := strconv.FormatFloat(ldp.X, 'f', 2, 32)
-	y := strconv.FormatFloat(ldp.Y, 'f', 2, 32)
+	x := strconv.FormatFloat(ldp.X(), 'f', 2, 32)
+	y := strconv.FormatFloat(ldp.Y(), 'f', 2, 32)
 	l := strconv.Itoa(ldp.layer)
-	return "X: " + x + ", Y: " + y + ", L: " + l
+	return "X(): " + x + ", Y(): " + y + ", L: " + l
 }

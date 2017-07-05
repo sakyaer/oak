@@ -19,7 +19,12 @@ import (
 )
 
 var (
+<<<<<<< HEAD
 	cheats = make(map[string]func([]string))
+=======
+	viewportLocked = true
+	commands       = make(map[string]func([]string))
+>>>>>>> master
 )
 
 // AddCommand is an alias for AddCheat for things
@@ -27,14 +32,10 @@ var (
 // console commands.
 // We probably only want one of the two of these
 func AddCommand(s string, fn func([]string)) {
-	AddCheat(s, fn)
+	commands[s] = fn
 }
 
-func AddCheat(s string, fn func([]string)) {
-	cheats[s] = fn
-}
-
-func DebugConsole(resetCh, skipScene chan bool) {
+func debugConsole(resetCh, skipScene chan bool) {
 	scanner := bufio.NewScanner(os.Stdin)
 	spew.Config.DisableMethods = true
 	spew.Config.MaxDepth = 2
@@ -52,12 +53,16 @@ func DebugConsole(resetCh, skipScene chan bool) {
 			}
 			//Parse the Input
 			tokenString := strings.Fields(scanner.Text())
+			if len(tokenString) == 0 {
+				continue
+			}
 			switch tokenString[0] {
 			case "cheat", "c":
 				// Requires that cheats are all one word! <-- don't forget
-				fmt.Println(cheats, tokenString[1])
-				if fn, ok := cheats[tokenString[1]]; ok {
+				if fn, ok := commands[tokenString[1]]; ok {
 					fn(tokenString[1:])
+				} else {
+					fmt.Println("Unknown command", tokenString[1])
 				}
 			case "viewport":
 				switch tokenString[1] {
@@ -84,7 +89,7 @@ func DebugConsole(resetCh, skipScene chan bool) {
 					toFade, ok := render.GetDebugRenderable(tokenString[1])
 					fadeVal := parseTokenAsInt(tokenString, 2, 255)
 					if ok {
-						toFade.(render.Modifiable).Fade(fadeVal)
+						toFade.(render.Modifiable).Modify(render.Fade(fadeVal))
 					} else {
 						fmt.Println("Could not fade input")
 					}
@@ -141,7 +146,7 @@ func parseTokenAsInt(tokenString []string, arrIndex int, defaultVal int) int {
 }
 
 func mouseDetails(nothing int, mevent interface{}) int {
-	me := mevent.(mouse.MouseEvent)
+	me := mevent.(mouse.Event)
 	x := int(me.X) + ViewPos.X
 	y := int(me.Y) + ViewPos.Y
 	loc := collision.NewUnassignedSpace(float64(x), float64(y), 16, 16)

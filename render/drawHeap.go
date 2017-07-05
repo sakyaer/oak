@@ -1,97 +1,134 @@
 package render
 
-import "container/heap"
+import (
+	"container/heap"
+	"image"
+	"image/draw"
 
-type RenderableHeap []Renderable
+	"bitbucket.org/oakmoundstudio/oak/dlog"
+)
+
+type RenderableHeap struct {
+	rs     []Renderable
+	toPush []Renderable
+	static bool
+}
+
+func NewHeap(static bool) *RenderableHeap {
+	rh := new(RenderableHeap)
+	rh.rs = make([]Renderable, 0)
+	rh.toPush = make([]Renderable, 0)
+	rh.static = static
+	return rh
+}
+
+func (rh *RenderableHeap) Add(r Renderable, layer int) Renderable {
+	r.SetLayer(layer)
+	rh.toPush = append(rh.toPush, r)
+	return r
+}
+
+func (rh *RenderableHeap) Replace(r1, r2 Renderable, layer int) {
+	rh.Add(r2, layer)
+	r1.UnDraw()
+}
 
 // Satisfying the Heap interface
-func (h RenderableHeap) Len() int           { return len(h) }
-func (h RenderableHeap) Less(i, j int) bool { return h[i].GetLayer() < h[j].GetLayer() }
-func (h RenderableHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *RenderableHeap) Len() int           { return len(h.rs) }
+func (h *RenderableHeap) Less(i, j int) bool { return h.rs[i].GetLayer() < h.rs[j].GetLayer() }
+func (h *RenderableHeap) Swap(i, j int)      { h.rs[i], h.rs[j] = h.rs[j], h.rs[i] }
 
-func (h *RenderableHeap) Push(x interface{}) {
-	if x == nil {
-		return
-	}
-	*h = append(*h, x.(Renderable))
-}
-
-func (h_p *RenderableHeap) Pop() interface{} {
-	h := *h_p
-	n := len(h)
-	x := h[n-1]
-	*h_p = h[0 : n-1]
-	return x
-}
-
-// ResetDrawHeap sets a flag to clear the drawheap
-// at the next predraw phase
-func ResetDrawHeap() {
-	resetHeap = true
-}
-
-func InitDrawHeap() {
-	rh = &RenderableHeap{}
-	srh = &RenderableHeap{}
-	heap.Init(rh)
-	heap.Init(srh)
-}
-
-// We manually define a LamdaHeap as it improves performance over using
-// the stdlib's Heap interface.
-type LambdaHeap struct {
-	bh []Renderable
-}
-
-func (lh *LambdaHeap) Push(r Renderable) {
+func (h *RenderableHeap) Push(r interface{}) {
+	defer func() {
+		if x := recover(); x != nil {
+			dlog.Error("Invalid Memory address pushed to Draw Heap")
+		}
+	}()
 	if r == nil {
 		return
 	}
-	lh.bh = append(lh.bh, r)
-	lh.up(len(lh.bh) - 1)
+	// This can cause a 'name offset base pointer out of range' error
+	// Maybe having incrementing sizes instead of appending could help that?
+	h.rs = append(h.rs, r.(Renderable))
 }
 
-func (lh *LambdaHeap) Pop() Renderable {
-	n := len(lh.bh) - 1
-	lh.bh[0], lh.bh[n] = lh.bh[n], lh.bh[0]
-
-	lh.down(0, n)
-
-	x := lh.bh[n]
-	lh.bh = lh.bh[0:n]
+func (h *RenderableHeap) Pop() interface{} {
+	n := len(h.rs)
+	x := h.rs[n-1]
+	h.rs = h.rs[0 : n-1]
 	return x
 }
 
-func (lh *LambdaHeap) up(j int) {
-	h := lh.bh
-	var i int
-	for {
-		i = (j - 1) / 2 // parent
-		if i == j || !(h[j].GetLayer() < h[i].GetLayer()) {
-			break
+// PreDraw parses through renderables to be pushed
+// and adds them to the drawheap.
+func (rh *RenderableHeap) PreDraw() {
+	defer func() {
+		if x := recover(); x != nil {
+			dlog.Error("Invalid Memory Address in Draw heap")
+			// This does not work-- all addresses following the bad address
+			// at i are also bad
+			//toPushRenderables = toPushRenderables[i+1:]
+			rh.toPush = []Renderable{}
 		}
-		lh.bh[i], lh.bh[j] = h[j], h[i]
-		h = lh.bh
-		j = i
+	}()
+	l := len(rh.toPush)
+	for i := 0; i < l; i++ {
+		r := rh.toPush[i]
+		if r != nil {
+			heap.Push(rh, r)
+		}
 	}
+	rh.toPush = rh.toPush[l:]
 }
 
-func (lh *LambdaHeap) down(i, n int) {
-	h := lh.bh
-	for {
-		j1 := 2*i + 1
-		if j1 >= n { // j1 < 0 after int overflow, ignored
-			break
+// Copying a renderableHeap does not include any of its elements,
+// as renderables cannot be copied.
+func (rh *RenderableHeap) Copy() Addable {
+	rh2 := new(RenderableHeap)
+	rh2.static = rh.static
+	return rh2
+}
+
+func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, screenH int) {
+	newRh := &RenderableHeap{}
+	if rh.static {
+		for rh.Len() > 0 {
+			rp := heap.Pop(rh)
+			if rp != nil {
+				r := rp.(Renderable)
+				if r.GetLayer() != Undraw {
+					r.Draw(world)
+					heap.Push(newRh, r)
+				}
+			}
 		}
-		j := j1 // left child
-		if j2 := j1 + 1; j2 < n && !(h[j1].GetLayer() < h[j2].GetLayer()) {
-			j = j2 // = 2*i + 2  // right child
+		newRh.static = true
+	} else {
+		vx := float64(-viewPos.X)
+		vy := float64(-viewPos.Y)
+		for rh.Len() > 0 {
+			intf := heap.Pop(rh)
+			if intf != nil {
+				r := intf.(Renderable)
+				if r.GetLayer() != Undraw {
+					x := int(r.GetX())
+					y := int(r.GetY())
+					x2 := x
+					y2 := y
+					w, h := r.GetDims()
+					x += w
+					y += h
+					if x > viewPos.X && y > viewPos.Y &&
+						x2 < viewPos.X+screenW && y2 < viewPos.Y+screenH {
+						if InDrawPolygon(x, y, x2, y2) {
+							r.DrawOffset(world, vx, vy)
+						}
+					}
+					heap.Push(newRh, r)
+				}
+			}
 		}
-		if !(h[j].GetLayer() < h[i].GetLayer()) {
-			break
-		}
-		lh.bh[i], lh.bh[j] = h[j], h[i]
-		h = lh.bh
-		i = j
 	}
+	newRh.toPush = rh.toPush
+	*rh = *newRh
 }

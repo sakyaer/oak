@@ -1,10 +1,10 @@
 package render
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/physics"
 	"image"
-	"image/color"
 	"image/draw"
+
+	"bitbucket.org/oakmoundstudio/oak/physics"
 )
 
 // The Compound type is intended for use to easily swap between multiple
@@ -22,6 +22,7 @@ type Compound struct {
 
 func NewCompound(start string, m map[string]Modifiable) *Compound {
 	return &Compound{
+		LayeredPoint:   NewLayeredPoint(0, 0, 0),
 		subRenderables: m,
 		curRenderable:  start,
 	}
@@ -72,18 +73,19 @@ func (c *Compound) IsStatic() bool {
 
 func (c *Compound) SetOffsets(k string, offsets physics.Vector) {
 	if r, ok := c.subRenderables[k]; ok {
-		r.SetPos(offsets.X, offsets.Y)
+		r.SetPos(offsets.X(), offsets.Y())
 	}
 }
 
 func (c *Compound) Copy() Modifiable {
 	newC := new(Compound)
-	*newC = *c
+	newC.LayeredPoint = c.LayeredPoint.Copy()
 	newSubRenderables := make(map[string]Modifiable)
 	for k, v := range c.subRenderables {
 		newSubRenderables[k] = v.Copy()
 	}
 	newC.subRenderables = newSubRenderables
+	newC.curRenderable = c.curRenderable
 	return newC
 }
 
@@ -91,83 +93,39 @@ func (c *Compound) GetRGBA() *image.RGBA {
 	return c.subRenderables[c.curRenderable].GetRGBA()
 }
 
-func (c *Compound) ApplyColor(co color.Color) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.ApplyColor(co)
-	}
-	return c
-}
-
-func (c *Compound) FillMask(img image.RGBA) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.FillMask(img)
-	}
-	return c
-}
-
-func (c *Compound) ApplyMask(img image.RGBA) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.ApplyMask(img)
-	}
-	return c
-}
-
-func (c *Compound) Rotate(degrees int) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.Rotate(degrees)
-	}
-	return c
-}
-
-func (c *Compound) Scale(xRatio float64, yRatio float64) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.Scale(xRatio, yRatio)
-	}
-	return c
-}
-
-func (c *Compound) FlipX() Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.FlipX()
-	}
-	return c
-}
-
-func (c *Compound) FlipY() Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.FlipY()
-	}
-	return c
-}
-func (c *Compound) Fade(alpha int) Modifiable {
-	for _, rend := range c.subRenderables {
-		rend.Fade(alpha)
+func (c *Compound) Modify(ms ...Modification) Modifiable {
+	for _, r := range c.subRenderables {
+		r.Modify(ms...)
 	}
 	return c
 }
 
 func (c *Compound) DrawOffset(buff draw.Image, xOff float64, yOff float64) {
-	c.subRenderables[c.curRenderable].DrawOffset(buff, c.X+xOff, c.Y+yOff)
+	c.subRenderables[c.curRenderable].DrawOffset(buff, c.X()+xOff, c.Y()+yOff)
 }
 
 func (c *Compound) Draw(buff draw.Image) {
-	c.subRenderables[c.curRenderable].DrawOffset(buff, c.X, c.Y)
+	c.subRenderables[c.curRenderable].DrawOffset(buff, c.X(), c.Y())
 }
 
 func (c *Compound) ShiftPos(x, y float64) {
-	c.SetPos(c.X+x, c.Y+y)
+	c.SetPos(c.X()+x, c.Y()+y)
 }
 
 func (c *Compound) ShiftY(y float64) {
-	c.SetPos(c.X, c.Y+y)
+	c.SetPos(c.X(), c.Y()+y)
 }
 
 func (c *Compound) ShiftX(x float64) {
-	c.SetPos(c.X+x, c.Y)
+	c.SetPos(c.X()+x, c.Y())
 }
 
 func (c *Compound) SetPos(x, y float64) {
 	c.LayeredPoint.SetPos(x, y)
+}
+
+func (c *Compound) GetDims() (int, int) {
+	return c.subRenderables[c.curRenderable].GetDims()
 }
 
 func (c *Compound) Pause() {
@@ -197,6 +155,15 @@ func (c *Compound) Revert(mod int) {
 		switch t := v.(type) {
 		case *Reverting:
 			t.Revert(mod)
+		}
+	}
+}
+
+func (c *Compound) RevertAll() {
+	for _, v := range c.subRenderables {
+		switch t := v.(type) {
+		case *Reverting:
+			t.RevertAll()
 		}
 	}
 }

@@ -3,61 +3,53 @@
 package particle
 
 import (
-	"image"
 	"image/draw"
 
 	"bitbucket.org/oakmoundstudio/oak/physics"
 	"bitbucket.org/oakmoundstudio/oak/render"
 )
 
+// A Particle is a renderable that is spawned by a generator, usually very fast,
+// usually very small, for visual effects
 type Particle interface {
 	render.Renderable
-	GetBaseParticle() *BaseParticle
+	GetBaseParticle() *baseParticle
 	GetPos() physics.Vector
-	GetSize() (float64, float64)
 	DrawOffsetGen(gen Generator, buff draw.Image, xOff, yOff float64)
 	Cycle(gen Generator)
 }
 
-type BaseParticle struct {
-	render.Layered
+type baseParticle struct {
+	render.LayeredPoint
 	Src       *Source
-	Pos       physics.Vector
 	Vel       physics.Vector
 	Life      float64
 	totalLife float64
 	pID       int
 }
 
-// A particle has no concept of an individual
-// rgba buffer, and so it returns nothing when its
-// rgba buffer is queried. This may change.
-func (bp *BaseParticle) GetRGBA() *image.RGBA {
-	return nil
+// Need to look at this! This is like the only crash left in oak hopefully
+func (bp *baseParticle) GetLayer() int {
+	if bp == nil {
+		return render.Undraw
+	}
+	return bp.LayeredPoint.GetLayer()
 }
 
-func (bp *BaseParticle) ShiftX(x float64) {
-	bp.Pos.X += x
+func (bp *baseParticle) GetBaseParticle() *baseParticle {
+	return bp
 }
 
-func (bp *BaseParticle) ShiftY(y float64) {
-	bp.Pos.Y += y
+func (bp *baseParticle) GetPos() physics.Vector {
+	return bp.Vector
 }
 
-func (bp *BaseParticle) GetX() float64 {
-	return bp.Pos.X
+func (bp *baseParticle) GetDims() (int, int) {
+	return 0, 0
 }
 
-func (bp *BaseParticle) GetY() float64 {
-	return bp.Pos.Y
-}
-func (bp *BaseParticle) SetPos(x, y float64) {
-	bp.Pos.X = x
-	bp.Pos.Y = y
-}
+func (bp *baseParticle) Cycle(gen Generator) {}
 
-func (bp *BaseParticle) Cycle(gen Generator) {}
-
-func (bp *BaseParticle) String() string {
+func (bp *baseParticle) String() string {
 	return "BaseParticle"
 }

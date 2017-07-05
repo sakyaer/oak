@@ -2,10 +2,7 @@ package render
 
 import (
 	"image"
-	"image/color"
 	"image/draw"
-
-	"bitbucket.org/oakmoundstudio/oak/physics"
 )
 
 type Sprite struct {
@@ -20,18 +17,20 @@ func NewEmptySprite(x, y float64, w, h int) *Sprite {
 
 func NewSprite(x, y float64, r *image.RGBA) *Sprite {
 	return &Sprite{
-		LayeredPoint: LayeredPoint{
-			Vector: physics.Vector{
-				X: x,
-				Y: y,
-			},
-		},
-		r: r,
+		LayeredPoint: NewLayeredPoint(x, y, 0),
+		r:            r,
 	}
 }
 
 func (s *Sprite) GetRGBA() *image.RGBA {
 	return s.r
+}
+func (s *Sprite) GetDims() (int, int) {
+	rgba := s.r
+	if rgba == nil {
+		return 6, 6
+	}
+	return rgba.Bounds().Max.X, rgba.Bounds().Max.Y
 }
 
 func (s *Sprite) SetRGBA(r *image.RGBA) {
@@ -39,16 +38,20 @@ func (s *Sprite) SetRGBA(r *image.RGBA) {
 }
 
 func (s *Sprite) DrawOffset(buff draw.Image, xOff, yOff float64) {
-	ShinyDraw(buff, s.r, int(s.X+xOff), int(s.Y+yOff))
+	ShinyDraw(buff, s.r, int(s.X()+xOff), int(s.Y()+yOff))
 }
 
 func (s *Sprite) Draw(buff draw.Image) {
-	ShinyDraw(buff, s.r, int(s.X), int(s.Y))
+	ShinyDraw(buff, s.r, int(s.X()), int(s.Y()))
 }
 
 func (s *Sprite) Copy() Modifiable {
 	newS := new(Sprite)
-	*newS = *s
+	if s.r != nil {
+		newS.r = new(image.RGBA)
+		*newS.r = *s.r
+	}
+	newS.LayeredPoint = s.LayeredPoint.Copy()
 	return newS
 }
 
@@ -56,45 +59,17 @@ func (s *Sprite) IsNil() bool {
 	return s.r == nil
 }
 
-func (s *Sprite) ApplyColor(c color.Color) Modifiable {
-	s.SetRGBA(ApplyColor(s.GetRGBA(), c))
+func (s *Sprite) Modify(ms ...Modification) Modifiable {
+	for _, m := range ms {
+		s.r = m(s.GetRGBA())
+	}
 	return s
 }
 
-func (s *Sprite) FillMask(img image.RGBA) Modifiable {
-	s.SetRGBA(FillMask(s.GetRGBA(), img))
-	return s
-}
-
-func (s *Sprite) ApplyMask(img image.RGBA) Modifiable {
-	s.SetRGBA(ApplyMask(s.GetRGBA(), img))
-	return s
-}
-
-func (s *Sprite) Rotate(degrees int) Modifiable {
-	s.SetRGBA(Rotate(s.GetRGBA(), degrees))
-	return s
-}
-func (s *Sprite) Scale(xRatio float64, yRatio float64) Modifiable {
-	s.SetRGBA(Scale(s.GetRGBA(), xRatio, yRatio))
-	return s
-}
-func (s *Sprite) FlipX() Modifiable {
-	s.SetRGBA(FlipX(s.GetRGBA()))
-	return s
-}
-func (s *Sprite) FlipY() Modifiable {
-	s.SetRGBA(FlipY(s.GetRGBA()))
-	return s
-}
-func (s *Sprite) Fade(alpha int) Modifiable {
-	s.SetRGBA(Fade(s.GetRGBA(), alpha))
-	return s
-}
 func OverlaySprites(sps []Sprite) *Sprite {
 	tmpSprite := sps[len(sps)-1].Copy().(*Sprite)
 	for i := len(sps) - 1; i > 0; i-- {
-		tmpSprite.SetRGBA(FillMask(tmpSprite.GetRGBA(), *sps[i-1].GetRGBA()))
+		tmpSprite.SetRGBA(FillMask(*sps[i-1].GetRGBA())(tmpSprite.GetRGBA()))
 	}
 	return tmpSprite
 }

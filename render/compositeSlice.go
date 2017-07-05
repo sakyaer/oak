@@ -2,7 +2,6 @@ package render
 
 import (
 	"image"
-	"image/color"
 	"image/draw"
 
 	"bitbucket.org/oakmoundstudio/oak/physics"
@@ -19,12 +18,13 @@ type Composite struct {
 
 func NewComposite(sl []Modifiable) *Composite {
 	cs := new(Composite)
+	cs.LayeredPoint = NewLayeredPoint(0, 0, 0)
 	cs.rs = sl
 	return cs
 }
 
 func (cs *Composite) AppendOffset(r Modifiable, v physics.Vector) {
-	r.SetPos(v.X, v.Y)
+	r.SetPos(v.X(), v.Y())
 	cs.rs = append(cs.rs, r)
 }
 
@@ -38,14 +38,14 @@ func (cs *Composite) Add(i int, r Modifiable) {
 
 func (cs *Composite) AddOffset(i int, v physics.Vector) {
 	if i < len(cs.rs) {
-		cs.rs[i].SetPos(v.X, v.Y)
+		cs.rs[i].SetPos(v.X(), v.Y())
 	}
 }
 
 func (cs *Composite) SetOffsets(vs []physics.Vector) {
 	for i, v := range vs {
 		if i < len(cs.rs) {
-			cs.rs[i].SetPos(v.X, v.Y)
+			cs.rs[i].SetPos(v.X(), v.Y())
 		}
 	}
 }
@@ -56,16 +56,16 @@ func (cs *Composite) Get(i int) Modifiable {
 
 func (cs *Composite) DrawOffset(buff draw.Image, xOff, yOff float64) {
 	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X+xOff, cs.Y+yOff)
+		c.DrawOffset(buff, cs.X()+xOff, cs.Y()+yOff)
 	}
 }
 func (cs *Composite) Draw(buff draw.Image) {
 	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X, cs.Y)
+		c.DrawOffset(buff, cs.X(), cs.Y())
 	}
 }
 func (cs *Composite) UnDraw() {
-	cs.layer = -1
+	cs.layer = Undraw
 	for _, c := range cs.rs {
 		c.UnDraw()
 	}
@@ -77,64 +77,21 @@ func (cs *Composite) AlwaysDirty() bool {
 	return true
 }
 
-func (cs *Composite) FlipX() Modifiable {
-	for _, v := range cs.rs {
-		v.FlipX()
-	}
-	return cs
-}
-func (cs *Composite) FlipY() Modifiable {
-	for _, v := range cs.rs {
-		v.FlipY()
-	}
-	return cs
-}
-func (cs *Composite) ApplyColor(c color.Color) Modifiable {
-	for _, v := range cs.rs {
-		v.ApplyColor(c)
+func (cs *Composite) Modify(ms ...Modification) Modifiable {
+	for _, r := range cs.rs {
+		r.Modify(ms...)
 	}
 	return cs
 }
 func (cs *Composite) Copy() Modifiable {
 	cs2 := new(Composite)
 	cs2.layer = cs.layer
-	cs2.X = cs.X
-	cs2.Y = cs.Y
+	cs2.Vector = cs.Vector
 	cs2.rs = make([]Modifiable, len(cs.rs))
 	for i, v := range cs.rs {
 		cs2.rs[i] = v.Copy()
 	}
 	return cs2
-}
-func (cs *Composite) FillMask(img image.RGBA) Modifiable {
-	for _, v := range cs.rs {
-		v.FillMask(img)
-	}
-	return cs
-}
-func (cs *Composite) ApplyMask(img image.RGBA) Modifiable {
-	for _, v := range cs.rs {
-		v.ApplyMask(img)
-	}
-	return cs
-}
-func (cs *Composite) Rotate(degrees int) Modifiable {
-	for _, v := range cs.rs {
-		v.Rotate(degrees)
-	}
-	return cs
-}
-func (cs *Composite) Scale(xRatio float64, yRatio float64) Modifiable {
-	for _, v := range cs.rs {
-		v.Scale(xRatio, yRatio)
-	}
-	return cs
-}
-func (cs *Composite) Fade(alpha int) Modifiable {
-	for _, v := range cs.rs {
-		v.Fade(alpha)
-	}
-	return cs
 }
 
 func (cs *Composite) String() string {
@@ -148,17 +105,20 @@ func (cs *Composite) String() string {
 
 type CompositeR struct {
 	LayeredPoint
-	rs []Renderable
+	toPush []Renderable
+	rs     []Renderable
 }
 
 func NewCompositeR(sl []Renderable) *CompositeR {
 	cs := new(CompositeR)
+	cs.LayeredPoint = NewLayeredPoint(0, 0, 0)
+	cs.toPush = make([]Renderable, 0)
 	cs.rs = sl
 	return cs
 }
 
 func (cs *CompositeR) AppendOffset(r Renderable, v physics.Vector) {
-	r.SetPos(v.X, v.Y)
+	r.SetPos(v.X(), v.Y())
 	cs.rs = append(cs.rs, r)
 }
 
@@ -166,14 +126,35 @@ func (cs *CompositeR) Append(r Renderable) {
 	cs.rs = append(cs.rs, r)
 }
 
-func (cs *CompositeR) Add(i int, r Renderable) {
-	cs.rs[i] = r
+func (cs *CompositeR) Add(r Renderable, i int) Renderable {
+	cs.toPush = append(cs.toPush, r)
+	return r
+}
+
+func (cs *CompositeR) Replace(r1, r2 Renderable, i int) {
+	cs.Add(r2, i)
+	r1.UnDraw()
 }
 
 func (cs *CompositeR) AddOffset(i int, v physics.Vector) {
 	if i < len(cs.rs) {
-		cs.rs[i].SetPos(v.X, v.Y)
+		cs.rs[i].SetPos(v.X(), v.Y())
 	}
+}
+
+func (cs *CompositeR) PreDraw() {
+	push := cs.toPush
+	cs.toPush = []Renderable{}
+	cs.rs = append(cs.rs, push...)
+}
+
+// CompositeRs cannot have their internal elements copied,
+// as renderables cannot be copied.
+func (cs *CompositeR) Copy() Addable {
+	cs2 := new(CompositeR)
+	cs2.LayeredPoint = cs.LayeredPoint
+	cs2.rs = make([]Renderable, len(cs.rs))
+	return cs2
 }
 
 func (cs *CompositeR) SetOffsets(ps []Point) {
@@ -190,16 +171,48 @@ func (cs *CompositeR) Get(i int) Renderable {
 
 func (cs *CompositeR) DrawOffset(buff draw.Image, xOff, yOff float64) {
 	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X+xOff, cs.Y+yOff)
+		c.DrawOffset(buff, cs.X()+xOff, cs.Y()+yOff)
 	}
 }
+
+func (cs *CompositeR) draw(world draw.Image, viewPos image.Point, screenW, screenH int) {
+	realLength := len(cs.rs)
+	for i := 0; i < realLength; i++ {
+		r := cs.rs[i]
+		for (r == nil || r.GetLayer() == Undraw) && realLength > i {
+			cs.rs[i], cs.rs[realLength-1] = cs.rs[realLength-1], cs.rs[i]
+			realLength--
+			r = cs.rs[i]
+		}
+		if realLength == i {
+			break
+		}
+		x := int(r.GetX())
+		y := int(r.GetY())
+		x2 := x
+		y2 := y
+		w, h := r.GetDims()
+		x += w
+		y += h
+		if x > viewPos.X && y > viewPos.Y &&
+			x2 < viewPos.X+screenW && y2 < viewPos.Y+screenH {
+
+			if InDrawPolygon(x, y, x2, y2) {
+				r.DrawOffset(world, float64(-viewPos.X), float64(-viewPos.Y))
+			}
+		}
+	}
+	cs.rs = cs.rs[0:realLength]
+}
+
 func (cs *CompositeR) Draw(buff draw.Image) {
 	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X, cs.Y)
+		c.DrawOffset(buff, cs.X(), cs.Y())
 	}
 }
+
 func (cs *CompositeR) UnDraw() {
-	cs.layer = -1
+	cs.layer = Undraw
 	for _, c := range cs.rs {
 		c.UnDraw()
 	}
