@@ -8,17 +8,10 @@ import (
 )
 
 var (
-<<<<<<< HEAD
-	ViewPos        = image.Point{}
-	useViewBounds  = false
-	viewBounds     Rect
-	viewportLocked = true
-=======
 	// ViewPos represents the point in the world which the viewport is anchored at.
 	ViewPos       = image.Point{}
 	useViewBounds = false
 	viewBounds    rect
->>>>>>> master
 )
 
 type rect struct {

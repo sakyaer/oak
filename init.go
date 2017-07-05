@@ -1,15 +1,16 @@
 package oak
 
 import (
-	"fmt"
 	"image"
+	"os"
 	"path/filepath"
+
+	"golang.org/x/exp/shiny/driver"
 
 	"bitbucket.org/oakmoundstudio/oak/audio"
 	"bitbucket.org/oakmoundstudio/oak/collision"
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/event"
-	"bitbucket.org/oakmoundstudio/oak/file"
 	"bitbucket.org/oakmoundstudio/oak/mouse"
 	"bitbucket.org/oakmoundstudio/oak/render"
 )
@@ -110,23 +111,6 @@ func Init(firstScene string) {
 	mouse.Init()
 	audio.InitWinAudio()
 
-<<<<<<< HEAD
-	SeedRNG(DEFAULT_SEED)
-
-	go LoadAssets()
-	InitDriver()
-	go DebugConsole(debugResetCh, skipSceneCh)
-
-	fmt.Println("Initch")
-	//<-initCh
-	// // This is the only time oak closes a channel
-	// // This should probably change
-	//close(initCh)
-
-	// Loop through scenes
-	fmt.Println("Init end")
-	SceneLoop(firstScene)
-=======
 	SeedRNG(DefaultSeed)
 
 	imageDir := filepath.Join(wd,
@@ -144,5 +128,4 @@ func Init(firstScene string) {
 	go debugConsole(debugResetCh, skipSceneCh)
 	dlog.Info("Init Main Driver")
 	driver.Main(lifecycleLoop)
->>>>>>> master
 }

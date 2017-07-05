@@ -1,21 +1,11 @@
-<<<<<<< HEAD
 //+build windows,!js
-=======
-//+build windows
->>>>>>> master
 
 package audio
 
 import (
-<<<<<<< HEAD
-	"math"
-
-	"bitbucket.org/StephenPatrick/go-winaudio/winaudio"
-=======
 	"bitbucket.org/StephenPatrick/go-winaudio/winaudio"
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/physics"
->>>>>>> master
 )
 
 // ScaleType should be moved to a different package that handles global

@@ -1,6 +1,7 @@
 package render
 
 import (
+	"encoding/json"
 	"errors"
 	"image"
 	"image/color"
@@ -8,14 +9,13 @@ import (
 	"log"
 	"path/filepath"
 	"regexp"
+	"strconv"
+	"strings"
 	"sync"
 
 	"bitbucket.org/oakmoundstudio/oak/dlog"
-<<<<<<< HEAD
 	"bitbucket.org/oakmoundstudio/oak/file"
-=======
 	"bitbucket.org/oakmoundstudio/oak/fileutil"
->>>>>>> master
 )
 
 var (
@@ -42,11 +42,7 @@ func loadPNG(directory, fileName string) *image.RGBA {
 
 	loadLock.Lock()
 	if _, ok := loadedImages[fileName]; !ok {
-<<<<<<< HEAD
-		imgFile, err := file.Open(filepath.Join(directory, fileName))
-=======
 		imgFile, err := fileutil.Open(filepath.Join(directory, fileName))
->>>>>>> master
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -175,8 +171,6 @@ func subImage(rgba *image.RGBA, x, y, w, h int) *image.RGBA {
 	}
 	return out
 }
-<<<<<<< HEAD
-=======
 
 func BatchLoad(baseFolder string) error {
 
@@ -273,4 +267,3 @@ func BatchLoad(baseFolder string) error {
 	}
 	return nil
 }
->>>>>>> master

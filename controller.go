@@ -9,15 +9,11 @@ import (
 	"golang.org/x/exp/shiny/screen"
 )
 
-<<<<<<< HEAD:lifecycle_windows.go
 func InitDriver() {
 	go driver.Main(lifecycleLoop)
 }
 
-func WindowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
-=======
 func windowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
->>>>>>> master:controller.go
 	return s.NewWindow(&screen.NewWindowOptions{
 		Width:  ScreenWidth,
 		Height: ScreenHeight,

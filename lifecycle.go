@@ -2,7 +2,6 @@
 package oak
 
 import (
-	"fmt"
 	"image"
 	"sync"
 
@@ -28,22 +27,9 @@ var (
 )
 
 func lifecycleLoop(s screen.Screen) {
-<<<<<<< HEAD
-	screenControl = s
-	var err error
-	fmt.Println("Lifecycle enter")
-
-	// The world buffer represents the total space that is conceptualized by the engine
-	// and able to be drawn to. Space outside of this area will appear as smeared
-	// white (on windows).
-	worldBuffer, err = screenControl.NewBuffer(image.Point{WorldWidth, WorldHeight})
-	if err != nil {
-		dlog.Error(err)
-=======
 	initControl.Lock()
 	if lifecycleInit {
 		dlog.Error("Started lifecycle twice, aborting second call")
->>>>>>> master
 		return
 	}
 	lifecycleInit = true
@@ -66,71 +52,6 @@ func lifecycleLoop(s screen.Screen) {
 	// publishes image data to the screen.\
 	dlog.Info("Creating window controller")
 	changeWindow(ScreenWidth, ScreenHeight)
-<<<<<<< HEAD
-	defer windowControl.Release()
-
-	eb = event.GetEventBus()
-
-	//go KeyHoldLoop()
-	//go InputLoop()
-
-	// Initiate the first scene
-	//initCh <- true
-
-	if conf.ShowFPS {
-		fmt.Println("Starting draw")
-		go DrawLoopFPS()
-	} else {
-		fmt.Println("Starting draw")
-		go DrawLoopNoFPS()
-	}
-
-	event.ResolvePending()
-}
-
-// do runs f on the osLocked thread.
-func osLockedFunc(f func()) {
-	done := make(chan bool, 1)
-	osCh <- func() {
-		f()
-		done <- true
-	}
-	<-done
-}
-
-func LogicLoop() chan bool {
-	// The logical loop.
-	// In order, it waits on receiving a signal to begin a logical frame.
-	// It then runs any functions bound to when a frame begins.
-	// It then allows a scene to perform it's loop operation.
-	ch := make(chan bool)
-	go func(doneCh chan bool) {
-		ticker := time.NewTicker(time.Second / time.Duration(int64(FrameRate)))
-		for {
-			select {
-			case <-ticker.C:
-				<-eb.TriggerBack("EnterFrame", nil)
-				sceneCh <- true
-			case <-doneCh:
-				ticker.Stop()
-				break
-			}
-		}
-	}(ch)
-	return ch
-}
-
-func GetScreen() *image.RGBA {
-	return winBuffer.RGBA()
-}
-
-func GetWorld() *image.RGBA {
-	return worldBuffer.RGBA()
-}
-
-func SetWorldSize(x, y int) {
-	worldBuffer, _ = screenControl.NewBuffer(image.Point{x, y})
-=======
 
 	dlog.Info("Getting event bus")
 	eb = event.GetBus()
@@ -148,7 +69,6 @@ func SetWorldSize(x, y int) {
 	// for the engine to stop.
 	<-quitCh
 	return
->>>>>>> master
 }
 
 func changeWindow(width, height int) {

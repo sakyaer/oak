@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 //+build windows,!js
-=======
-//+build windows
->>>>>>> master
 
 package audio
 

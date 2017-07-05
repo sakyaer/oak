@@ -8,7 +8,7 @@ func InitDriver() {
 	go lifecycleLoop(new(JSScreen))
 }
 
-func WindowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
+func windowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
 	return s.NewWindow(&screen.NewWindowOptions{
 		Width:  ScreenWidth,
 		Height: ScreenHeight,

@@ -19,12 +19,8 @@ import (
 )
 
 var (
-<<<<<<< HEAD
-	cheats = make(map[string]func([]string))
-=======
 	viewportLocked = true
 	commands       = make(map[string]func([]string))
->>>>>>> master
 )
 
 // AddCommand is an alias for AddCheat for things
