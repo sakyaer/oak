@@ -5,13 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"golang.org/x/exp/shiny/driver"
-
-	"bitbucket.org/oakmoundstudio/oak/audio"
-	"bitbucket.org/oakmoundstudio/oak/collision"
 	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"bitbucket.org/oakmoundstudio/oak/event"
-	"bitbucket.org/oakmoundstudio/oak/mouse"
 	"bitbucket.org/oakmoundstudio/oak/render"
 )
 
@@ -106,10 +101,6 @@ func Init(firstScene string) {
 		conf.Font.Hinting, conf.Font.Color, conf.Font.File, conf.Font.Size,
 		conf.Font.DPI)
 	// END of loading variables from configuration
-
-	collision.Init()
-	mouse.Init()
-	audio.InitWinAudio()
 
 	SeedRNG(DefaultSeed)
 
