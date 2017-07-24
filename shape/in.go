@@ -2,11 +2,9 @@ package shape
 
 import (
 	"math"
-)
 
-type Point struct {
-	X, Y int
-}
+	"github.com/oakmound/oak/alg/intgeom"
+)
 
 // In functions return whether the given coordinate lies
 // in a shape.
@@ -61,7 +59,8 @@ func (ji JustIn) Rect(sizes ...int) [][]bool {
 	return InToRect(In(ji))(sizes...)
 }
 
-func (ji JustIn) Outline(sizes ...int) ([]Point, error) {
+// Outline calls ToOutline on the JustIn
+func (ji JustIn) Outline(sizes ...int) ([]intgeom.Point, error) {
 	return ToOutline(ji)(sizes...)
 }
 
@@ -83,7 +82,7 @@ var (
 		}
 		return false
 	})
-	// Diamond
+	// Diamond has a shape like the following:
 	// . . t . .
 	// . t t t .
 	// t t t t t
@@ -93,7 +92,7 @@ var (
 		radius := sizes[0] / 2
 		return math.Abs(float64(x-radius))+math.Abs(float64(y-radius)) < float64(radius)
 	})
-	// Circle
+	// Circle has a shape like the following:
 	// . . . . . . .
 	// . . t t t . .
 	// . t t t t t .
@@ -111,7 +110,7 @@ var (
 		}
 		return math.Pow(dx, 2)+math.Pow(dy, 2) < math.Pow(radiusf64, 2)
 	})
-	// Checkered
+	// Checkered has a shape like the following:
 	// t . t . t .
 	// . t . t . t
 	// t . t . t .
@@ -125,7 +124,7 @@ var (
 
 // XRange is an example In utility which returns values within a given
 // relative range (where 0 = 0 and 1 = size).
-//TODO: update to respect mutliple sizes
+//TODO: update to respect multiple sizes
 func XRange(a, b float64) In {
 	return func(x, y int, sizes ...int) bool {
 		xf := float64(x)

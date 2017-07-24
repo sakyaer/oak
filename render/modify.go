@@ -6,7 +6,7 @@ import (
 	// missable bugs.
 	//"github.com/anthonynsimon/bild/blend"
 
-	"bitbucket.org/oakmoundstudio/oak/alg"
+	"github.com/oakmound/oak/alg"
 
 	"github.com/disintegration/gift"
 
@@ -80,6 +80,13 @@ func FlipY(rgba *image.RGBA) *image.RGBA {
 	return newRgba
 }
 
+// todo: this should not be in this package
+type point struct {
+	X, Y float64
+}
+
+// CutRound rounds the edges of the Modifiable with Bezier curves.
+// Todo: A nice bezier curve toolset would be nice
 func CutRound(xOff, yOff float64) Modification {
 	return func(rgba image.Image) *image.RGBA {
 		bds := rgba.Bounds()
@@ -106,9 +113,9 @@ func CutRound(xOff, yOff float64) Modification {
 			y1 := float64(c[1])
 			x2 := x1 + (float64(bds.Max.X*c[2]) * xOff)
 			y2 := y1 + (float64(bds.Max.Y*c[3]) * yOff)
-			p1 := Point{x2, y1}
-			p2 := Point{x1, y1}
-			p3 := Point{x1, y2}
+			p1 := point{x2, y1}
+			p2 := point{x1, y1}
+			p3 := point{x1, y2}
 			//fmt.Println("Corners", p1, p2, p3)
 
 			// Progressing along the curve, whenever a new y value is
@@ -138,8 +145,8 @@ func CutRound(xOff, yOff float64) Modification {
 }
 
 // todo: this should not be in this package
-func pointBetween(p1, p2 Point, f float64) Point {
-	return Point{p1.X*(1-f) + p2.X*f, p1.Y*(1-f) + p2.Y*f}
+func pointBetween(p1, p2 point, f float64) point {
+	return point{p1.X*(1-f) + p2.X*f, p1.Y*(1-f) + p2.Y*f}
 }
 
 // CutRel acts like Cut, but takes in a multiplier on the
@@ -147,8 +154,8 @@ func pointBetween(p1, p2 Point, f float64) Point {
 func CutRel(relWidth, relHeight float64) Modification {
 	return func(rgba image.Image) *image.RGBA {
 		bds := rgba.Bounds()
-		newWidth := int(float64(bds.Max.X) * relWidth)
-		newHeight := int(float64(bds.Max.Y) * relHeight)
+		newWidth := alg.RoundF64(float64(bds.Max.X) * relWidth)
+		newHeight := alg.RoundF64(float64(bds.Max.Y) * relHeight)
 		newRgba := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
 		for x := 0; x < newWidth; x++ {
 			for y := 0; y < newHeight; y++ {

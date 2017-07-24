@@ -1,11 +1,7 @@
-// Package event propogates events through entities with given caller IDs.
-// It sets up a subscribe-publish model with the Bind and Trigger functions.
-// In a slight change to the sub-pub model, event allows bindings to occur
-// in an explicit order through assigning priority to individual bind calls.
 package event
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"github.com/oakmound/oak/dlog"
 
 	"reflect"
 	"runtime"
@@ -117,6 +113,8 @@ func (cid CID) String() string {
 }
 
 // E is shorthand for GetEntity(int(cid))
+// But we apparently forgot we added this shorthand,
+// because this isn't used anywhere.
 func (cid CID) E() interface{} {
 	return GetEntity(int(cid))
 }
@@ -348,11 +346,11 @@ func (bl *bindableList) removeIndex(i int) {
 
 func (eb *Bus) getBindableList(opt BindingOption) *bindableList {
 
-	if m, _ := eb.bindingMap[opt.Name]; m == nil {
+	if m := eb.bindingMap[opt.Name]; m == nil {
 		eb.bindingMap[opt.Name] = make(map[int]*bindableStore)
 	}
 
-	if m, _ := eb.bindingMap[opt.Name][opt.CallerID]; m == nil {
+	if m := eb.bindingMap[opt.Name][opt.CallerID]; m == nil {
 		eb.bindingMap[opt.Name][opt.CallerID] = new(bindableStore)
 		eb.bindingMap[opt.Name][opt.CallerID].defaultPriority = (new(bindableList))
 	}

@@ -1,6 +1,6 @@
 package particle
 
-import "bitbucket.org/oakmoundstudio/oak/event"
+import "github.com/oakmound/oak/event"
 
 const (
 	blockSize = 2048
@@ -25,7 +25,7 @@ func init() {
 					responseCh <- particleBlocks[pID/blockSize]
 					lastOpen--
 				case i := <-freeCh:
-					opened := freeRecieve(i)
+					opened := freereceive(i)
 					if opened < lastOpen {
 						lastOpen = opened
 					}
@@ -35,7 +35,7 @@ func init() {
 			}
 			select {
 			case i := <-freeCh:
-				opened := freeRecieve(i)
+				opened := freereceive(i)
 				if opened < lastOpen {
 					lastOpen = opened
 				}
@@ -46,7 +46,7 @@ func init() {
 	}()
 }
 
-func freeRecieve(i int) int {
+func freereceive(i int) int {
 	delete(particleBlocks, i)
 	return i - 1
 }
@@ -63,7 +63,7 @@ func Deallocate(block int) {
 	freeCh <- block
 }
 
-// LookupSource requests the source bound to a id in a block in the particle space
+// LookupSource requests the source that generated a pid
 func LookupSource(id int) *Source {
 	requestCh <- id
 	owner := <-responseCh

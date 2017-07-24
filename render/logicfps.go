@@ -5,11 +5,11 @@ import (
 	"image/draw"
 	"time"
 
-	"bitbucket.org/oakmoundstudio/oak/event"
-	"bitbucket.org/oakmoundstudio/oak/timing"
+	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/timing"
 )
 
-// DrawFPS is a draw stack element that will draw the fps onto the screen
+// LogicFPS is a draw stack element that will draw the logical fps onto the screen
 type LogicFPS struct {
 	event.CID
 	fps      int
@@ -17,13 +17,14 @@ type LogicFPS struct {
 	txt      *Text
 }
 
+// Init satisfies event.Entity
 func (lf *LogicFPS) Init() event.CID {
 	id := event.NextID(lf)
 	lf.CID = id
 	return id
 }
 
-// NewDrawFPS returns a zero-initialized DrawFPS
+// NewLogicFPS returns a zero-initialized LogicFPS
 func NewLogicFPS() *LogicFPS {
 	lf := new(LogicFPS)
 	lf.lastTime = time.Now()

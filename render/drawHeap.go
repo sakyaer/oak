@@ -5,15 +5,18 @@ import (
 	"image"
 	"image/draw"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"github.com/oakmound/oak/dlog"
 )
 
+//The RenderableHeap type is set up to manage a set of renderables to prevent any unsafe operations
+// and allow for distinct updates between draw cycles
 type RenderableHeap struct {
 	rs     []Renderable
 	toPush []Renderable
 	static bool
 }
 
+//NewHeap creates a new renderableHeap
 func NewHeap(static bool) *RenderableHeap {
 	rh := new(RenderableHeap)
 	rh.rs = make([]Renderable, 0)
@@ -22,23 +25,31 @@ func NewHeap(static bool) *RenderableHeap {
 	return rh
 }
 
+//Add stages a new Renderable to add to the heap
 func (rh *RenderableHeap) Add(r Renderable, layer int) Renderable {
 	r.SetLayer(layer)
 	rh.toPush = append(rh.toPush, r)
 	return r
 }
 
+//Replace adds a Renderable and removes an old one
 func (rh *RenderableHeap) Replace(r1, r2 Renderable, layer int) {
 	rh.Add(r2, layer)
 	r1.UnDraw()
 }
 
 // Satisfying the Heap interface
-func (h *RenderableHeap) Len() int           { return len(h.rs) }
-func (h *RenderableHeap) Less(i, j int) bool { return h.rs[i].GetLayer() < h.rs[j].GetLayer() }
-func (h *RenderableHeap) Swap(i, j int)      { h.rs[i], h.rs[j] = h.rs[j], h.rs[i] }
+//Len gets the length of the current heap
+func (rh *RenderableHeap) Len() int { return len(rh.rs) }
 
-func (h *RenderableHeap) Push(r interface{}) {
+//Less returns whether a renderable at index i is at a lower layer than the one at index j
+func (rh *RenderableHeap) Less(i, j int) bool { return rh.rs[i].GetLayer() < rh.rs[j].GetLayer() }
+
+//Swap moves two locations
+func (rh *RenderableHeap) Swap(i, j int) { rh.rs[i], rh.rs[j] = rh.rs[j], rh.rs[i] }
+
+//Push adds to the renderable heap
+func (rh *RenderableHeap) Push(r interface{}) {
 	defer func() {
 		if x := recover(); x != nil {
 			dlog.Error("Invalid Memory address pushed to Draw Heap")
@@ -49,13 +60,14 @@ func (h *RenderableHeap) Push(r interface{}) {
 	}
 	// This can cause a 'name offset base pointer out of range' error
 	// Maybe having incrementing sizes instead of appending could help that?
-	h.rs = append(h.rs, r.(Renderable))
+	rh.rs = append(rh.rs, r.(Renderable))
 }
 
-func (h *RenderableHeap) Pop() interface{} {
-	n := len(h.rs)
-	x := h.rs[n-1]
-	h.rs = h.rs[0 : n-1]
+//Pop pops from the heap
+func (rh *RenderableHeap) Pop() interface{} {
+	n := len(rh.rs)
+	x := rh.rs[n-1]
+	rh.rs = rh.rs[0 : n-1]
 	return x
 }
 
@@ -81,7 +93,7 @@ func (rh *RenderableHeap) PreDraw() {
 	rh.toPush = rh.toPush[l:]
 }
 
-// Copying a renderableHeap does not include any of its elements,
+// Copy on a renderableHeap does not include any of its elements,
 // as renderables cannot be copied.
 func (rh *RenderableHeap) Copy() Addable {
 	rh2 := new(RenderableHeap)

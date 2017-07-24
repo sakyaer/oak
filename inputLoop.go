@@ -4,14 +4,15 @@ import (
 	"image"
 	"runtime"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	pmouse "bitbucket.org/oakmoundstudio/oak/mouse"
+	"github.com/oakmound/oak/dlog"
+	pmouse "github.com/oakmound/oak/mouse"
 	"golang.org/x/mobile/event/key"
 	"golang.org/x/mobile/event/lifecycle"
 	"golang.org/x/mobile/event/mouse"
 	"golang.org/x/mobile/event/size"
 )
 
+// Todo: bring this back in as an option, it was remove to reduce input lag
 // var (
 // 	eFilter gesture.EventFilter
 // )
@@ -22,7 +23,6 @@ func inputLoop() {
 	for {
 		//e := eFilter.Filter(eFilter.EventDeque.NextEvent()) //Filters an event to see if it fits a defined gesture
 		switch e := windowControl.NextEvent().(type) {
-
 		// We only currently respond to death lifecycle events.
 		case lifecycle.Event:
 			if e.To == lifecycle.StageDead {
@@ -60,10 +60,10 @@ func inputLoop() {
 		// The basic event name is meant for entities which
 		// want to respond to the mouse event happening -anywhere-.
 		//
-		// For events which have mouse collision enabled, they'll recieve
+		// For events which have mouse collision enabled, they'll receive
 		// $eventName+"On" when the event occurs within their collision area.
 		//
-		// Mouse events all recieve an x, y, and button string.
+		// Mouse events all receive an x, y, and button string.
 		case mouse.Event:
 			button := pmouse.GetMouseButton(int32(e.Button))
 			//dlog.Verb("Mouse direction ", e.Direction.String(), " Button ", button)
@@ -108,6 +108,9 @@ func inputLoop() {
 		case error:
 			dlog.Error(e)
 		}
+		// This loop can be tight enough that the go scheduler never gets
+		// a chance to take control from this thread. This is a hack that
+		// solves that.
 		schedCt++
 		if schedCt > 1000 {
 			schedCt = 0

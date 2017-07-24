@@ -9,16 +9,13 @@ import (
 	"github.com/200sc/klangsynthese/mp3"
 	"github.com/200sc/klangsynthese/wav"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	"bitbucket.org/oakmoundstudio/oak/fileutil"
-	"bitbucket.org/oakmoundstudio/oak/oakerr"
+	"github.com/oakmound/oak/dlog"
+	"github.com/oakmound/oak/fileutil"
+	"github.com/oakmound/oak/oakerr"
 )
 
-var (
-	wavController = wav.NewController()
-	mp3Controller = mp3.NewController()
-)
-
+// Data is an alias for an interface supporting the built in filters in our
+// external audio playing library
 type Data audio.FullAudio
 
 // GetSounds returns a set of Data for a set of input filenames
@@ -59,9 +56,9 @@ func Load(directory, filename string) (Data, error) {
 		end := strings.ToLower(filename[len(filename)-4:])
 		switch end {
 		case ".wav":
-			buffer, err = wavController.Load(f)
+			buffer, err = wav.Load(f)
 		case ".mp3":
-			buffer, err = mp3Controller.Load(f)
+			buffer, err = mp3.Load(f)
 		default:
 			return nil, errors.New("Unsupported file ending " + end)
 		}
@@ -73,6 +70,8 @@ func Load(directory, filename string) (Data, error) {
 	return loaded[filename], nil
 }
 
+// Unload removes an element from the loaded map. If the element does not
+// exist, it does nothing.
 func Unload(filename string) {
 	delete(loaded, filename)
 }

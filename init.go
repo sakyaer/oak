@@ -5,9 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	"bitbucket.org/oakmoundstudio/oak/event"
-	"bitbucket.org/oakmoundstudio/oak/render"
+	"github.com/oakmound/oak/dlog"
+	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/render"
+	"golang.org/x/exp/shiny/driver"
 )
 
 var (
@@ -21,21 +22,21 @@ var (
 	//
 	transitionCh = make(chan bool)
 
-	// The Scene channel recieves a signal
+	// The Scene channel receives a signal
 	// when a scene's .loop() function should
 	// be called.
 	sceneCh = make(chan bool)
 
-	// The skip scene channel recieves a debug
+	// The skip scene channel receives a debug
 	// signal to forcibly go to the next
 	// scene.
 	skipSceneCh = make(chan bool)
 
-	// The quit channel recieves a signal when
+	// The quit channel receives a signal when
 	// the program should stop.
 	quitCh = make(chan bool)
 
-	// The draw channel recieves a signal when
+	// The draw channel receives a signal when
 	// drawing should cease (or resume)
 	drawCh = make(chan bool)
 
@@ -78,11 +79,11 @@ var (
 
 // Init initializes the oak engine.
 // It spawns off an event loop of several goroutines
-// and loops through scenes after initalization.
+// and loops through scenes after initialization.
 func Init(firstScene string) {
 	dlog.CreateLogFile()
 
-	loadDefaultConf()
+	initConf()
 
 	// Set variables from conf file
 	dlog.SetStringDebugLevel(conf.Debug.Level)

@@ -1,8 +1,8 @@
 package audio
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/dlog"
 	"github.com/200sc/klangsynthese/font"
+	"github.com/oakmound/oak/dlog"
 )
 
 // Play is shorthand for Get followed by Play.
@@ -17,6 +17,7 @@ func Play(f *font.Font, filename string) error {
 	return err
 }
 
+// DefPlay acts like play when given DefFont
 func DefPlay(filename string) error {
 	return Play(DefFont, filename)
 }

@@ -1,9 +1,6 @@
-// Package mouse handles the propagation of mouse events
-// though clickable regions.
-// It has a lot of functions which are equivalent to those in the collision package.
 package mouse
 
-import "bitbucket.org/oakmoundstudio/oak/collision"
+import "github.com/oakmound/oak/collision"
 
 // Propagate triggers direct mouse events on entities which are clicked
 func Propagate(eventName string, me Event) {

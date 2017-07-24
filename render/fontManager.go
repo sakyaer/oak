@@ -1,6 +1,6 @@
 package render
 
-import "bitbucket.org/oakmoundstudio/oak/oakerr"
+import "github.com/oakmound/oak/oakerr"
 
 // A FontManager is just a map for fonts that contains a default font
 type FontManager map[string]*Font
@@ -28,6 +28,6 @@ func (fm *FontManager) NewFont(name string, fg FontGenerator) error {
 // Get retrieves a font from a manager
 func (fm *FontManager) Get(name string) *Font {
 	manager := (*fm)
-	font, _ := manager[name]
+	font := manager[name]
 	return font
 }

@@ -1,8 +1,8 @@
 package audio
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/oakerr"
 	"github.com/200sc/klangsynthese/font"
+	"github.com/oakmound/oak/oakerr"
 )
 
 // A FontManager is a map of names to Fonts that has a built in
@@ -33,6 +33,6 @@ func (fm *FontManager) NewFont(name string, f *font.Font) error {
 // Get returns whatever is at name in font
 func (fm *FontManager) Get(name string) *font.Font {
 	manager := (*fm)
-	font, _ := manager[name]
+	font := manager[name]
 	return font
 }

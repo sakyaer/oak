@@ -1,9 +1,6 @@
 //+build !nolog
 //+build !js
 
-// Package dlog provides logging functions with
-// caller file and line information,
-// logging levels and level and text filters.
 package dlog
 
 import (
@@ -37,6 +34,7 @@ var (
 	writer      *bufio.Writer
 )
 
+// GetLogLevel returns the current log level, i.e WARN or INFO...
 func GetLogLevel() LogLevel {
 	return debugLevel
 }

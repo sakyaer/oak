@@ -1,12 +1,11 @@
-// Package oak is a game engine...
 package oak
 
 import (
 	"image"
 	"sync"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	"bitbucket.org/oakmoundstudio/oak/event"
+	"github.com/oakmound/oak/dlog"
+	"github.com/oakmound/oak/event"
 
 	"golang.org/x/exp/shiny/screen"
 )
@@ -18,8 +17,6 @@ var (
 
 	windowRect     image.Rectangle
 	windowUpdateCh = make(chan bool)
-
-	osCh = make(chan func())
 
 	initControl = sync.Mutex{}
 
@@ -68,7 +65,6 @@ func lifecycleLoop(s screen.Screen) {
 	// The quit channel represents a signal
 	// for the engine to stop.
 	<-quitCh
-	return
 }
 
 func changeWindow(width, height int) {

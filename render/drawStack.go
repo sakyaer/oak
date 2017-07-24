@@ -5,22 +5,25 @@ import (
 	"image"
 	"image/draw"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"github.com/oakmound/oak/dlog"
 )
 
 var (
+	// GlobalDrawStack is the stack that all draw calls are parsed through.
 	GlobalDrawStack = &DrawStack{
 		as: []Addable{NewHeap(false)},
 	}
 	initialDrawStack = GlobalDrawStack
 )
 
+//The DrawStack is a stack with a safe adding mechanism that creates isolation between draw steps via predraw
 type DrawStack struct {
 	as     []Addable
 	toPush []Addable
 	toPop  int
 }
 
+// An Addable manages Renderables
 type Addable interface {
 	PreDraw()
 	Add(Renderable, int) Renderable
@@ -29,6 +32,7 @@ type Addable interface {
 	draw(draw.Image, image.Point, int, int)
 }
 
+//SetDrawStack takes in a set of Addables which act as the set of Drawstacks available
 func SetDrawStack(as ...Addable) {
 	GlobalDrawStack = &DrawStack{as: as}
 	initialDrawStack = GlobalDrawStack.Copy()
@@ -36,10 +40,12 @@ func SetDrawStack(as ...Addable) {
 	dlog.Info("Initial", initialDrawStack)
 }
 
+//ResetDrawStack resets the Global stack back to the initial stack
 func ResetDrawStack() {
 	GlobalDrawStack = initialDrawStack.Copy()
 }
 
+//Draw actively draws the onto the actual screen
 func (ds *DrawStack) Draw(world draw.Image, view image.Point, w, h int) {
 
 	for _, a := range ds.as {
@@ -50,6 +56,7 @@ func (ds *DrawStack) Draw(world draw.Image, view image.Point, w, h int) {
 	}
 }
 
+//Draw accesses the global draw stack
 func Draw(r Renderable, l int) (Renderable, error) {
 	if r == nil {
 		dlog.Error("Tried to draw nil")
@@ -84,15 +91,18 @@ func ReplaceDraw(r1, r2 Renderable, stackLayer, layer int) {
 	GlobalDrawStack.as[stackLayer].Replace(r1, r2, layer)
 }
 
+//Push appends an addable to the draw stack during the next predraw
 func (ds *DrawStack) Push(a Addable) {
 	ds.toPush = append(ds.toPush, a)
 
 }
 
+//Pop increments the pop counter
 func (ds *DrawStack) Pop() {
 	ds.toPop++
 }
 
+//PreDraw takes care of popping and pushing onto the stack. This helps safegaurd against operations taking place in the middle of a draw
 func (ds *DrawStack) PreDraw() {
 	if ds.toPop > 0 {
 		ds.as = ds.as[0 : len(ds.as)-ds.toPop]
@@ -109,6 +119,7 @@ func (ds *DrawStack) PreDraw() {
 	}
 }
 
+//Copy creates a new deep copy of a Drawstack
 func (ds *DrawStack) Copy() *DrawStack {
 	ds2 := new(DrawStack)
 	ds2.as = make([]Addable, len(ds.as))
@@ -120,6 +131,7 @@ func (ds *DrawStack) Copy() *DrawStack {
 	return ds2
 }
 
+//PreDraw tries to reset the GlobalDrawStack or performs the GlobalDrawStack's predraw functions
 func PreDraw() {
 	if resetDraw {
 		ResetDrawStack()

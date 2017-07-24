@@ -10,13 +10,15 @@ type progressFunction func(x, y, w, h int) float64
 
 // Progress functions
 var (
+	//HorizontalProgress measures progress as x / w
 	HorizontalProgress = func(x, y, w, h int) float64 {
 		return float64(x) / float64(w)
 	}
+	//VerticalProgress measures progress as y / h
 	VerticalProgress = func(x, y, w, h int) float64 {
 		return float64(y) / float64(h)
 	}
-
+	//CircularProgress measures progress as distance from the center of a circle.
 	CircularProgress = func(x, y, w, h int) float64 {
 		xRadius := float64(w) / 2
 		yRadius := float64(h) / 2
@@ -54,17 +56,20 @@ func NewGradientBox(w, h int, startColor, endColor color.Color, pFunction progre
 	return NewSprite(0, 0, rgba)
 }
 
-// NewHorizontalGradientBox passes HorizontalProgress into NewGradientBox
+// NewHorizontalGradientBox returns a gradient box with a horizontal gradient from
+// the start to end color, left to right.
 func NewHorizontalGradientBox(w, h int, startColor, endColor color.Color) *Sprite {
 	return NewGradientBox(w, h, startColor, endColor, HorizontalProgress)
 }
 
-// NewVerticalGradientBox passes VerticalProgress into NewGradientBox
+// NewVerticalGradientBox returns a gradient box with a vertical gradient from
+// the start to end color, top to bottom.
 func NewVerticalGradientBox(w, h int, startColor, endColor color.Color) *Sprite {
 	return NewGradientBox(w, h, startColor, endColor, VerticalProgress)
 }
 
-// NewCircularGradientBox passes CircularProgress into NewGradientBox
+// NewCircularGradientBox returns a gradient box where the center will be startColor
+// and the gradient will radiate as a circle out from the center.
 func NewCircularGradientBox(w, h int, startColor, endColor color.Color) *Sprite {
 	return NewGradientBox(w, h, startColor, endColor, CircularProgress)
 }

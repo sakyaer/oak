@@ -1,10 +1,10 @@
 package oak
 
 import (
-	"bitbucket.org/oakmoundstudio/oak/audio"
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	"bitbucket.org/oakmoundstudio/oak/fileutil"
-	"bitbucket.org/oakmoundstudio/oak/render"
+	"github.com/oakmound/oak/audio"
+	"github.com/oakmound/oak/dlog"
+	"github.com/oakmound/oak/fileutil"
+	"github.com/oakmound/oak/render"
 )
 
 var (
@@ -39,6 +39,9 @@ func endLoad() {
 	dlog.Info("Startup load signal sent")
 }
 
+// SetBinaryPayload just sets some public fields on packages that require access to binary functions
+// as alternatives to os file functions. This is no longer necessary, as a single package uses these
+// now.
 func SetBinaryPayload(payloadFn func(string) ([]byte, error), dirFn func(string) ([]string, error)) {
 	fileutil.BindataDir = dirFn
 	fileutil.BindataFn = payloadFn

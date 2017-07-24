@@ -3,11 +3,11 @@ package particle
 import (
 	"image/draw"
 
-	"bitbucket.org/oakmoundstudio/oak/collision"
+	"github.com/oakmound/oak/collision"
 )
 
 // A CollisionParticle is a wrapper around other particles that also
-// has a collision space and can functionally react with the enviroment
+// has a collision space and can functionally react with the environment
 // on collision
 type CollisionParticle struct {
 	Particle
@@ -47,6 +47,7 @@ func (cp *CollisionParticle) GetDims() (int, int) {
 	return int(cp.s.GetW()), int(cp.s.GetH())
 }
 
+// String returns the type as string
 func (cp *CollisionParticle) String() string {
 	return "CollisionParticle"
 }
