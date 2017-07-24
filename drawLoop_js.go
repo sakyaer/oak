@@ -7,8 +7,8 @@ import (
 	"image"
 	"image/draw"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
-	"bitbucket.org/oakmoundstudio/oak/render"
+	"github.com/oakmound/oak/dlog"
+	"github.com/oakmound/oak/render"
 	"golang.org/x/exp/shiny/screen"
 )
 

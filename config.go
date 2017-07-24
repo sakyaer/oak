@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	"bitbucket.org/oakmoundstudio/oak/file"
+	"github.com/oakmound/oak/file"
 
 	"github.com/oakmound/oak/dlog"
 )

@@ -5,7 +5,7 @@ package oak
 import (
 	"image"
 
-	"bitbucket.org/oakmoundstudio/oak/dlog"
+	"github.com/oakmound/oak/dlog"
 )
 
 type JSBuffer struct {
