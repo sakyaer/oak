@@ -8,7 +8,7 @@ import (
 )
 
 func InitDriver() {
-	go driver.Main(lifecycleLoop)
+	driver.Main(lifecycleLoop)
 }
 
 func windowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {

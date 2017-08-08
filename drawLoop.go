@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 
@@ -19,11 +20,9 @@ var (
 // DrawLoop
 // Unless told to stop, the draw channel will repeatedly
 // 1. draw black to a temporary buffer
-// 2. run any functions bound to precede drawing.
-// 3. draw all elements onto the temporary buffer.
-// 4. run any functions bound to follow drawing.
-// 5. draw the buffer's data at the viewport's position to the screen.
-// 6. publish the screen to display in window.
+// 2. draw all elements onto the temporary buffer.
+// 3. scale the buffer's data at the viewport's position to a texture.
+// 4. publish the texture to display on screen.
 func drawLoop() {
 	<-drawCh
 
@@ -41,6 +40,7 @@ func drawLoop() {
 	DrawTicker.SetTick(timing.FPSToDuration(DrawFrameRate))
 
 	dlog.Verb("Draw Loop Start")
+	fmt.Println("Draw Loop Start")
 	for {
 	drawSelect:
 		select {

@@ -3,7 +3,6 @@
 package oak
 
 import (
-	"errors"
 	"fmt"
 	"image"
 
@@ -37,5 +36,6 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 
 func (jss *JSScreen) NewTexture(p image.Point) (screen.Texture, error) {
 	fmt.Println("New JS Texture")
-	return nil, errors.New("Not supported on JS")
+	txt := new(JSTexture)
+	return txt, nil
 }

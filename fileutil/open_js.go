@@ -116,6 +116,5 @@ func OpenOS(path string) (File, error) {
 func Getwd() (string, error) {
 	win := js.Global.Get("window")
 	loc := win.Get("location").Get("pathname").String()
-	fmt.Println("Working directory:", loc)
 	return filepath.Dir(loc), nil
 }
