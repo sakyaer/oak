@@ -1,12 +1,8 @@
-//+build windows,!js
-
 package oak
 
 import (
 	"image"
 	"image/draw"
-
-	"runtime/debug"
 
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/render"
@@ -31,7 +27,7 @@ var (
 func drawLoop() {
 	<-drawCh
 
-	debug.SetPanicOnFault(true)
+	SetPanicOnFault()
 
 	tx, err := screenControl.NewTexture(winBuffer.Bounds().Max)
 	if err != nil {

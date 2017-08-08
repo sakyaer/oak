@@ -3,13 +3,21 @@ package fileutil
 import (
 	"bytes"
 	"io"
+	"path/filepath"
+
+	"github.com/oakmound/oak/dlog"
 )
 
-// This functionality is equivalent to ioutil.go in the standard library,
-// except we call our Open instead of os.Open.
-
-func ReadFileOS(filename string) ([]byte, error) {
-	f, err := OpenOS(filename)
+// ReadFile replaces ioutil.ReadFile, trying to use the BinaryFn if it exists.
+func ReadFile(file string) ([]byte, error) {
+	if BindataFn != nil {
+		rel, err := filepath.Rel(wd, file)
+		if err == nil {
+			return BindataFn(rel)
+		}
+		dlog.Warn("Error in rel", err)
+	}
+	f, err := OpenOS(file)
 	if err != nil {
 		return nil, err
 	}

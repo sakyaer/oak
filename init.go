@@ -2,13 +2,12 @@ package oak
 
 import (
 	"image"
-	"os"
 	"path/filepath"
 
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/fileutil"
 	"github.com/oakmound/oak/render"
-	"golang.org/x/exp/shiny/driver"
 )
 
 var (
@@ -96,7 +95,7 @@ func Init(firstScene string) {
 	FrameRate = conf.FrameRate
 	DrawFrameRate = conf.DrawFrameRate
 
-	wd, _ := os.Getwd()
+	wd, _ := fileutil.Getwd()
 
 	render.SetFontDefaults(wd, conf.Assets.AssetPath, conf.Assets.FontPath,
 		conf.Font.Hinting, conf.Font.Color, conf.Font.File, conf.Font.Size,
@@ -119,5 +118,5 @@ func Init(firstScene string) {
 	dlog.Info("Init Console")
 	go debugConsole(debugResetCh, skipSceneCh)
 	dlog.Info("Init Main Driver")
-	driver.Main(lifecycleLoop)
+	InitDriver()
 }

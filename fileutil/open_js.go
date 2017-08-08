@@ -75,7 +75,7 @@ func (f *file) Stat() (os.FileInfo, error) {
 	return fi, nil
 }
 
-func Open(path string) (File, error) {
+func OpenOS(path string) (File, error) {
 	fmt.Println("Open JS")
 	var err error
 	var content *js.Object

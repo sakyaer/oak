@@ -6,8 +6,6 @@ import (
 
 	"github.com/oakmound/oak/fileutil"
 
-	"github.com/oakmound/oak/file"
-
 	"github.com/oakmound/oak/dlog"
 )
 
