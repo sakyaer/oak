@@ -29,7 +29,9 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 	document := js.Global.Get("document")
 	canvas := document.Call("createElement", "canvas")
 	jsc.ctx = canvas.Call("getContext", "2d")
-	document.Get("body").Call("appendChild", canvas)
+	bdy := document.Get("body")
+	fmt.Println(bdy)
+	bdy.Call("appendChild", canvas)
 
 	return jsc, nil
 }

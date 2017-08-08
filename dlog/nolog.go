@@ -1,4 +1,4 @@
-//+build nolog OR js
+//+build nolog
 
 package dlog
 
