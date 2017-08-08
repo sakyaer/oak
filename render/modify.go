@@ -116,7 +116,6 @@ func CutRound(xOff, yOff float64) Modification {
 			p1 := point{x2, y1}
 			p2 := point{x1, y1}
 			p3 := point{x1, y2}
-			//fmt.Println("Corners", p1, p2, p3)
 
 			// Progressing along the curve, whenever a new y value is
 			// intersected at a pixel delete all values
@@ -128,7 +127,6 @@ func CutRound(xOff, yOff float64) Modification {
 				p4 := pointBetween(p1, p2, progress)
 				p5 := pointBetween(p2, p3, progress)
 				curveAt := pointBetween(p4, p5, progress)
-				//fmt.Println("Curve, progress:", progress, "pts", p4, p5, curveAt)
 
 				// Could only redo this loop at new y values to save time,
 				// but because this is currently just a pre-processing modification
@@ -359,9 +357,15 @@ func ApplyMask(img image.RGBA) Modification {
 
 // Rotate returns a rotated rgba.
 func Rotate(degrees int) Modification {
+	return RotateInterpolated(degrees, gift.CubicInterpolation)
+}
+
+// RotateInterpolated acts as Rotate, but accepts an interpolation argument.
+// standard rotation does this with Cubic Interpolation.
+func RotateInterpolated(degrees int, interpolation gift.Interpolation) Modification {
 	return func(rgba image.Image) *image.RGBA {
 		filter := gift.New(
-			gift.Rotate(float32(degrees), transparent, gift.CubicInterpolation))
+			gift.Rotate(float32(degrees), transparent, interpolation))
 		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
 		filter.Draw(dst, rgba)
 		return dst
@@ -379,5 +383,75 @@ func Scale(xRatio, yRatio float64) Modification {
 		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
 		filter.Draw(dst, rgba)
 		return dst
+	}
+}
+
+// TrimColor will trim inputs so that any rows or columns where each pixel is
+// less than or equal to the input color are removed. This will change the dimensions
+// of the image.
+func TrimColor(trimUnder color.Color) Modification {
+	r, g, b, a := trimUnder.RGBA()
+	return func(rgba image.Image) *image.RGBA {
+		bounds := rgba.Bounds()
+		w := bounds.Max.X
+		h := bounds.Max.Y
+		xOff := 0
+		yOff := 0
+	trimouter1:
+		for x := 0; x < w; x++ {
+			for y := 0; y < h; y++ {
+				c := rgba.At(x, y)
+				r2, g2, b2, a2 := c.RGBA()
+				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
+					continue
+				}
+				break trimouter1
+			}
+			xOff++
+		}
+	trimouter2:
+		for x := w; x >= 0; x-- {
+			for y := 0; y < h; y++ {
+				c := rgba.At(x, y)
+				r2, g2, b2, a2 := c.RGBA()
+				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
+					continue
+				}
+				break trimouter2
+			}
+			w--
+		}
+	trimouter3:
+		for y := h; y >= 0; y-- {
+			for x := 0; x < w; x++ {
+				c := rgba.At(x, y)
+				r2, g2, b2, a2 := c.RGBA()
+				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
+					continue
+				}
+				break trimouter3
+			}
+			h--
+		}
+	trimouter4:
+		for y := 0; y < h; y++ {
+			for x := 0; x < w; x++ {
+				c := rgba.At(x, y)
+				r2, g2, b2, a2 := c.RGBA()
+				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
+					continue
+				}
+				break trimouter4
+			}
+			yOff++
+		}
+		out := image.NewRGBA(image.Rect(0, 0, w-xOff+1, h-yOff+1))
+		for x := xOff; x <= w; x++ {
+			for y := yOff; y <= h; y++ {
+				c := rgba.At(x, y)
+				out.Set(x-xOff, y-yOff, c)
+			}
+		}
+		return out
 	}
 }

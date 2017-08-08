@@ -1,6 +1,7 @@
 package render
 
 import (
+	"errors"
 	"image"
 	"image/draw"
 	"sync"
@@ -33,21 +34,25 @@ func NewCompound(start string, m map[string]Modifiable) *Compound {
 }
 
 // Add makes a new entry in the Compounds map
-func (c *Compound) Add(k string, v Modifiable) {
+func (c *Compound) Add(k string, v Modifiable) (err error) {
+	if _, ok := c.subRenderables[k]; ok {
+		err = errors.New("Key already defined. Overwriting")
+	}
 	c.lock.Lock()
 	c.subRenderables[k] = v
 	c.lock.Unlock()
+	return err
 }
 
 // Set sets the current renderable to the one specified
-func (c *Compound) Set(k string) {
+func (c *Compound) Set(k string) error {
 	c.lock.RLock()
 	if _, ok := c.subRenderables[k]; !ok {
-		// Todo: return an error here, don't panic
-		panic("Unknown renderable for string " + k + " on compound")
+		return errors.New("Unknown renderable for string " + k + " on compound")
 	}
 	c.lock.RUnlock()
 	c.curRenderable = k
+	return nil
 }
 
 // GetSub returns a keyed Modifiable from this compound's map
@@ -123,21 +128,6 @@ func (c *Compound) Draw(buff draw.Image) {
 // ShiftPos shifts the Compounds logical position
 func (c *Compound) ShiftPos(x, y float64) {
 	c.SetPos(c.X()+x, c.Y()+y)
-}
-
-// ShiftY shifts the Compounds logical y position
-func (c *Compound) ShiftY(y float64) {
-	c.SetPos(c.X(), c.Y()+y)
-}
-
-// ShiftX shifts the Compounds logical x position
-func (c *Compound) ShiftX(x float64) {
-	c.SetPos(c.X()+x, c.Y())
-}
-
-// SetPos sets the Compound's logical position
-func (c *Compound) SetPos(x, y float64) {
-	c.LayeredPoint.SetPos(x, y)
 }
 
 // GetDims gets the current Renderables dimensions

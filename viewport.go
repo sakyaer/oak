@@ -5,6 +5,7 @@ import (
 
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/physics"
 )
 
 var (
@@ -26,7 +27,7 @@ func SetScreen(x, y int) {
 
 func updateScreen(x, y int) {
 	if useViewBounds {
-		if viewBounds.minX < x && viewBounds.maxX > x+ScreenWidth {
+		if viewBounds.minX <= x && viewBounds.maxX >= x+ScreenWidth {
 			dlog.Verb("Set ViewX to ", x)
 			ViewPos.X = x
 		} else if viewBounds.minX > x {
@@ -34,7 +35,7 @@ func updateScreen(x, y int) {
 		} else if viewBounds.maxX < x+ScreenWidth {
 			ViewPos.X = viewBounds.maxX - ScreenWidth
 		}
-		if viewBounds.minY < y && viewBounds.maxY > y+ScreenHeight {
+		if viewBounds.minY <= y && viewBounds.maxY >= y+ScreenHeight {
 			dlog.Verb("Set ViewY to ", y)
 			ViewPos.Y = y
 		} else if viewBounds.minY > y {
@@ -105,4 +106,9 @@ func moveViewportBinding(speed int) func(int, interface{}) int {
 		}
 		return 0
 	}
+}
+
+// ViewVector returns ViewPos as a Vector
+func ViewVector() physics.Vector {
+	return physics.NewVector(float64(ViewPos.X), float64(ViewPos.Y))
 }

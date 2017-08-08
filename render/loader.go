@@ -5,8 +5,9 @@ import (
 	"errors"
 	"image"
 	"image/color"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
-	"log"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -25,7 +26,7 @@ var (
 var (
 	// Form ...main/core.go/assets/images,
 	// the image directory.
-	wd, _ = file.Getwd()
+	wd, _ = fileutil.Getwd()
 	dir   = filepath.Join(
 		wd,
 		"assets",
@@ -37,13 +38,14 @@ var (
 	loadLock   = sync.Mutex{}
 )
 
-func loadPNG(directory, fileName string) *image.RGBA {
+func loadImage(directory, fileName string) (*image.RGBA, error) {
 
 	loadLock.Lock()
 	if _, ok := loadedImages[fileName]; !ok {
 		imgFile, err := fileutil.Open(filepath.Join(directory, fileName))
 		if err != nil {
-			log.Fatal(err)
+			loadLock.Unlock()
+			return nil, err
 		}
 		defer func() {
 			err = imgFile.Close()
@@ -52,9 +54,19 @@ func loadPNG(directory, fileName string) *image.RGBA {
 			}
 		}()
 
-		img, err := png.Decode(imgFile)
+		ext := fileName[len(fileName)-4:]
+		var img image.Image
+		switch ext {
+		case ".png":
+			img, err = png.Decode(imgFile)
+		case ".gif":
+			img, err = gif.Decode(imgFile)
+		case "jpeg", ".jpg":
+			img, err = jpeg.Decode(imgFile)
+		}
 		if err != nil {
-			log.Fatal(err)
+			loadLock.Unlock()
+			return nil, err
 		}
 
 		bounds := img.Bounds()
@@ -71,12 +83,17 @@ func loadPNG(directory, fileName string) *image.RGBA {
 	}
 	r := loadedImages[fileName]
 	loadLock.Unlock()
-	return r
+	return r, nil
 }
 
 // LoadSprite loads the input fileName into a Sprite
 func LoadSprite(fileName string) *Sprite {
-	return NewSprite(0, 0, loadPNG(dir, fileName))
+	r, err := loadImage(dir, fileName)
+	if err != nil {
+		dlog.Error(err)
+		return nil
+	}
+	return NewSprite(0, 0, r)
 }
 
 // GetSheet tries to find the given file in the set of loaded sheets.
@@ -102,7 +119,11 @@ func GetSheet(fileName string) [][]*Sprite {
 func LoadSheet(directory, fileName string, w, h, pad int) (*Sheet, error) {
 	if _, ok := loadedImages[fileName]; !ok {
 		dlog.Verb("Missing file in loaded images: ", fileName)
-		loadedImages[fileName] = loadPNG(directory, fileName)
+		r, err := loadImage(directory, fileName)
+		if err != nil {
+			return nil, err
+		}
+		loadedImages[fileName] = r
 	}
 	if sheetP, ok := loadedSheets[fileName]; ok {
 		return sheetP, nil
@@ -189,17 +210,17 @@ func subImage(rgba *image.RGBA, x, y, w, h int) *image.RGBA {
 // in the /tiles folder should be read as 32x32
 func BatchLoad(baseFolder string) error {
 
-	// dir2 := filepath.Join(dir, "textures")
-	folders, _ := fileutil.ReadDir(baseFolder)
-
+	folders, err := fileutil.ReadDir(baseFolder)
+	if err != nil {
+		dlog.Error(err)
+		return err
+	}
 	aliasFile, err := fileutil.ReadFile(filepath.Join(baseFolder, "alias.json"))
 	aliases := make(map[string]string)
 	if err == nil {
 		err = json.Unmarshal(aliasFile, &aliases)
 		if err != nil {
 			dlog.Error("Alias file unparseable: ", err)
-		} else {
-			dlog.Verb(aliases)
 		}
 	}
 
@@ -249,7 +270,11 @@ func BatchLoad(baseFolder string) error {
 					switch n[len(n)-4:] {
 					case ".png":
 						dlog.Verb("loading file ", n)
-						buff := loadPNG(baseFolder, filepath.Join(folder.Name(), n))
+						buff, err := loadImage(baseFolder, filepath.Join(folder.Name(), n))
+						if err != nil {
+							dlog.Error(err)
+							continue
+						}
 						w := buff.Bounds().Max.X
 						h := buff.Bounds().Max.Y
 

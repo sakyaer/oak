@@ -1,8 +1,9 @@
 package audio
 
 import (
+	"errors"
+
 	"github.com/200sc/klangsynthese/audio"
-	"github.com/200sc/klangsynthese/audio/filter/supports"
 	"github.com/200sc/klangsynthese/font"
 )
 
@@ -32,31 +33,26 @@ func New(f *font.Font, d Data, coords ...*float64) *Audio {
 func (a *Audio) Play() <-chan error {
 	a2, err := a.Copy()
 	if err != nil {
-		ch := make(chan error)
-		go func() {
-			ch <- err
-		}()
-		return ch
+		return errChannel(err)
 	}
 	a3, err := a2.Filter(a.Font.Filters...)
 	if err != nil {
-		ch := make(chan error)
-		go func() {
-			ch <- err
-		}()
-		return ch
+		return errChannel(err)
 	}
-	// This part is probably unnecessary. Requires further testing.
 	a4, err := a3.(*Audio).FullAudio.Copy()
 	if err != nil {
-		ch := make(chan error)
-		go func() {
-			ch <- err
-		}()
-		return ch
+		return errChannel(err)
 	}
 	a.toStop = a4
 	return a4.Play()
+}
+
+func errChannel(err error) <-chan error {
+	ch := make(chan error)
+	go func() {
+		ch <- err
+	}()
+	return ch
 }
 
 // Stop stops an audio's playback
@@ -67,7 +63,10 @@ func (a *Audio) Stop() error {
 // Copy returns a copy of the audio
 func (a *Audio) Copy() (audio.Audio, error) {
 	a2, err := a.Audio.Copy()
-	return New(a.Audio.Font, a2.(audio.FullAudio), a.X, a.Y), err
+	if err != nil {
+		return nil, err
+	}
+	return New(a.Audio.Font, a2.(audio.FullAudio), a.X, a.Y), nil
 }
 
 // MustCopy acts like Copy, but panics on an error.
@@ -78,19 +77,18 @@ func (a *Audio) MustCopy() audio.Audio {
 // Filter returns the audio with some set of filters applied to it.
 func (a *Audio) Filter(fs ...audio.Filter) (audio.Audio, error) {
 	var ad audio.Audio = a
-	var err error
-	var consError supports.ConsError
+	var err, consErr error
 	for _, f := range fs {
 		ad, err = f.Apply(ad)
 		if err != nil {
-			if consError == nil {
-				consError = err.(supports.ConsError)
+			if consErr == nil {
+				consErr = err
 			} else {
-				consError = consError.Cons(err)
+				consErr = errors.New(err.Error() + ":" + consErr.Error())
 			}
 		}
 	}
-	return ad, consError
+	return ad, consErr
 }
 
 // MustFilter acts like Filter but ignores errors.

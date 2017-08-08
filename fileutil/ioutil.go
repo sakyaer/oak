@@ -1,4 +1,4 @@
-package file
+package fileutil
 
 import (
 	"bytes"
@@ -8,8 +8,8 @@ import (
 // This functionality is equivalent to ioutil.go in the standard library,
 // except we call our Open instead of os.Open.
 
-func ReadFile(filename string) ([]byte, error) {
-	f, err := Open(filename)
+func ReadFileOS(filename string) ([]byte, error) {
+	f, err := OpenOS(filename)
 	if err != nil {
 		return nil, err
 	}

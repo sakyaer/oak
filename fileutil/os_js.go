@@ -20,7 +20,7 @@
 
 //+build js
 
-package file
+package fileutil
 
 import (
 	"bytes"

@@ -1,10 +1,10 @@
 //+build !js
 
-package file
+package fileutil
 
 import "os"
 
-func Open(s string) (File, error) {
+func OpenOS(s string) (File, error) {
 	return os.Open(s)
 }
 
