@@ -4,31 +4,37 @@ import (
 	"container/heap"
 	"image"
 	"image/draw"
-
-	"github.com/oakmound/oak/dlog"
+	"sync"
 )
 
-//The RenderableHeap type is set up to manage a set of renderables to prevent any unsafe operations
-// and allow for distinct updates between draw cycles
+// A RenderableHeap managed a set of renderables to be drawn in explicit layered
+// order, using an internal heap to manage that order.
 type RenderableHeap struct {
-	rs     []Renderable
-	toPush []Renderable
-	static bool
+	rs      []Renderable
+	toPush  []Renderable
+	static  bool
+	addLock sync.RWMutex
 }
 
-//NewHeap creates a new renderableHeap
+// NewHeap creates a new renderableHeap. The static boolean represents whether
+// this heap exists relative to the viewport or not-- if true, an element at 40,40
+// will always be at 40,40. If false, when the viewport moves, the element will
+// move opposite the direction of the viewport.
 func NewHeap(static bool) *RenderableHeap {
 	rh := new(RenderableHeap)
 	rh.rs = make([]Renderable, 0)
 	rh.toPush = make([]Renderable, 0)
 	rh.static = static
+	rh.addLock = sync.RWMutex{}
 	return rh
 }
 
 //Add stages a new Renderable to add to the heap
 func (rh *RenderableHeap) Add(r Renderable, layer int) Renderable {
 	r.SetLayer(layer)
+	rh.addLock.Lock()
 	rh.toPush = append(rh.toPush, r)
+	rh.addLock.Unlock()
 	return r
 }
 
@@ -50,11 +56,11 @@ func (rh *RenderableHeap) Swap(i, j int) { rh.rs[i], rh.rs[j] = rh.rs[j], rh.rs[
 
 //Push adds to the renderable heap
 func (rh *RenderableHeap) Push(r interface{}) {
-	defer func() {
-		if x := recover(); x != nil {
-			dlog.Error("Invalid Memory address pushed to Draw Heap")
-		}
-	}()
+	// defer func() {
+	// 	if x := recover(); x != nil {
+	// 		dlog.Error("Invalid Memory address pushed to Draw Heap")
+	// 	}
+	// }()
 	if r == nil {
 		return
 	}
@@ -74,31 +80,29 @@ func (rh *RenderableHeap) Pop() interface{} {
 // PreDraw parses through renderables to be pushed
 // and adds them to the drawheap.
 func (rh *RenderableHeap) PreDraw() {
-	defer func() {
-		if x := recover(); x != nil {
-			dlog.Error("Invalid Memory Address in Draw heap")
-			// This does not work-- all addresses following the bad address
-			// at i are also bad
-			//toPushRenderables = toPushRenderables[i+1:]
-			rh.toPush = []Renderable{}
-		}
-	}()
-	l := len(rh.toPush)
-	for i := 0; i < l; i++ {
-		r := rh.toPush[i]
+	// defer func() {
+	// 	if x := recover(); x != nil {
+	// 		dlog.Error("Invalid Memory Address in Draw heap")
+	// 		// This does not work-- all addresses following the bad address
+	// 		// at i are also bad
+	// 		//rh.toPush = rh.toPush[i+1:]
+	// 		rh.toPush = []Renderable{}
+	// 	}
+	// }()
+	rh.addLock.Lock()
+	for _, r := range rh.toPush {
 		if r != nil {
 			heap.Push(rh, r)
 		}
 	}
-	rh.toPush = rh.toPush[l:]
+	rh.toPush = make([]Renderable, 0)
+	rh.addLock.Unlock()
 }
 
 // Copy on a renderableHeap does not include any of its elements,
 // as renderables cannot be copied.
 func (rh *RenderableHeap) Copy() Addable {
-	rh2 := new(RenderableHeap)
-	rh2.static = rh.static
-	return rh2
+	return NewHeap(rh.static)
 }
 
 func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, screenH int) {
@@ -114,7 +118,6 @@ func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, s
 				}
 			}
 		}
-		newRh.static = true
 	} else {
 		vx := float64(-viewPos.X)
 		vy := float64(-viewPos.Y)
@@ -123,13 +126,11 @@ func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, s
 			if intf != nil {
 				r := intf.(Renderable)
 				if r.GetLayer() != Undraw {
-					x := int(r.GetX())
-					y := int(r.GetY())
-					x2 := x
-					y2 := y
+					x2 := int(r.GetX())
+					y2 := int(r.GetY())
 					w, h := r.GetDims()
-					x += w
-					y += h
+					x := w + x2
+					y := h + y2
 					if x > viewPos.X && y > viewPos.Y &&
 						x2 < viewPos.X+screenW && y2 < viewPos.Y+screenH {
 						if InDrawPolygon(x, y, x2, y2) {
@@ -141,6 +142,5 @@ func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, s
 			}
 		}
 	}
-	newRh.toPush = rh.toPush
-	*rh = *newRh
+	rh.rs = newRh.rs
 }

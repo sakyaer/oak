@@ -14,6 +14,8 @@ import (
 	"image/color"
 	//"image/draw"
 	"math"
+
+	"github.com/oakmound/oak/dlog"
 )
 
 var (
@@ -44,40 +46,63 @@ func And(ms ...Modification) Modification {
 	}
 }
 
-// Brighten brightens an image
-func Brighten(brightenBy float32) Modification {
+// GiftFilter converts any set of gift.Filters into a Modification.
+func GiftFilter(fis ...gift.Filter) Modification {
 	return func(rgba image.Image) *image.RGBA {
-		filter := gift.New(
-			gift.Brightness(brightenBy))
+		filter := gift.New(fis...)
 		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
 		filter.Draw(dst, rgba)
 		return dst
 	}
 }
 
+// Brighten brightens an image between -100 and 100. 100 will be solid white,
+// -100 will be solid black.
+func Brighten(brightenBy float32) Modification {
+	return GiftFilter(gift.Brightness(brightenBy))
+}
+
+// Saturate saturates the input between -100 and 500 percent.
+func Saturate(saturateBy float32) Modification {
+	return GiftFilter(gift.Saturation(saturateBy))
+}
+
 // FlipX returns a new rgba which is flipped
 // over the horizontal axis.
-func FlipX(rgba image.Image) *image.RGBA {
-	filter := gift.New(
-		gift.FlipHorizontal())
-	dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
-	filter.Draw(dst, rgba)
-	return dst
-}
+var FlipX = GiftFilter(gift.FlipHorizontal())
 
 // FlipY returns a new rgba which is flipped
 // over the vertical axis.
-func FlipY(rgba *image.RGBA) *image.RGBA {
-	bounds := rgba.Bounds()
-	w := bounds.Max.X
-	h := bounds.Max.Y
-	newRgba := image.NewRGBA(image.Rect(0, 0, w, h))
-	for x := 0; x < w; x++ {
-		for y := 0; y < h; y++ {
-			newRgba.Set(x, y, rgba.At(x, h-y))
-		}
+var FlipY = GiftFilter(gift.FlipVertical())
+
+// ColorBalance takes in 3 numbers between -100 and 500 and applies it to the given image
+func ColorBalance(r, g, b float32) Modification {
+	return GiftFilter(gift.ColorBalance(r, g, b))
+}
+
+// Rotate returns a rotated rgba.
+func Rotate(degrees int) Modification {
+	return RotateInterpolated(degrees, gift.CubicInterpolation)
+}
+
+// RotateInterpolated acts as Rotate, but accepts an interpolation argument.
+// standard rotation does this with Cubic Interpolation.
+func RotateInterpolated(degrees int, interpolation gift.Interpolation) Modification {
+	return GiftFilter(gift.Rotate(float32(degrees), transparent, interpolation))
+}
+
+// Scale returns a scaled rgba.
+func Scale(xRatio, yRatio float64) Modification {
+	return func(rgba image.Image) *image.RGBA {
+		bounds := rgba.Bounds()
+		w := int(math.Floor(float64(bounds.Max.X) * xRatio))
+		h := int(math.Floor(float64(bounds.Max.Y) * yRatio))
+		filter := gift.New(
+			gift.Resize(w, h, gift.CubicResampling))
+		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
+		filter.Draw(dst, rgba)
+		return dst
 	}
-	return newRgba
 }
 
 // todo: this should not be in this package
@@ -147,21 +172,56 @@ func pointBetween(p1, p2 point, f float64) point {
 	return point{p1.X*(1-f) + p2.X*f, p1.Y*(1-f) + p2.Y*f}
 }
 
-// CutRel acts like Cut, but takes in a multiplier on the
-// existing dimensions of the image.
-func CutRel(relWidth, relHeight float64) Modification {
+//CutFn  can reduce or add blank space to an input image.
+// Each input function decides the starting location or offset of a cut.
+func CutFn(xMod, yMod, wMod, hMod func(int) int) Modification {
 	return func(rgba image.Image) *image.RGBA {
 		bds := rgba.Bounds()
-		newWidth := alg.RoundF64(float64(bds.Max.X) * relWidth)
-		newHeight := alg.RoundF64(float64(bds.Max.Y) * relHeight)
+		startX := xMod(bds.Max.X)
+		startY := yMod(bds.Max.Y)
+		newWidth := wMod(bds.Max.X)
+		newHeight := hMod(bds.Max.Y)
+
 		newRgba := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
 		for x := 0; x < newWidth; x++ {
 			for y := 0; y < newHeight; y++ {
-				newRgba.Set(x, y, rgba.At(x, y))
+				newRgba.Set(x, y, rgba.At(x+startX, y+startY))
 			}
 		}
 		return newRgba
 	}
+}
+
+// CutFromLeft acts like cut but removes from the left hand side rather than the right
+func CutFromLeft(newWidth, newHeight int) Modification {
+	return CutFn(func(w int) int {
+		out := w - newWidth
+		dlog.Error("Startx", out)
+		return out
+	},
+		func(h int) int {
+			out := h - newHeight
+			dlog.Error("Starty", out)
+			return out
+		},
+		func(int) int {
+			dlog.Error("n width", newWidth)
+
+			return newWidth
+		},
+		func(int) int {
+			dlog.Error("n height", newHeight)
+			return newHeight
+		})
+}
+
+// CutRel acts like Cut, but takes in a multiplier on the
+// existing dimensions of the image.
+func CutRel(relWidth, relHeight float64) Modification {
+	return CutFn(func(int) int { return 0 },
+		func(int) int { return 0 },
+		func(w int) int { return alg.RoundF64(float64(w) * relWidth) },
+		func(h int) int { return alg.RoundF64(float64(h) * relHeight) })
 }
 
 // Cut reduces (or increases, adding nothing)
@@ -170,15 +230,10 @@ func CutRel(relWidth, relHeight float64) Modification {
 // don't need CutRel and Cut? i.e a function header like
 // Cut(wMod, hMod func(int) int)? )
 func Cut(newWidth, newHeight int) Modification {
-	return func(rgba image.Image) *image.RGBA {
-		newRgba := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
-		for x := 0; x < newWidth; x++ {
-			for y := 0; y < newHeight; y++ {
-				newRgba.Set(x, y, rgba.At(x, y))
-			}
-		}
-		return newRgba
-	}
+	return CutFn(func(int) int { return 0 },
+		func(int) int { return 0 },
+		func(int) int { return newWidth },
+		func(int) int { return newHeight })
 }
 
 // Fade reduces the alpha of an image
@@ -249,16 +304,6 @@ func ApplyColor(c color.Color) Modification {
 			}
 		}
 		return newRgba
-	}
-}
-
-// ColorBalance takes in 3 numbers between -100 and 500 and applies it to the given image
-func ColorBalance(r, g, b float32) Modification {
-	return func(rgba image.Image) *image.RGBA {
-		filter := gift.New(gift.ColorBalance(r, g, b))
-		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
-		filter.Draw(dst, rgba)
-		return dst
 	}
 }
 
@@ -355,37 +400,6 @@ func ApplyMask(img image.RGBA) Modification {
 	}
 }
 
-// Rotate returns a rotated rgba.
-func Rotate(degrees int) Modification {
-	return RotateInterpolated(degrees, gift.CubicInterpolation)
-}
-
-// RotateInterpolated acts as Rotate, but accepts an interpolation argument.
-// standard rotation does this with Cubic Interpolation.
-func RotateInterpolated(degrees int, interpolation gift.Interpolation) Modification {
-	return func(rgba image.Image) *image.RGBA {
-		filter := gift.New(
-			gift.Rotate(float32(degrees), transparent, interpolation))
-		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
-		filter.Draw(dst, rgba)
-		return dst
-	}
-}
-
-// Scale returns a scaled rgba.
-func Scale(xRatio, yRatio float64) Modification {
-	return func(rgba image.Image) *image.RGBA {
-		bounds := rgba.Bounds()
-		w := int(math.Floor(float64(bounds.Max.X) * xRatio))
-		h := int(math.Floor(float64(bounds.Max.Y) * yRatio))
-		filter := gift.New(
-			gift.Resize(w, h, gift.CubicResampling))
-		dst := image.NewRGBA(filter.Bounds(rgba.Bounds()))
-		filter.Draw(dst, rgba)
-		return dst
-	}
-}
-
 // TrimColor will trim inputs so that any rows or columns where each pixel is
 // less than or equal to the input color are removed. This will change the dimensions
 // of the image.
@@ -400,48 +414,40 @@ func TrimColor(trimUnder color.Color) Modification {
 	trimouter1:
 		for x := 0; x < w; x++ {
 			for y := 0; y < h; y++ {
-				c := rgba.At(x, y)
-				r2, g2, b2, a2 := c.RGBA()
-				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
-					continue
+				r2, g2, b2, a2 := rgba.At(x, y).RGBA()
+				if !colorBelow(r, g, b, a, r2, g2, b2, a2) {
+					break trimouter1
 				}
-				break trimouter1
 			}
 			xOff++
 		}
 	trimouter2:
 		for x := w; x >= 0; x-- {
 			for y := 0; y < h; y++ {
-				c := rgba.At(x, y)
-				r2, g2, b2, a2 := c.RGBA()
-				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
-					continue
+				r2, g2, b2, a2 := rgba.At(x, y).RGBA()
+				if !colorBelow(r, g, b, a, r2, g2, b2, a2) {
+					break trimouter2
 				}
-				break trimouter2
 			}
 			w--
 		}
 	trimouter3:
 		for y := h; y >= 0; y-- {
 			for x := 0; x < w; x++ {
-				c := rgba.At(x, y)
-				r2, g2, b2, a2 := c.RGBA()
-				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
-					continue
+				r2, g2, b2, a2 := rgba.At(x, y).RGBA()
+				if !colorBelow(r, g, b, a, r2, g2, b2, a2) {
+					break trimouter3
 				}
-				break trimouter3
 			}
 			h--
 		}
 	trimouter4:
 		for y := 0; y < h; y++ {
 			for x := 0; x < w; x++ {
-				c := rgba.At(x, y)
-				r2, g2, b2, a2 := c.RGBA()
-				if r2 <= r && g2 <= g && b2 <= b && a2 <= a {
-					continue
+				r2, g2, b2, a2 := rgba.At(x, y).RGBA()
+				if !colorBelow(r, g, b, a, r2, g2, b2, a2) {
+					break trimouter4
 				}
-				break trimouter4
 			}
 			yOff++
 		}
@@ -453,5 +459,51 @@ func TrimColor(trimUnder color.Color) Modification {
 			}
 		}
 		return out
+	}
+}
+
+func colorBelow(r, g, b, a, r2, g2, b2, a2 uint32) bool {
+	return r2 <= r && g2 <= g && b2 <= b && a2 <= a
+}
+
+// ConformToPallete modifies the input image so that it's colors all fall
+// in the input color palette.
+func ConformToPallete(p color.Palette) Modification {
+	return func(rgba image.Image) *image.RGBA {
+		bounds := rgba.Bounds()
+		w := bounds.Max.X
+		h := bounds.Max.Y
+		newRgba := image.NewRGBA(image.Rect(0, 0, w, h))
+		for x := 0; x < w; x++ {
+			for y := 0; y < h; y++ {
+				newRgba.Set(x, y, p.Convert(rgba.At(x, y)))
+			}
+		}
+		return newRgba
+	}
+}
+
+// Zoom zooms into a position on the input image.
+// The position is determined by the input percentages, and how far the zoom
+// is deep depends on the input zoom level-- 2.0 would quarter the number of
+// unique pixels from the input to the output.
+func Zoom(xPerc, yPerc, zoom float64) func(rgba image.Image) *image.RGBA {
+	return func(rgba image.Image) *image.RGBA {
+		bounds := rgba.Bounds()
+		w := float64(bounds.Max.X)
+		h := float64(bounds.Max.Y)
+		newRgba := image.NewRGBA(image.Rect(0, 0, int(w), int(h)))
+		newW := w / zoom
+		newH := h / zoom
+		minX := (w - newW) * xPerc
+		minY := (h - newH) * yPerc
+		for x := 0.0; x < w; x++ {
+			for y := 0.0; y < h; y++ {
+				x2 := int(((x * xPerc) / (zoom * xPerc)) + minX)
+				y2 := int(((y * yPerc) / (zoom * yPerc)) + minY)
+				newRgba.Set(int(x), int(y), rgba.At(x2, y2))
+			}
+		}
+		return newRgba
 	}
 }

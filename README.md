@@ -1,8 +1,10 @@
 # Oak 
 ### A pure Go game engine
 [![GoDoc](https://godoc.org/github.com/OakmoundStudio/oak?status.svg)](https://godoc.org/github.com/OakmoundStudio/oak)
-[![Go Report Card](https://goreportcard.com/badge/github.com/OakmoundStudio/oak)](https://goreportcard.com/report/github.com/OakmoundStudio/oak)
-[![Build Status](https://travis-ci.org/oakmound/oak.svg?branch=develop)](https://travis-ci.org/oakmound/oak)
+[![Go Report Card](https://goreportcard.com/badge/github.com/oakmound/oak)](https://goreportcard.com/report/github.com/oakmound/oak)
+[![Build Status](https://travis-ci.org/oakmound/oak.svg?branch=master)](https://travis-ci.org/oakmound/oak)
+[![Code Coverage](https://codecov.io/gh/oakmound/oak/branch/develop/graph/badge.svg)](https://codecov.io/gh/oakmound/oak)
+![badge](http://img.shields.io/badge/first--timers--only-friendly-blue.svg?style=round-square)
 ----
 
 ## Installation
@@ -87,7 +89,7 @@ Oak supports Windows with no dependencies and Linux with limited audio dependenc
     - Manipulatable `time.Ticker` to readily change frame rate
 1. [Shaping](https://godoc.org/github.com/oakmound/oak/shape)
     - Shapes from `func(x float64) (y float64)` equations
-    - Shapes from `func(x,y, w, (h) int) bool` containment
+    - Shapes from `func(x,y,w,h int) bool` containment
     - Convert shapes into: 
         - Containment checks
         - Outlines

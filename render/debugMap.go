@@ -21,5 +21,8 @@ func GetDebugRenderable(rName string) (Renderable, bool) {
 	debugLock.RLock()
 	r, ok := debugMap[rName]
 	debugLock.RUnlock()
-	return r, ok
+	if r == nil {
+		return nil, false
+	}
+	return r.(Renderable), ok
 }
