@@ -20,7 +20,7 @@ func UpdateDebugMap(rName string, r Renderable) {
 func GetDebugRenderable(rName string) (Renderable, bool) {
 	debugLock.RLock()
 	r, ok := debugMap[rName]
-	debugLock.RUnlock()
+	debugLock.RUnlock()	
 	if r == nil {
 		return nil, false
 	}
