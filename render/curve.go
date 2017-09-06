@@ -1,6 +1,7 @@
 package render
 
 import (
+	"errors"
 	"image"
 	"image/color"
 	"math"
@@ -16,7 +17,7 @@ func DrawCircle(rgba *image.RGBA, c color.Color, radius, thickness float64, offs
 
 // DrawCurve draws a curve inward on the input rgba, of color c.
 func DrawCurve(rgba *image.RGBA, c color.Color, radius, thickness, initialAngle, circlePercentage float64, offsets ...float64) {
-	offX := 0.0
+	offX := 0.0 
 	offY := 0.0
 	if len(offsets) > 0 {
 		offX = offsets[0]

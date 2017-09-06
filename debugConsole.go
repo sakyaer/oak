@@ -5,15 +5,15 @@ package oak
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"io"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/oakmound/oak/collision"
-	"github.com/oakmound/oak/event" 
+	"github.com/oakmound/oak/event"
 	"github.com/oakmound/oak/mouse"
 	"github.com/oakmound/oak/render"
 )
@@ -28,6 +28,10 @@ var (
 // 'c <s> <args>' is input to the console
 func AddCommand(s string, fn func([]string)) {
 	commands[s] = fn
+}
+
+func defaultDebugConsole() {
+	debugConsole(debugResetCh, skipSceneCh, os.Stdin)
 }
 
 func debugConsole(resetCh, skipScene chan bool, input io.Reader) {

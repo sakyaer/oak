@@ -12,4 +12,6 @@ func AddCommand(s string, fn func([]string)) {
 
 func AddCheat(s string, fn func([]string)) {}
 
-func debugConsole(resetCh, skipScene chan bool) {}
+func defaultDebugConsole() {}
+
+func debugConsole(resetCh, skipScene chan bool, input io.Reader) {}
