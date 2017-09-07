@@ -40,7 +40,7 @@ func IsDown(key string) (k bool) {
 	return
 }
 
-// IsHeld returns whether a key is held down, and for how long
+// IsHeld returns whether a key is held down, and for how long it has been held
 func IsHeld(key string) (k bool, d time.Duration) {
 	keyLock.RLock()
 	k = keyState[key]
