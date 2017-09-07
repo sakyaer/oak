@@ -29,10 +29,12 @@ func sceneLoop(firstScene string) {
 	dlog.Info("First Scene Start")
 	fmt.Println("First scene start")
 
+	// Scene goroutine waits here to send these signals.
 	drawCh <- true
 	drawCh <- true
 
 	dlog.Verb("Draw Channel Activated")
+	fmt.Println("Draw Channel Activated")
 
 	for {
 		fmt.Println("Scene start")

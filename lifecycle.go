@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"sync"
@@ -26,6 +27,7 @@ var (
 )
 
 func lifecycleLoop(s screen.Screen) {
+	fmt.Println("Starting lifecycle")
 	initControl.Lock()
 	if lifecycleInit {
 		dlog.Error("Started lifecycle twice, aborting second call")
@@ -42,33 +44,45 @@ func lifecycleLoop(s screen.Screen) {
 	// The window buffer represents the subsection of the world which is available to
 	// be shown in a window.
 	dlog.Info("Creating window buffer")
+	fmt.Println("Creating window buffer")
 	winBuffer, err = screenControl.NewBuffer(image.Point{ScreenWidth, ScreenHeight})
 	if err != nil {
 		dlog.Error(err)
 		return
 	}
 
+	fmt.Println("Window buffer created")
+
 	// The window controller handles incoming hardware or platform events and
 	// publishes image data to the screen.\
 	dlog.Info("Creating window controller")
 	changeWindow(ScreenWidth*conf.Screen.Scale, ScreenHeight*conf.Screen.Scale)
 
+	fmt.Println("Window controller created")
+
 	dlog.Info("Getting event bus")
 	eb = event.GetBus()
 
+	fmt.Println("Event bus gotten")
+
 	dlog.Info("Starting draw loop")
 	go drawLoop()
+	fmt.Println("Draw loop started")
 	if !conf.DisableKeyhold {
 		dlog.Info("Starting key hold loop")
 		go keyHoldLoop()
+		fmt.Println("Keyhold loop started")
 	}
 	dlog.Info("Starting input loop")
 	go inputLoop()
+	fmt.Println("Input loop started")
 
 	dlog.Info("Starting event handler")
 	go event.ResolvePending()
+	fmt.Println("Event handler started")
 	// The quit channel represents a signal
 	// for the engine to stop.
+	// Lifecycle goroutine reaches here.
 	<-quitCh
 }
 

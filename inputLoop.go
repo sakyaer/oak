@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/oakmound/oak/dlog"
@@ -18,6 +19,8 @@ var (
 )
 
 func inputLoop() {
+	// This never happens on JS
+	fmt.Println("Input loop goroutine start")
 	// Obtain input events in a manner dependant on config settings
 	if conf.GestureSupport {
 		eFilter = gesture.EventFilter{EventDeque: windowControl}
@@ -30,6 +33,7 @@ func inputLoop() {
 	}
 	schedCt := 0
 	for {
+		fmt.Println("Waiting on input")
 		switch e := eventFn().(type) {
 		// We only currently respond to death lifecycle events.
 		case lifecycle.Event:

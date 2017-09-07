@@ -1,6 +1,8 @@
 package oak
 
 import (
+	"fmt"
+
 	"github.com/oakmound/oak/audio"
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/fileutil"
@@ -36,9 +38,12 @@ func loadAssets(imageDir, audioDir string) {
 }
 
 func endLoad() {
+	fmt.Println("Done loading assets")
 	dlog.Info("Done Loading")
+	// Loading goroutine waits here
 	startupLoadCh <- true
 	dlog.Info("Startup load signal sent")
+	fmt.Println("Loading goroutine complete")
 }
 
 // SetBinaryPayload just sets some public fields on packages that require access to binary functions

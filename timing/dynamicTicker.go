@@ -1,6 +1,7 @@
 package timing
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/oakmound/oak/dlog"
@@ -29,7 +30,9 @@ func NewDynamicTicker() *DynamicTicker {
 		forceTick: make(chan bool),
 	}
 	go func(dt *DynamicTicker) {
+		fmt.Println("dynamic ticker goroutine started")
 		for {
+			fmt.Println("Waiting on dynamic ticker signal")
 			select {
 			case v := <-dt.ticker.C:
 			tickLoop:
@@ -50,6 +53,7 @@ func NewDynamicTicker() *DynamicTicker {
 					}
 				}
 			case ticker := <-dt.resetCh:
+				fmt.Println("Received tick reset signal")
 				dt.ticker.Stop()
 				dt.ticker = ticker
 			case r := <-dt.forceTick:
@@ -83,7 +87,11 @@ func NewDynamicTicker() *DynamicTicker {
 // SetTick changes the rate at which a dynamic ticker
 // ticks
 func (dt *DynamicTicker) SetTick(d time.Duration) {
-	dt.resetCh <- time.NewTicker(d)
+	fmt.Println("Setting tick")
+	tck := time.NewTicker(d)
+	fmt.Println("Got ticker", tck, dt.resetCh)
+	dt.resetCh <- tck
+	fmt.Println("Tick set accomplished")
 }
 
 func (dt *DynamicTicker) close() {

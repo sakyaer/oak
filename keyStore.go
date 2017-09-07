@@ -1,6 +1,7 @@
 package oak
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -57,6 +58,7 @@ func keyHoldLoop() {
 	var delta time.Duration
 	now := time.Now()
 	for {
+		fmt.Println("Keyhold loop")
 		next = time.Now()
 		delta = next.Sub(now)
 		now = next
