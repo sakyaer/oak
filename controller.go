@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/shiny/screen"
 )
 
-func InitDriver() {
+func initDriver() {
 	driver.Main(lifecycleLoop)
 }
 

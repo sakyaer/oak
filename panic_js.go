@@ -3,4 +3,4 @@
 package oak
 
 // SetPanicOnFault cannot run on JS
-func SetPanicOnFault() {}
+func setPanicOnFault() {}

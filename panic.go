@@ -4,6 +4,6 @@ package oak
 
 import "runtime/debug"
 
-func SetPanicOnFault() {
+func setPanicOnFault() {
 	debug.SetPanicOnFault(true)
 }

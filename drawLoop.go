@@ -26,7 +26,7 @@ var (
 func drawLoop() {
 	<-drawCh
 
-	SetPanicOnFault()
+	setPanicOnFault()
 
 	tx, err := screenControl.NewTexture(winBuffer.Bounds().Max)
 	if err != nil {

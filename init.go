@@ -119,5 +119,5 @@ func Init(firstScene string) {
 	dlog.Info("Init Console")
 	go defaultDebugConsole()
 	dlog.Info("Init Main Driver")
-	InitDriver()
+	initDriver()
 }

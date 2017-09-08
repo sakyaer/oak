@@ -4,7 +4,7 @@ package oak
 
 import "golang.org/x/exp/shiny/screen"
 
-func InitDriver() {
+func initDriver() {
 	lifecycleLoop(new(JSScreen))
 }
 
