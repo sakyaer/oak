@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"runtime"
 	"sync"
 
 	"golang.org/x/exp/shiny/screen"
@@ -60,9 +61,16 @@ func (jsc *JSWindow) NextEvent() interface{} {
 // Uploader
 
 func (jsc *JSWindow) Upload(dp image.Point, src screen.Buffer, sr image.Rectangle) {
-	jsc.jsUint8 = js.Global.Get("Uint8ClampedArray").New(src.RGBA().Pix, sr.Max.X, sr.Max.Y)
+	if jsc.jsUint8 == nil {
+		jsc.jsUint8 = js.Global.Get("Uint8ClampedArray").New(src.RGBA().Pix, sr.Max.X, sr.Max.Y)
+	} else {
+		jsc.jsUint8.Call("set", src.RGBA().Pix)
+	}
+	// This uses a heck of a lot of memory. It'd be wonderful if we didn't need to call New here
+	// but could just refill the old variable
 	jsc.imgData = js.Global.Get("ImageData").New(jsc.jsUint8, sr.Max.X, sr.Max.Y)
 	jsc.ctx.Call("putImageData", jsc.imgData, dp.X, dp.Y)
+	runtime.GC()
 }
 
 func (jsc *JSWindow) Fill(dr image.Rectangle, src color.Color, op draw.Op) {

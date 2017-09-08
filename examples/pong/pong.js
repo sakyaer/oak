@@ -2255,7 +2255,7 @@ $packages["runtime/internal/sys"] = (function() {
 	return $pkg;
 })();
 $packages["runtime"] = (function() {
-	var $pkg = {}, $init, js, sys, Error, TypeAssertionError, errorString, structType, ptrType$4, init, Caller, Goexit, GOMAXPROCS, Gosched, SetFinalizer, KeepAlive, throw$1;
+	var $pkg = {}, $init, js, sys, Error, TypeAssertionError, errorString, structType, ptrType$4, init, Caller, GC, Goexit, GOMAXPROCS, Gosched, SetFinalizer, KeepAlive, throw$1;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sys = $packages["runtime/internal/sys"];
 	Error = $pkg.Error = $newType(8, $kindInterface, "runtime.Error", true, "runtime", true, null);
@@ -2316,6 +2316,9 @@ $packages["runtime"] = (function() {
 		return [pc, file, line, ok];
 	};
 	$pkg.Caller = Caller;
+	GC = function() {
+	};
+	$pkg.GC = GC;
 	Goexit = function() {
 		$curGoroutine.exit = $externalize(true, $Bool);
 		$throw(null);
@@ -61933,15 +61936,24 @@ $packages["github.com/oakmound/oak"] = (function() {
 	};
 	JSWindow.prototype.NextEvent = function() { return this.$val.NextEvent(); };
 	JSWindow.ptr.prototype.Upload = function(dp, src, sr) {
-		var _r, dp, jsc, sr, src, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; dp = $f.dp; jsc = $f.jsc; sr = $f.sr; src = $f.src; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _r$1, dp, jsc, sr, src, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; dp = $f.dp; jsc = $f.jsc; sr = $f.sr; src = $f.src; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		jsc = this;
-		_r = src.RGBA(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		jsc.jsUint8 = new ($global.Uint8ClampedArray)($externalize(_r.Pix, sliceType$3), sr.Max.X, sr.Max.Y);
+		/* */ if (jsc.jsUint8 === null) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (jsc.jsUint8 === null) { */ case 1:
+			_r = src.RGBA(); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			jsc.jsUint8 = new ($global.Uint8ClampedArray)($externalize(_r.Pix, sliceType$3), sr.Max.X, sr.Max.Y);
+			$s = 3; continue;
+		/* } else { */ case 2:
+			_r$1 = src.RGBA(); /* */ $s = 5; case 5: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			jsc.jsUint8.set($externalize(_r$1.Pix, sliceType$3));
+		/* } */ case 3:
 		jsc.imgData = new ($global.ImageData)(jsc.jsUint8, sr.Max.X, sr.Max.Y);
 		jsc.ctx.putImageData(jsc.imgData, dp.X, dp.Y);
+		runtime.GC();
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.Upload }; } $f._r = _r; $f.dp = dp; $f.jsc = jsc; $f.sr = sr; $f.src = src; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.Upload }; } $f._r = _r; $f._r$1 = _r$1; $f.dp = dp; $f.jsc = jsc; $f.sr = sr; $f.src = src; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	JSWindow.prototype.Upload = function(dp, src, sr) { return this.$val.Upload(dp, src, sr); };
 	JSWindow.ptr.prototype.Fill = function(dr, src, op) {
