@@ -33,7 +33,7 @@ func inputLoop() {
 	}
 	schedCt := 0
 	for {
-		fmt.Println("Waiting on input")
+		//fmt.Println("Waiting on input")
 		switch e := eventFn().(type) {
 		// We only currently respond to death lifecycle events.
 		case lifecycle.Event:
@@ -121,7 +121,7 @@ func inputLoop() {
 		// a chance to take control from this thread. This is a hack that
 		// solves that.
 		schedCt++
-		if schedCt > 1000 {
+		if schedCt > 100 {
 			schedCt = 0
 			runtime.Gosched()
 		}

@@ -1,7 +1,6 @@
 package event
 
 import (
-	"fmt"
 	"runtime"
 
 	"github.com/oakmound/oak/dlog"
@@ -46,7 +45,7 @@ func ResolvePending() {
 		if schedCt > 1000 {
 			schedCt = 0
 			// JS: this is never reached
-			fmt.Println("Giving up resolve pending schedule")
+			//fmt.Println("Giving up resolve pending schedule")
 			runtime.Gosched()
 		}
 	}

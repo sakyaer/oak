@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/fileutil"
+	"github.com/oakmound/oak/render/internal/fonts"
 )
 
 var (
@@ -26,6 +26,7 @@ var (
 
 	// DefFontGenerator is a default font generator of no options
 	DefFontGenerator = FontGenerator{}
+	binaryFonts      = fonts.Asset
 
 	loadedFonts = make(map[string]*truetype.Font)
 )
@@ -54,9 +55,7 @@ func (fg *FontGenerator) Generate() *Font {
 		if defaultFontFile != "" {
 			fg.File = defaultFontFile
 		} else {
-			_, curFile, _, _ := runtime.Caller(1)
-			fmt.Println("curfile", curFile)
-			dir = filepath.Join(filepath.Dir(curFile), "default_assets", "font")
+			dir = filepath.Join("default_assets", "font")
 			fg.File = "luxisr.ttf"
 		}
 	}
@@ -171,7 +170,14 @@ func FontColor(s string) image.Image {
 //LoadFont loads in a font file and stores it with the given name. This is necessary before using the fonttype for a Font
 func LoadFont(dir string, fontFile string) *truetype.Font {
 	if _, ok := loadedFonts[fontFile]; !ok {
-		fontBytes, err := fileutil.ReadFile(filepath.Join(dir, fontFile))
+		var fontBytes []byte
+		var err error
+		if dir == filepath.Join("default_assets", "font") {
+			fmt.Println("Dir is default")
+			fontBytes, err = binaryFonts(filepath.Join(dir, fontFile))
+		} else {
+			fontBytes, err = fileutil.ReadFile(filepath.Join(dir, fontFile))
+		}
 		if err != nil {
 			dlog.Error(err.Error())
 			return nil
