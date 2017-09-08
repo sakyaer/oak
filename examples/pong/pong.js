@@ -60745,7 +60745,7 @@ $packages["golang.org/x/mobile/event/size"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/oakmound/oak"] = (function() {
-	var $pkg = {}, $init, json, errors, fmt, toml, js, alg, audio, collision, dlog, event, fileutil, mouse$1, physics, render, mod, timing, gesture, screen, f64, key, lifecycle, mouse, size, image, color, draw, io, rand, filepath, runtime, strings, sync, time, JSBuffer, Config, Assets, Debug, Screen, Font, transitionFunction, Scene, SceneResult, SceneEnd, SceneStart, SceneUpdate, JSScreen, JSTexture, rect, JSWindow, ptrType, ptrType$1, arrayType, ptrType$2, sliceType, ptrType$3, sliceType$1, ptrType$6, ptrType$7, funcType, ptrType$8, sliceType$2, sliceType$3, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, conf, imageBlack, drawLoopPublishDef, drawLoopPublish, transitionCh, sceneCh, skipSceneCh, quitCh, drawCh, debugResetCh, viewportCh, debugResetInProgress, eb, globalFirstScene, zeroPoint, jsMouseButtons, jsKeys, eFilter, eventFn, keyBinds, keyBindLock, keyState, keyDurations, keyLock, durationLock, winBuffer, screenControl, windowControl, windowRect, windowUpdateCh, initControl, lifecycleInit, aspectRatio, startupLoadCh, framesElapsed, currentSeed, sceneMap, useViewBounds, viewBounds, initConfAssets, initConfDebug, initConfScreen, initConfFont, initConf, InitDriver, windowController, defaultDebugConsole, drawLoop, Init, jsMouseButton, jsKey, inputLoop, GetKeyBind, setUp, setDown, IsDown, SetLang, lifecycleLoop, changeWindow, ChangeWindow, loadAssets, endLoad, logicLoop, SetPanicOnFault, SeedRNG, sceneTransition, AddScene, sceneLoop, updateScreen;
+	var $pkg = {}, $init, json, errors, fmt, toml, js, alg, audio, collision, dlog, event, fileutil, mouse$1, physics, render, mod, timing, gesture, screen, f64, key, lifecycle, mouse, size, image, color, draw, io, rand, filepath, runtime, strings, sync, time, JSBuffer, Config, Assets, Debug, Screen, Font, transitionFunction, Scene, SceneResult, SceneEnd, SceneStart, SceneUpdate, JSScreen, JSTexture, rect, JSWindow, ptrType, ptrType$1, arrayType, sliceType, ptrType$2, sliceType$1, ptrType$5, ptrType$6, funcType, ptrType$7, sliceType$2, sliceType$3, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, conf, imageBlack, drawLoopPublish, transitionCh, sceneCh, skipSceneCh, quitCh, drawCh, debugResetCh, viewportCh, debugResetInProgress, eb, globalFirstScene, zeroPoint, jsMouseButtons, jsKeys, eFilter, eventFn, keyBinds, keyBindLock, keyState, keyDurations, keyLock, durationLock, winBuffer, screenControl, windowControl, windowRect, windowUpdateCh, initControl, lifecycleInit, aspectRatio, startupLoadCh, framesElapsed, drawLoopPublishDef, currentSeed, sceneMap, useViewBounds, viewBounds, initConfAssets, initConfDebug, initConfScreen, initConfFont, initConf, initDriver, windowController, defaultDebugConsole, drawLoop, Init, jsMouseButton, jsKey, inputLoop, GetKeyBind, setUp, setDown, IsDown, SetLang, lifecycleLoop, changeWindow, ChangeWindow, loadAssets, endLoad, logicLoop, setPanicOnFault, SeedRNG, sceneTransition, AddScene, sceneLoop, updateScreen;
 	json = $packages["encoding/json"];
 	errors = $packages["errors"];
 	fmt = $packages["fmt"];
@@ -60783,7 +60783,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.rect = new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0));
-			this.rgba = ptrType$8.nil;
+			this.rgba = ptrType$7.nil;
 			return;
 		}
 		this.rect = rect_;
@@ -60906,7 +60906,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 	JSTexture = $pkg.JSTexture = $newType(0, $kindStruct, "oak.JSTexture", true, "github.com/oakmound/oak", true, function(JSBuffer_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.JSBuffer = new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$8.nil);
+			this.JSBuffer = new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$7.nil);
 			return;
 		}
 		this.JSBuffer = JSBuffer_;
@@ -60944,20 +60944,20 @@ $packages["github.com/oakmound/oak"] = (function() {
 	ptrType = $ptrType(timing.DynamicTicker);
 	ptrType$1 = $ptrType(event.Bus);
 	arrayType = $arrayType($Int, 2);
-	ptrType$2 = $ptrType(screen.DrawOptions);
 	sliceType = $sliceType($emptyInterface);
-	ptrType$3 = $ptrType(SceneResult);
+	ptrType$2 = $ptrType(SceneResult);
 	sliceType$1 = $sliceType($String);
-	ptrType$6 = $ptrType(Scene);
-	ptrType$7 = $ptrType(js.Object);
-	funcType = $funcType([ptrType$7], [], false);
-	ptrType$8 = $ptrType(image.RGBA);
+	ptrType$5 = $ptrType(Scene);
+	ptrType$6 = $ptrType(js.Object);
+	funcType = $funcType([ptrType$6], [], false);
+	ptrType$7 = $ptrType(image.RGBA);
 	sliceType$2 = $sliceType($Float64);
 	sliceType$3 = $sliceType($Uint8);
-	ptrType$9 = $ptrType(JSBuffer);
-	ptrType$10 = $ptrType(screen.NewWindowOptions);
-	ptrType$11 = $ptrType(JSScreen);
-	ptrType$12 = $ptrType(JSTexture);
+	ptrType$8 = $ptrType(JSBuffer);
+	ptrType$9 = $ptrType(screen.NewWindowOptions);
+	ptrType$10 = $ptrType(JSScreen);
+	ptrType$11 = $ptrType(JSTexture);
+	ptrType$12 = $ptrType(screen.DrawOptions);
 	ptrType$13 = $ptrType(JSWindow);
 	JSBuffer.ptr.prototype.Release = function() {
 		var jsb, $s, $r;
@@ -61062,14 +61062,13 @@ $packages["github.com/oakmound/oak"] = (function() {
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: initConf }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
-	InitDriver = function() {
+	initDriver = function() {
 		var $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		$r = lifecycleLoop(new JSScreen.ptr()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: InitDriver }; } $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: initDriver }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
-	$pkg.InitDriver = InitDriver;
 	windowController = function(s, ScreenWidth, ScreenHeight) {
 		var ScreenHeight, ScreenWidth, _r, s, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ScreenHeight = $f.ScreenHeight; ScreenWidth = $f.ScreenWidth; _r = $f._r; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -61090,7 +61089,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$15 = $f._r$15; _r$16 = $f._r$16; _r$17 = $f._r$17; _r$18 = $f._r$18; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; err = $f.err; tx = $f.tx; viewPoint = $f.viewPoint; viewPoint$1 = $f.viewPoint$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = $recv(drawCh); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r[0];
-		SetPanicOnFault();
+		setPanicOnFault();
 		_r$1 = winBuffer.Bounds(); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 		_r$2 = screenControl.NewTexture($clone(_r$1.Max, image.Point)); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		_tuple = _r$2;
@@ -61217,7 +61216,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		$r = dlog.Info(new sliceType([new $String("Init Console")])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$go(defaultDebugConsole, []);
 		$r = dlog.Info(new sliceType([new $String("Init Main Driver")])); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = InitDriver(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = initDriver(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Init }; } $f._tuple = _tuple; $f.audioDir = audioDir; $f.firstScene = firstScene; $f.imageDir = imageDir; $f.wd = wd; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -61619,9 +61618,8 @@ $packages["github.com/oakmound/oak"] = (function() {
 		}), [ch]);
 		return ch;
 	};
-	SetPanicOnFault = function() {
+	setPanicOnFault = function() {
 	};
-	$pkg.SetPanicOnFault = SetPanicOnFault;
 	SeedRNG = function(inSeed) {
 		var _r, _r$1, _r$2, _r$3, inSeed, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; inSeed = $f.inSeed; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -61678,7 +61676,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _key = $f._key; _r = $f._r; _tuple = $f._tuple; end = $f.end; loop = $f.loop; name = $f.name; ok = $f.ok; start = $f.start; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = fmt.Println(new sliceType([new $String("[oak]-------- Adding"), new $String(name)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r;
-		_tuple = (_entry = sceneMap[$String.keyFor(name)], _entry !== undefined ? [_entry.v, true] : [ptrType$6.nil, false]);
+		_tuple = (_entry = sceneMap[$String.keyFor(name)], _entry !== undefined ? [_entry.v, true] : [ptrType$5.nil, false]);
 		ok = _tuple[1];
 		if (!ok) {
 			_key = name; (sceneMap || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: new Scene.ptr(false, start, loop, end) };
@@ -61694,7 +61692,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		prevScene = [prevScene];
 		result = [result];
 		prevScene[0] = "";
-		_tuple = (_entry = sceneMap[$String.keyFor(firstScene)], _entry !== undefined ? [_entry.v, true] : [ptrType$6.nil, false]);
+		_tuple = (_entry = sceneMap[$String.keyFor(firstScene)], _entry !== undefined ? [_entry.v, true] : [ptrType$5.nil, false]);
 		s = _tuple[0];
 		ok = _tuple[1];
 		/* */ if (!ok) { $s = 1; continue; }
@@ -61726,7 +61724,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 				var _entry$1, _tuple$1, ok$1, s$1, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry$1 = $f._entry$1; _tuple$1 = $f._tuple$1; ok$1 = $f.ok$1; s$1 = $f.s$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 				$r = dlog.Info(new sliceType([new $String("Starting scene in goroutine"), new $String($pkg.CurrentScene)])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_tuple$1 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? [_entry$1.v, true] : [ptrType$6.nil, false]);
+				_tuple$1 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? [_entry$1.v, true] : [ptrType$5.nil, false]);
 				s$1 = _tuple$1[0];
 				ok$1 = _tuple$1[1];
 				/* */ if (!ok$1) { $s = 2; continue; }
@@ -61759,7 +61757,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 				/* */ if (_selection[0] === 1) { $s = 27; continue; }
 				/* */ $s = 28; continue;
 				/* if (_selection[0] === 0) { */ case 26:
-					_r$5 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? _entry$1.v : ptrType$6.nil).loop(); /* */ $s = 29; case 29: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+					_r$5 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? _entry$1.v : ptrType$5.nil).loop(); /* */ $s = 29; case 29: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 					cont = _r$5;
 					$s = 28; continue;
 				/* } else if (_selection[0] === 1) { */ case 27:
@@ -61787,11 +61785,11 @@ $packages["github.com/oakmound/oak"] = (function() {
 			$r = render.ResetDrawStack(); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = render.PreDraw(); /* */ $s = 40; case 40: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = dlog.Verb(new sliceType([new $String("Engine Reset")])); /* */ $s = 41; case 41: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$6 = (_entry$2 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$2 !== undefined ? _entry$2.v : ptrType$6.nil).end(); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+			_r$6 = (_entry$2 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$2 !== undefined ? _entry$2.v : ptrType$5.nil).end(); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
 			_tuple$1 = _r$6;
 			$pkg.CurrentScene = _tuple$1[0];
 			result[0] = _tuple$1[1];
-			if (result[0] === ptrType$3.nil) {
+			if (result[0] === ptrType$2.nil) {
 				result[0] = new SceneResult.ptr($ifaceNil, $throwNilPointerError);
 			}
 			eb = event.GetBus();
@@ -61898,7 +61896,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		jss = this;
 		_r = fmt.Println(new sliceType([new $String("New JS Texture")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r;
-		txt = new JSTexture.ptr(new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$8.nil));
+		txt = new JSTexture.ptr(new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$7.nil));
 		$s = -1; return [txt, $ifaceNil];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewTexture }; } $f._r = _r; $f.jss = jss; $f.p = p; $f.txt = txt; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -62057,26 +62055,26 @@ $packages["github.com/oakmound/oak"] = (function() {
 		jsc = this;
 	};
 	JSWindow.prototype.Scale = function(dr, src, sr, op, opts) { return this.$val.Scale(dr, src, sr, op, opts); };
-	ptrType$9.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Size", name: "Size", pkg: "", typ: $funcType([], [image.Point], false)}, {prop: "Bounds", name: "Bounds", pkg: "", typ: $funcType([], [image.Rectangle], false)}, {prop: "RGBA", name: "RGBA", pkg: "", typ: $funcType([], [ptrType$8], false)}];
-	ptrType$11.methods = [{prop: "NewBuffer", name: "NewBuffer", pkg: "", typ: $funcType([image.Point], [screen.Buffer, $error], false)}, {prop: "NewWindow", name: "NewWindow", pkg: "", typ: $funcType([ptrType$10], [screen.Window, $error], false)}, {prop: "NewTexture", name: "NewTexture", pkg: "", typ: $funcType([image.Point], [screen.Texture, $error], false)}];
-	ptrType$12.methods = [{prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}];
-	ptrType$13.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Publish", name: "Publish", pkg: "", typ: $funcType([], [screen.PublishResult], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "SendFirst", name: "SendFirst", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "NextEvent", name: "NextEvent", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}, {prop: "Draw", name: "Draw", pkg: "", typ: $funcType([f64.Aff3, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "DrawUniform", name: "DrawUniform", pkg: "", typ: $funcType([f64.Aff3, color.Color, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Copy", name: "Copy", pkg: "", typ: $funcType([image.Point, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Scale", name: "Scale", pkg: "", typ: $funcType([image.Rectangle, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}];
-	JSBuffer.init("github.com/oakmound/oak", [{prop: "rect", name: "rect", anonymous: false, exported: false, typ: image.Rectangle, tag: ""}, {prop: "rgba", name: "rgba", anonymous: false, exported: false, typ: ptrType$8, tag: ""}]);
+	ptrType$8.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Size", name: "Size", pkg: "", typ: $funcType([], [image.Point], false)}, {prop: "Bounds", name: "Bounds", pkg: "", typ: $funcType([], [image.Rectangle], false)}, {prop: "RGBA", name: "RGBA", pkg: "", typ: $funcType([], [ptrType$7], false)}];
+	ptrType$10.methods = [{prop: "NewBuffer", name: "NewBuffer", pkg: "", typ: $funcType([image.Point], [screen.Buffer, $error], false)}, {prop: "NewWindow", name: "NewWindow", pkg: "", typ: $funcType([ptrType$9], [screen.Window, $error], false)}, {prop: "NewTexture", name: "NewTexture", pkg: "", typ: $funcType([image.Point], [screen.Texture, $error], false)}];
+	ptrType$11.methods = [{prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}];
+	ptrType$13.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Publish", name: "Publish", pkg: "", typ: $funcType([], [screen.PublishResult], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "SendFirst", name: "SendFirst", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "NextEvent", name: "NextEvent", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}, {prop: "Draw", name: "Draw", pkg: "", typ: $funcType([f64.Aff3, screen.Texture, image.Rectangle, draw.Op, ptrType$12], [], false)}, {prop: "DrawUniform", name: "DrawUniform", pkg: "", typ: $funcType([f64.Aff3, color.Color, image.Rectangle, draw.Op, ptrType$12], [], false)}, {prop: "Copy", name: "Copy", pkg: "", typ: $funcType([image.Point, screen.Texture, image.Rectangle, draw.Op, ptrType$12], [], false)}, {prop: "Scale", name: "Scale", pkg: "", typ: $funcType([image.Rectangle, screen.Texture, image.Rectangle, draw.Op, ptrType$12], [], false)}];
+	JSBuffer.init("github.com/oakmound/oak", [{prop: "rect", name: "rect", anonymous: false, exported: false, typ: image.Rectangle, tag: ""}, {prop: "rgba", name: "rgba", anonymous: false, exported: false, typ: ptrType$7, tag: ""}]);
 	Config.init("", [{prop: "Assets", name: "Assets", anonymous: false, exported: true, typ: Assets, tag: "json:\"assets\""}, {prop: "Debug", name: "Debug", anonymous: false, exported: true, typ: Debug, tag: "json:\"debug\""}, {prop: "Screen", name: "Screen", anonymous: false, exported: true, typ: Screen, tag: "json:\"screen\""}, {prop: "Font", name: "Font", anonymous: false, exported: true, typ: Font, tag: "json:\"font\""}, {prop: "FrameRate", name: "FrameRate", anonymous: false, exported: true, typ: $Int, tag: "json:\"frameRate\""}, {prop: "DrawFrameRate", name: "DrawFrameRate", anonymous: false, exported: true, typ: $Int, tag: "json:\"drawFrameRate\""}, {prop: "Language", name: "Language", anonymous: false, exported: true, typ: $String, tag: "json:\"language\""}, {prop: "Title", name: "Title", anonymous: false, exported: true, typ: $String, tag: "json:\"title\""}, {prop: "BatchLoad", name: "BatchLoad", anonymous: false, exported: true, typ: $Bool, tag: "json:\"batchLoad\""}, {prop: "GestureSupport", name: "GestureSupport", anonymous: false, exported: true, typ: $Bool, tag: "json:\"gestureSupport\""}, {prop: "DisableKeyhold", name: "DisableKeyhold", anonymous: false, exported: true, typ: $Bool, tag: "json:\"disableKeyHold\""}]);
 	Assets.init("", [{prop: "AssetPath", name: "AssetPath", anonymous: false, exported: true, typ: $String, tag: "json:\"assetPath\""}, {prop: "AudioPath", name: "AudioPath", anonymous: false, exported: true, typ: $String, tag: "json:\"audioPath\""}, {prop: "ImagePath", name: "ImagePath", anonymous: false, exported: true, typ: $String, tag: "json:\"imagePath\""}, {prop: "FontPath", name: "FontPath", anonymous: false, exported: true, typ: $String, tag: "json:\"fontPath\""}]);
 	Debug.init("", [{prop: "Filter", name: "Filter", anonymous: false, exported: true, typ: $String, tag: "json:\"filter\""}, {prop: "Level", name: "Level", anonymous: false, exported: true, typ: $String, tag: "json:\"level\""}]);
 	Screen.init("", [{prop: "Height", name: "Height", anonymous: false, exported: true, typ: $Int, tag: "json:\"height\""}, {prop: "Width", name: "Width", anonymous: false, exported: true, typ: $Int, tag: "json:\"width\""}, {prop: "Scale", name: "Scale", anonymous: false, exported: true, typ: $Int, tag: "json:\"scale\""}]);
 	Font.init("", [{prop: "Hinting", name: "Hinting", anonymous: false, exported: true, typ: $String, tag: "json:\"hinting\""}, {prop: "Size", name: "Size", anonymous: false, exported: true, typ: $Float64, tag: "json:\"size\""}, {prop: "DPI", name: "DPI", anonymous: false, exported: true, typ: $Float64, tag: "json:\"dpi\""}, {prop: "File", name: "File", anonymous: false, exported: true, typ: $String, tag: "json:\"file\""}, {prop: "Color", name: "Color", anonymous: false, exported: true, typ: $String, tag: "json:\"color\""}]);
-	transitionFunction.init([ptrType$8, $Int], [$Bool], false);
+	transitionFunction.init([ptrType$7, $Int], [$Bool], false);
 	Scene.init("github.com/oakmound/oak", [{prop: "active", name: "active", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "start", name: "start", anonymous: false, exported: false, typ: SceneStart, tag: ""}, {prop: "loop", name: "loop", anonymous: false, exported: false, typ: SceneUpdate, tag: ""}, {prop: "end", name: "end", anonymous: false, exported: false, typ: SceneEnd, tag: ""}]);
 	SceneResult.init("", [{prop: "NextSceneInput", name: "NextSceneInput", anonymous: false, exported: true, typ: $emptyInterface, tag: ""}, {prop: "Transition", name: "Transition", anonymous: false, exported: true, typ: transitionFunction, tag: ""}]);
-	SceneEnd.init([], [$String, ptrType$3], false);
+	SceneEnd.init([], [$String, ptrType$2], false);
 	SceneStart.init([$String, $emptyInterface], [], false);
 	SceneUpdate.init([], [$Bool], false);
 	JSScreen.init("", []);
 	JSTexture.init("", [{prop: "JSBuffer", name: "JSBuffer", anonymous: true, exported: true, typ: JSBuffer, tag: ""}]);
 	rect.init("github.com/oakmound/oak", [{prop: "minX", name: "minX", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "minY", name: "minY", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "maxX", name: "maxX", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "maxY", name: "maxY", anonymous: false, exported: false, typ: $Int, tag: ""}]);
-	JSWindow.init("github.com/oakmound/oak", [{prop: "ctx", name: "ctx", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "jsUint8", name: "jsUint8", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "imgData", name: "imgData", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "events", name: "events", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "eventLock", name: "eventLock", anonymous: false, exported: false, typ: sync.Mutex, tag: ""}]);
+	JSWindow.init("github.com/oakmound/oak", [{prop: "ctx", name: "ctx", anonymous: false, exported: false, typ: ptrType$6, tag: ""}, {prop: "jsUint8", name: "jsUint8", anonymous: false, exported: false, typ: ptrType$6, tag: ""}, {prop: "imgData", name: "imgData", anonymous: false, exported: false, typ: ptrType$6, tag: ""}, {prop: "events", name: "events", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "eventLock", name: "eventLock", anonymous: false, exported: false, typ: sync.Mutex, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -62155,30 +62153,22 @@ $packages["github.com/oakmound/oak"] = (function() {
 		keyDurations = {};
 		keyLock = new sync.RWMutex.ptr(new sync.Mutex.ptr(0, 0), 0, 0, 0, 0);
 		durationLock = new sync.RWMutex.ptr(new sync.Mutex.ptr(0, 0), 0, 0, 0, 0);
-		drawLoopPublishDef = (function $b(tx) {
-			var _arg, _arg$1, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _r, _r$1, _r$2, tx, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; tx = $f.tx; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			_arg = $clone(zeroPoint, image.Point);
-			_arg$1 = winBuffer;
-			_r = winBuffer.Bounds(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_arg$2 = $clone(_r, image.Rectangle);
-			$r = tx.Upload(_arg, _arg$1, _arg$2); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_arg$3 = $clone(windowRect, image.Rectangle);
-			_arg$4 = tx;
-			_r$1 = tx.Bounds(); /* */ $s = 3; case 3: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_arg$5 = $clone(_r$1, image.Rectangle);
-			_arg$6 = ptrType$2.nil;
-			$r = windowControl.Scale(_arg$3, _arg$4, _arg$5, 1, _arg$6); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$2 = windowControl.Publish(); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_r$2;
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.tx = tx; $f.$s = $s; $f.$r = $r; return $f;
-		});
-		drawLoopPublish = drawLoopPublishDef;
 		windowUpdateCh = new $Chan($Bool, 0);
 		initControl = new sync.Mutex.ptr(0, 0);
 		$pkg.UseAspectRatio = false;
 		startupLoadCh = new $Chan($Bool, 0);
+		drawLoopPublishDef = (function $b(tx) {
+			var _arg, _arg$1, _arg$2, _r, tx, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _r = $f._r; tx = $f.tx; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			_arg = $clone(zeroPoint, image.Point);
+			_arg$1 = winBuffer;
+			_r = winBuffer.Bounds(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_arg$2 = $clone(_r, image.Rectangle);
+			$r = windowControl.Upload(_arg, _arg$1, _arg$2); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._r = _r; $f.tx = tx; $f.$s = $s; $f.$r = $r; return $f;
+		});
+		drawLoopPublish = drawLoopPublishDef;
 		sceneMap = $makeMap($String.keyFor, [{ k: "loading", v: new Scene.ptr(false, (function $b(prevScene, data) {
 			var data, prevScene, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; data = $f.data; prevScene = $f.prevScene; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -62201,7 +62191,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 			$s = -1; return false;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._selection = _selection; $f.$s = $s; $f.$r = $r; return $f;
 		}), (function() {
-			return [globalFirstScene, ptrType$3.nil];
+			return [globalFirstScene, ptrType$2.nil];
 		})) }]);
 		$pkg.ViewPos = new image.Point.ptr(0, 0);
 		useViewBounds = false;
