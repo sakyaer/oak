@@ -32,7 +32,6 @@ func NewDynamicTicker() *DynamicTicker {
 	go func(dt *DynamicTicker) {
 		fmt.Println("dynamic ticker goroutine started")
 		for {
-			fmt.Println("Waiting on dynamic ticker signal")
 			select {
 			case v := <-dt.ticker.C:
 			tickLoop:

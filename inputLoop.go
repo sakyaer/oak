@@ -51,6 +51,7 @@ func inputLoop() {
 		// The specific key that is pressed is passed as the data interface for
 		// the former events, but not for the latter.
 		case key.Event:
+			fmt.Println("Key event", e)
 			k := GetKeyBind(e.Code.String()[4:])
 			if e.Direction == key.DirPress {
 				//dlog.Verb("--------------------", e.Code.String()[4:], k)
@@ -77,6 +78,8 @@ func inputLoop() {
 		//
 		// Mouse events all receive an x, y, and button string.
 		case mouse.Event:
+			fmt.Println("Mouse event", e)
+
 			button := pmouse.GetMouseButton(e.Button)
 			eventName := pmouse.GetEventName(e.Direction, e.Button)
 			if e.Direction == mouse.DirPress {

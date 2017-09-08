@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"sync"
 
 	"golang.org/x/exp/shiny/screen"
 	"golang.org/x/image/math/f64"
@@ -16,9 +17,11 @@ import (
 )
 
 type JSWindow struct {
-	ctx     *js.Object
-	jsUint8 *js.Object
-	imgData *js.Object
+	ctx       *js.Object
+	jsUint8   *js.Object
+	imgData   *js.Object
+	events    []interface{}
+	eventLock sync.Mutex
 }
 
 func (jsc *JSWindow) Release() {
@@ -34,7 +37,9 @@ func (jsc *JSWindow) Publish() screen.PublishResult {
 /////////////
 // EventDeque
 func (jsc *JSWindow) Send(event interface{}) {
-	dlog.Error("Send is not yet supported for JSWindow")
+	jsc.eventLock.Lock()
+	jsc.events = append(jsc.events, event)
+	jsc.eventLock.Unlock()
 }
 
 func (jsc *JSWindow) SendFirst(event interface{}) {
@@ -42,7 +47,13 @@ func (jsc *JSWindow) SendFirst(event interface{}) {
 }
 
 func (jsc *JSWindow) NextEvent() interface{} {
-	//Todo
+	if len(jsc.events) > 0 {
+		jsc.eventLock.Lock()
+		ev := jsc.events[0]
+		jsc.events = jsc.events[1:]
+		jsc.eventLock.Unlock()
+		return ev
+	}
 	return nil
 }
 

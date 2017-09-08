@@ -74,7 +74,6 @@ func drawLoop() {
 			dlog.Verb("Got something from viewport channel")
 			updateScreen(viewPoint[0], viewPoint[1])
 		case <-DrawTicker.C:
-			fmt.Println("Draw Ticker signal received")
 			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
 			render.PreDraw()
 			render.GlobalDrawStack.Draw(winBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
@@ -85,7 +84,6 @@ func drawLoop() {
 
 var (
 	drawLoopPublishDef = func(tx screen.Texture) {
-		fmt.Println("Publishing")
 		tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
 		windowControl.Scale(windowRect, tx, tx.Bounds(), screen.Src, nil)
 		windowControl.Publish()

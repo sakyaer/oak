@@ -8,6 +8,8 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"golang.org/x/exp/shiny/screen"
+	"golang.org/x/mobile/event/key"
+	"golang.org/x/mobile/event/mouse"
 )
 
 type JSScreen struct{}
@@ -22,6 +24,7 @@ func (jss *JSScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
 	}
 	return buffer, nil
 }
+
 func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, error) {
 	fmt.Println("New JS Window")
 	jsc := new(JSWindow)
@@ -34,6 +37,45 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 	jsc.ctx = canvas.Call("getContext", "2d")
 	bdy := document.Get("body")
 	bdy.Call("appendChild", canvas)
+
+	// These bindings are modified from the bindings engi uses for its js support.
+
+	canvas.Call("addEventListener", "mousemove", func(ev *js.Object) {
+		rect := canvas.Call("getBoundingClientRect")
+		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
+		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
+		jsc.Send(mouse.Event{X: x, Y: y, Button: mouse.ButtonNone, Direction: mouse.DirNone})
+	}, false)
+
+	canvas.Call("addEventListener", "mousedown", func(ev *js.Object) {
+		rect := canvas.Call("getBoundingClientRect")
+		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
+		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
+		button := jsMouseButton(ev.Get("button").Int())
+		jsc.Send(mouse.Event{X: x, Y: y, Button: button, Direction: mouse.DirPress})
+	}, false)
+
+	canvas.Call("addEventListener", "mouseup", func(ev *js.Object) {
+		rect := canvas.Call("getBoundingClientRect")
+		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
+		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
+		button := jsMouseButton(ev.Get("button").Int())
+		jsc.Send(mouse.Event{X: x, Y: y, Button: button, Direction: mouse.DirRelease})
+	}, false)
+
+	// js.Global.Call("addEventListener", "keypress", func(ev *js.Object) {
+
+	// }, false)
+
+	js.Global.Call("addEventListener", "keydown", func(ev *js.Object) {
+		k := ev.Get("keyCode").Int()
+		jsc.Send(key.Event{Code: jsKey(k), Direction: key.DirPress})
+	}, false)
+
+	js.Global.Call("addEventListener", "keyup", func(ev *js.Object) {
+		k := ev.Get("keyCode").Int()
+		jsc.Send(key.Event{Code: jsKey(k), Direction: key.DirRelease})
+	}, false)
 
 	return jsc, nil
 }

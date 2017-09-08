@@ -30060,77 +30060,75 @@ $packages["github.com/oakmound/oak/timing"] = (function() {
 		var dt;
 		dt = new DynamicTicker.ptr(time.NewTicker(new time.Duration(838190, 1362165760)), new $Chan(time.Time, 0), new $Chan(ptrType, 0), new $Chan($Bool, 0));
 		$go((function $b(dt$1) {
-			var _r, _r$1, _r$2, _r$3, _r$4, _r$5, _selection, _selection$1, _selection$2, dt$1, r, r$1, r$2, ticker, ticker$1, ticker$2, v, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _selection = $f._selection; _selection$1 = $f._selection$1; _selection$2 = $f._selection$2; dt$1 = $f.dt$1; r = $f.r; r$1 = $f.r$1; r$2 = $f.r$2; ticker = $f.ticker; ticker$1 = $f.ticker$1; ticker$2 = $f.ticker$2; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			var _r, _r$1, _r$2, _r$3, _r$4, _selection, _selection$1, _selection$2, dt$1, r, r$1, r$2, ticker, ticker$1, ticker$2, v, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _selection = $f._selection; _selection$1 = $f._selection$1; _selection$2 = $f._selection$2; dt$1 = $f.dt$1; r = $f.r; r$1 = $f.r$1; r$2 = $f.r$2; ticker = $f.ticker; ticker$1 = $f.ticker$1; ticker$2 = $f.ticker$2; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			_r = fmt.Println(new sliceType([new $String("dynamic ticker goroutine started")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_r;
 			/* while (true) { */ case 2:
-				_r$1 = fmt.Println(new sliceType([new $String("Waiting on dynamic ticker signal")])); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_r$1;
-				_r$2 = $select([[dt$1.ticker.C], [dt$1.resetCh], [dt$1.forceTick]]); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				_selection = _r$2;
-				/* */ if (_selection[0] === 0) { $s = 6; continue; }
-				/* */ if (_selection[0] === 1) { $s = 7; continue; }
-				/* */ if (_selection[0] === 2) { $s = 8; continue; }
-				/* */ $s = 9; continue;
-				/* if (_selection[0] === 0) { */ case 6:
+				_r$1 = $select([[dt$1.ticker.C], [dt$1.resetCh], [dt$1.forceTick]]); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_selection = _r$1;
+				/* */ if (_selection[0] === 0) { $s = 5; continue; }
+				/* */ if (_selection[0] === 1) { $s = 6; continue; }
+				/* */ if (_selection[0] === 2) { $s = 7; continue; }
+				/* */ $s = 8; continue;
+				/* if (_selection[0] === 0) { */ case 5:
 					v = $clone(_selection[1][0], time.Time);
-					/* while (true) { */ case 10:
-						_r$3 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, $clone(v, time.Time)]]); /* */ $s = 12; case 12: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-						_selection$1 = _r$3;
+					/* while (true) { */ case 9:
+						_r$2 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, $clone(v, time.Time)]]); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+						_selection$1 = _r$2;
 						if (_selection$1[0] === 0) {
 							r = _selection$1[1][0];
 							if (!r) {
 								dt$1.close();
 								$s = -1; return;
 							}
-							/* continue; */ $s = 10; continue;
+							/* continue; */ $s = 9; continue;
 						} else if (_selection$1[0] === 1) {
 							ticker = _selection$1[1][0];
 							dt$1.ticker.Stop();
 							dt$1.ticker = ticker;
-							/* break tickLoop; */ $s = 11; continue s;
+							/* break tickLoop; */ $s = 10; continue s;
 						} else if (_selection$1[0] === 2) {
-							/* break tickLoop; */ $s = 11; continue s;
+							/* break tickLoop; */ $s = 10; continue s;
 						}
-					/* } */ $s = 10; continue; case 11:
-					$s = 9; continue;
-				/* } else if (_selection[0] === 1) { */ case 7:
+					/* } */ $s = 9; continue; case 10:
+					$s = 8; continue;
+				/* } else if (_selection[0] === 1) { */ case 6:
 					ticker$1 = _selection[1][0];
-					_r$4 = fmt.Println(new sliceType([new $String("Received tick reset signal")])); /* */ $s = 13; case 13: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-					_r$4;
+					_r$3 = fmt.Println(new sliceType([new $String("Received tick reset signal")])); /* */ $s = 12; case 12: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+					_r$3;
 					dt$1.ticker.Stop();
 					dt$1.ticker = ticker$1;
-					$s = 9; continue;
-				/* } else if (_selection[0] === 2) { */ case 8:
+					$s = 8; continue;
+				/* } else if (_selection[0] === 2) { */ case 7:
 					r$1 = _selection[1][0];
 					if (!r$1) {
 						dt$1.close();
 						$s = -1; return;
 					}
-					/* while (true) { */ case 14:
-						_r$5 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$1.nil)]]); /* */ $s = 16; case 16: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-						_selection$2 = _r$5;
+					/* while (true) { */ case 13:
+						_r$4 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$1.nil)]]); /* */ $s = 15; case 15: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+						_selection$2 = _r$4;
 						if (_selection$2[0] === 0) {
 							r$2 = _selection$2[1][0];
 							if (!r$2) {
 								dt$1.close();
 								$s = -1; return;
 							}
-							/* continue; */ $s = 14; continue;
+							/* continue; */ $s = 13; continue;
 						} else if (_selection$2[0] === 1) {
 							ticker$2 = _selection$2[1][0];
 							dt$1.ticker.Stop();
 							dt$1.ticker = ticker$2;
-							/* break forceLoop; */ $s = 15; continue s;
+							/* break forceLoop; */ $s = 14; continue s;
 						} else if (_selection$2[0] === 2) {
-							/* break forceLoop; */ $s = 15; continue s;
+							/* break forceLoop; */ $s = 14; continue s;
 						}
-					/* } */ $s = 14; continue; case 15:
-				/* } */ case 9:
+					/* } */ $s = 13; continue; case 14:
+				/* } */ case 8:
 			/* } */ $s = 2; continue; case 3:
 			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._selection = _selection; $f._selection$1 = _selection$1; $f._selection$2 = _selection$2; $f.dt$1 = dt$1; $f.r = r; $f.r$1 = r$1; $f.r$2 = r$2; $f.ticker = ticker; $f.ticker$1 = ticker$1; $f.ticker$2 = ticker$2; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._selection = _selection; $f._selection$1 = _selection$1; $f._selection$2 = _selection$2; $f.dt$1 = dt$1; $f.r = r; $f.r$1 = r$1; $f.r$2 = r$2; $f.ticker = ticker; $f.ticker$1 = ticker$1; $f.ticker$2 = ticker$2; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
 		}), [dt]);
 		return dt;
 	};
@@ -60747,7 +60745,7 @@ $packages["golang.org/x/mobile/event/size"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/oakmound/oak"] = (function() {
-	var $pkg = {}, $init, json, errors, fmt, toml, js, alg, audio, collision, dlog, event, fileutil, mouse, physics, render, mod, timing, gesture, screen, f64, key, lifecycle, mouse$1, size, image, color, draw, io, rand, filepath, runtime, strings, sync, time, JSBuffer, Config, Assets, Debug, Screen, Font, transitionFunction, Scene, SceneResult, SceneEnd, SceneStart, SceneUpdate, JSScreen, JSTexture, rect, JSWindow, ptrType, ptrType$1, arrayType, sliceType, ptrType$2, ptrType$3, sliceType$1, ptrType$6, ptrType$7, sliceType$2, sliceType$3, ptrType$8, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, conf, imageBlack, drawLoopPublishDef, drawLoopPublish, transitionCh, sceneCh, skipSceneCh, quitCh, drawCh, debugResetCh, viewportCh, debugResetInProgress, eb, globalFirstScene, zeroPoint, eFilter, eventFn, keyBinds, keyBindLock, keyState, keyDurations, keyLock, durationLock, winBuffer, screenControl, windowControl, windowRect, windowUpdateCh, initControl, lifecycleInit, aspectRatio, startupLoadCh, framesElapsed, currentSeed, sceneMap, useViewBounds, viewBounds, initConfAssets, initConfDebug, initConfScreen, initConfFont, initConf, InitDriver, windowController, defaultDebugConsole, drawLoop, Init, inputLoop, GetKeyBind, setUp, setDown, IsDown, SetLang, lifecycleLoop, changeWindow, ChangeWindow, loadAssets, endLoad, logicLoop, SetPanicOnFault, SeedRNG, sceneTransition, AddScene, sceneLoop, updateScreen;
+	var $pkg = {}, $init, json, errors, fmt, toml, js, alg, audio, collision, dlog, event, fileutil, mouse$1, physics, render, mod, timing, gesture, screen, f64, key, lifecycle, mouse, size, image, color, draw, io, rand, filepath, runtime, strings, sync, time, JSBuffer, Config, Assets, Debug, Screen, Font, transitionFunction, Scene, SceneResult, SceneEnd, SceneStart, SceneUpdate, JSScreen, JSTexture, rect, JSWindow, ptrType, ptrType$1, arrayType, ptrType$2, sliceType, ptrType$3, sliceType$1, ptrType$6, ptrType$7, funcType, ptrType$8, sliceType$2, sliceType$3, ptrType$9, ptrType$10, ptrType$11, ptrType$12, ptrType$13, conf, imageBlack, drawLoopPublishDef, drawLoopPublish, transitionCh, sceneCh, skipSceneCh, quitCh, drawCh, debugResetCh, viewportCh, debugResetInProgress, eb, globalFirstScene, zeroPoint, jsMouseButtons, jsKeys, eFilter, eventFn, keyBinds, keyBindLock, keyState, keyDurations, keyLock, durationLock, winBuffer, screenControl, windowControl, windowRect, windowUpdateCh, initControl, lifecycleInit, aspectRatio, startupLoadCh, framesElapsed, currentSeed, sceneMap, useViewBounds, viewBounds, initConfAssets, initConfDebug, initConfScreen, initConfFont, initConf, InitDriver, windowController, defaultDebugConsole, drawLoop, Init, jsMouseButton, jsKey, inputLoop, GetKeyBind, setUp, setDown, IsDown, SetLang, lifecycleLoop, changeWindow, ChangeWindow, loadAssets, endLoad, logicLoop, SetPanicOnFault, SeedRNG, sceneTransition, AddScene, sceneLoop, updateScreen;
 	json = $packages["encoding/json"];
 	errors = $packages["errors"];
 	fmt = $packages["fmt"];
@@ -60759,7 +60757,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 	dlog = $packages["github.com/oakmound/oak/dlog"];
 	event = $packages["github.com/oakmound/oak/event"];
 	fileutil = $packages["github.com/oakmound/oak/fileutil"];
-	mouse = $packages["github.com/oakmound/oak/mouse"];
+	mouse$1 = $packages["github.com/oakmound/oak/mouse"];
 	physics = $packages["github.com/oakmound/oak/physics"];
 	render = $packages["github.com/oakmound/oak/render"];
 	mod = $packages["github.com/oakmound/oak/render/mod"];
@@ -60769,7 +60767,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 	f64 = $packages["golang.org/x/image/math/f64"];
 	key = $packages["golang.org/x/mobile/event/key"];
 	lifecycle = $packages["golang.org/x/mobile/event/lifecycle"];
-	mouse$1 = $packages["golang.org/x/mobile/event/mouse"];
+	mouse = $packages["golang.org/x/mobile/event/mouse"];
 	size = $packages["golang.org/x/mobile/event/size"];
 	image = $packages["image"];
 	color = $packages["image/color"];
@@ -60785,7 +60783,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.rect = new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0));
-			this.rgba = ptrType$7.nil;
+			this.rgba = ptrType$8.nil;
 			return;
 		}
 		this.rect = rect_;
@@ -60908,7 +60906,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 	JSTexture = $pkg.JSTexture = $newType(0, $kindStruct, "oak.JSTexture", true, "github.com/oakmound/oak", true, function(JSBuffer_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.JSBuffer = new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$7.nil);
+			this.JSBuffer = new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$8.nil);
 			return;
 		}
 		this.JSBuffer = JSBuffer_;
@@ -60927,35 +60925,40 @@ $packages["github.com/oakmound/oak"] = (function() {
 		this.maxX = maxX_;
 		this.maxY = maxY_;
 	});
-	JSWindow = $pkg.JSWindow = $newType(0, $kindStruct, "oak.JSWindow", true, "github.com/oakmound/oak", true, function(ctx_, jsUint8_, imgData_) {
+	JSWindow = $pkg.JSWindow = $newType(0, $kindStruct, "oak.JSWindow", true, "github.com/oakmound/oak", true, function(ctx_, jsUint8_, imgData_, events_, eventLock_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.ctx = null;
 			this.jsUint8 = null;
 			this.imgData = null;
+			this.events = sliceType.nil;
+			this.eventLock = new sync.Mutex.ptr(0, 0);
 			return;
 		}
 		this.ctx = ctx_;
 		this.jsUint8 = jsUint8_;
 		this.imgData = imgData_;
+		this.events = events_;
+		this.eventLock = eventLock_;
 	});
 	ptrType = $ptrType(timing.DynamicTicker);
 	ptrType$1 = $ptrType(event.Bus);
 	arrayType = $arrayType($Int, 2);
-	sliceType = $sliceType($emptyInterface);
 	ptrType$2 = $ptrType(screen.DrawOptions);
+	sliceType = $sliceType($emptyInterface);
 	ptrType$3 = $ptrType(SceneResult);
 	sliceType$1 = $sliceType($String);
 	ptrType$6 = $ptrType(Scene);
-	ptrType$7 = $ptrType(image.RGBA);
+	ptrType$7 = $ptrType(js.Object);
+	funcType = $funcType([ptrType$7], [], false);
+	ptrType$8 = $ptrType(image.RGBA);
 	sliceType$2 = $sliceType($Float64);
 	sliceType$3 = $sliceType($Uint8);
-	ptrType$8 = $ptrType(JSBuffer);
-	ptrType$9 = $ptrType(screen.NewWindowOptions);
-	ptrType$10 = $ptrType(JSScreen);
-	ptrType$11 = $ptrType(JSTexture);
-	ptrType$12 = $ptrType(JSWindow);
-	ptrType$13 = $ptrType(js.Object);
+	ptrType$9 = $ptrType(JSBuffer);
+	ptrType$10 = $ptrType(screen.NewWindowOptions);
+	ptrType$11 = $ptrType(JSScreen);
+	ptrType$12 = $ptrType(JSTexture);
+	ptrType$13 = $ptrType(JSWindow);
 	JSBuffer.ptr.prototype.Release = function() {
 		var jsb, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; jsb = $f.jsb; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -61083,8 +61086,8 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: defaultDebugConsole }; } $f._r = _r; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	drawLoop = function() {
-		var _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$14, _r$15, _r$16, _r$17, _r$18, _r$19, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _selection, _selection$1, _tuple, err, tx, viewPoint, viewPoint$1, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$15 = $f._r$15; _r$16 = $f._r$16; _r$17 = $f._r$17; _r$18 = $f._r$18; _r$19 = $f._r$19; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; err = $f.err; tx = $f.tx; viewPoint = $f.viewPoint; viewPoint$1 = $f.viewPoint$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$14, _r$15, _r$16, _r$17, _r$18, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _selection, _selection$1, _tuple, err, tx, viewPoint, viewPoint$1, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$15 = $f._r$15; _r$16 = $f._r$16; _r$17 = $f._r$17; _r$18 = $f._r$18; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; err = $f.err; tx = $f.tx; viewPoint = $f.viewPoint; viewPoint$1 = $f.viewPoint$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = $recv(drawCh); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r[0];
 		SetPanicOnFault();
@@ -61172,23 +61175,21 @@ $packages["github.com/oakmound/oak"] = (function() {
 				$r = updateScreen(viewPoint$1[0], viewPoint$1[1]); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 20; continue;
 			/* } else if (_selection[0] === 3) { */ case 19:
-				_r$16 = fmt.Println(new sliceType([new $String("Draw Ticker signal received")])); /* */ $s = 45; case 45: if($c) { $c = false; _r$16 = _r$16.$blk(); } if (_r$16 && _r$16.$blk !== undefined) { break s; }
-				_r$16;
-				_r$17 = winBuffer.RGBA(); /* */ $s = 46; case 46: if($c) { $c = false; _r$17 = _r$17.$blk(); } if (_r$17 && _r$17.$blk !== undefined) { break s; }
-				_arg$8 = _r$17;
-				_r$18 = winBuffer.Bounds(); /* */ $s = 47; case 47: if($c) { $c = false; _r$18 = _r$18.$blk(); } if (_r$18 && _r$18.$blk !== undefined) { break s; }
-				_arg$9 = $clone(_r$18, image.Rectangle);
+				_r$16 = winBuffer.RGBA(); /* */ $s = 45; case 45: if($c) { $c = false; _r$16 = _r$16.$blk(); } if (_r$16 && _r$16.$blk !== undefined) { break s; }
+				_arg$8 = _r$16;
+				_r$17 = winBuffer.Bounds(); /* */ $s = 46; case 46: if($c) { $c = false; _r$17 = _r$17.$blk(); } if (_r$17 && _r$17.$blk !== undefined) { break s; }
+				_arg$9 = $clone(_r$17, image.Rectangle);
 				_arg$10 = imageBlack;
 				_arg$11 = $clone(zeroPoint, image.Point);
-				$r = draw.Draw(_arg$8, _arg$9, _arg$10, _arg$11, 1); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = render.PreDraw(); /* */ $s = 49; case 49: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_r$19 = winBuffer.RGBA(); /* */ $s = 50; case 50: if($c) { $c = false; _r$19 = _r$19.$blk(); } if (_r$19 && _r$19.$blk !== undefined) { break s; }
-				$r = render.GlobalDrawStack.Draw(_r$19, $clone($pkg.ViewPos, image.Point), $pkg.ScreenWidth, $pkg.ScreenHeight); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = drawLoopPublish(tx); /* */ $s = 52; case 52: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = draw.Draw(_arg$8, _arg$9, _arg$10, _arg$11, 1); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = render.PreDraw(); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$18 = winBuffer.RGBA(); /* */ $s = 49; case 49: if($c) { $c = false; _r$18 = _r$18.$blk(); } if (_r$18 && _r$18.$blk !== undefined) { break s; }
+				$r = render.GlobalDrawStack.Draw(_r$18, $clone($pkg.ViewPos, image.Point), $pkg.ScreenWidth, $pkg.ScreenHeight); /* */ $s = 50; case 50: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = drawLoopPublish(tx); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } } */ case 20:
 		/* } */ $s = 13; continue; case 14:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: drawLoop }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$14 = _r$14; $f._r$15 = _r$15; $f._r$16 = _r$16; $f._r$17 = _r$17; $f._r$18 = _r$18; $f._r$19 = _r$19; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f.err = err; $f.tx = tx; $f.viewPoint = viewPoint; $f.viewPoint$1 = viewPoint$1; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: drawLoop }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$14 = _r$14; $f._r$15 = _r$15; $f._r$16 = _r$16; $f._r$17 = _r$17; $f._r$18 = _r$18; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f.err = err; $f.tx = tx; $f.viewPoint = viewPoint; $f.viewPoint$1 = viewPoint$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Init = function(firstScene) {
 		var _tuple, audioDir, firstScene, imageDir, wd, $s, $r;
@@ -61221,9 +61222,29 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Init }; } $f._tuple = _tuple; $f.audioDir = audioDir; $f.firstScene = firstScene; $f.imageDir = imageDir; $f.wd = wd; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.Init = Init;
+	jsMouseButton = function(i) {
+		var _entry, _tuple, i, ok, v;
+		_tuple = (_entry = jsMouseButtons[$Int.keyFor(i)], _entry !== undefined ? [_entry.v, true] : [0, false]);
+		v = _tuple[0];
+		ok = _tuple[1];
+		if (ok) {
+			return v;
+		}
+		return 0;
+	};
+	jsKey = function(i) {
+		var _entry, _tuple, i, ok, v;
+		_tuple = (_entry = jsKeys[$Int.keyFor(i)], _entry !== undefined ? [_entry.v, true] : [0, false]);
+		v = _tuple[0];
+		ok = _tuple[1];
+		if (ok) {
+			return v;
+		}
+		return 0;
+	};
 	inputLoop = function() {
-		var _r, _r$1, _r$2, _r$3, _r$4, _ref, button, e, e$1, e$2, e$3, e$4, e$5, eventName, eventName$1, k, mevent, schedCt, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _ref = $f._ref; button = $f.button; e = $f.e; e$1 = $f.e$1; e$2 = $f.e$2; e$3 = $f.e$3; e$4 = $f.e$4; e$5 = $f.e$5; eventName = $f.eventName; eventName$1 = $f.eventName$1; k = $f.k; mevent = $f.mevent; schedCt = $f.schedCt; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _ref, button, e, e$1, e$2, e$3, e$4, e$5, eventName, eventName$1, k, mevent, schedCt, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _ref = $f._ref; button = $f.button; e = $f.e; e$1 = $f.e$1; e$2 = $f.e$2; e$3 = $f.e$3; e$4 = $f.e$4; e$5 = $f.e$5; eventName = $f.eventName; eventName$1 = $f.eventName$1; k = $f.k; mevent = $f.mevent; schedCt = $f.schedCt; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = fmt.Println(new sliceType([new $String("Input loop goroutine start")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r;
 		/* */ if (conf.GestureSupport) { $s = 2; continue; }
@@ -61248,7 +61269,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 			_ref = _r$1;
 			/* */ if ($assertType(_ref, lifecycle.Event, true)[1]) { $s = 8; continue; }
 			/* */ if ($assertType(_ref, key.Event, true)[1]) { $s = 9; continue; }
-			/* */ if ($assertType(_ref, mouse$1.Event, true)[1]) { $s = 10; continue; }
+			/* */ if ($assertType(_ref, mouse.Event, true)[1]) { $s = 10; continue; }
 			/* */ if ($assertType(_ref, gesture.Event, true)[1]) { $s = 11; continue; }
 			/* */ if ($assertType(_ref, size.Event, true)[1]) { $s = 12; continue; }
 			/* */ if ($assertType(_ref, $error, true)[1]) { $s = 13; continue; }
@@ -61264,66 +61285,70 @@ $packages["github.com/oakmound/oak"] = (function() {
 				$s = 14; continue;
 			/* } else if ($assertType(_ref, key.Event, true)[1]) { */ case 9:
 				e$1 = $clone(_ref.$val, key.Event);
-				_r$2 = new key.Code(e$1.Code).String(); /* */ $s = 18; case 18: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				_r$3 = GetKeyBind($substring(_r$2, 4)); /* */ $s = 19; case 19: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-				k = _r$3;
-				/* */ if (e$1.Direction === 1) { $s = 20; continue; }
-				/* */ if (e$1.Direction === 2) { $s = 21; continue; }
-				/* */ $s = 22; continue;
-				/* if (e$1.Direction === 1) { */ case 20:
-					$r = setDown(k); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$2 = fmt.Println(new sliceType([new $String("Key event"), new e$1.constructor.elem(e$1)])); /* */ $s = 18; case 18: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				_r$2;
+				_r$3 = new key.Code(e$1.Code).String(); /* */ $s = 19; case 19: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				_r$4 = GetKeyBind($substring(_r$3, 4)); /* */ $s = 20; case 20: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+				k = _r$4;
+				/* */ if (e$1.Direction === 1) { $s = 21; continue; }
+				/* */ if (e$1.Direction === 2) { $s = 22; continue; }
+				/* */ $s = 23; continue;
+				/* if (e$1.Direction === 1) { */ case 21:
+					$r = setDown(k); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					eb.Trigger("KeyDown", new $String(k));
 					eb.Trigger("KeyDown" + k, $ifaceNil);
-					$s = 22; continue;
-				/* } else if (e$1.Direction === 2) { */ case 21:
-					$r = setUp(k); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 23; continue;
+				/* } else if (e$1.Direction === 2) { */ case 22:
+					$r = setUp(k); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					eb.Trigger("KeyUp", new $String(k));
 					eb.Trigger("KeyUp" + k, $ifaceNil);
-				/* } */ case 22:
+				/* } */ case 23:
 				$s = 14; continue;
-			/* } else if ($assertType(_ref, mouse$1.Event, true)[1]) { */ case 10:
-				e$2 = $clone(_ref.$val, mouse$1.Event);
-				button = mouse.GetMouseButton(e$2.Button);
-				eventName = mouse.GetEventName(e$2.Direction, e$2.Button);
-				/* */ if (e$2.Direction === 1) { $s = 25; continue; }
-				/* */ if (e$2.Direction === 2) { $s = 26; continue; }
-				/* */ $s = 27; continue;
-				/* if (e$2.Direction === 1) { */ case 25:
-					$r = setDown(button); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 27; continue;
-				/* } else if (e$2.Direction === 2) { */ case 26:
-					$r = setUp(button); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 27:
-				mevent = new mouse.Event.ptr($fround(($fround(($fround(e$2.X - (windowRect.Min.X))) / ((windowRect.Max.X - windowRect.Min.X >> 0)))) * ($pkg.ScreenWidth)), $fround(($fround(($fround(e$2.Y - (windowRect.Min.Y))) / ((windowRect.Max.Y - windowRect.Min.Y >> 0)))) * ($pkg.ScreenHeight)), button, eventName);
-				mouse.Event.copy(mouse.LastMouseEvent, mevent);
+			/* } else if ($assertType(_ref, mouse.Event, true)[1]) { */ case 10:
+				e$2 = $clone(_ref.$val, mouse.Event);
+				_r$5 = fmt.Println(new sliceType([new $String("Mouse event"), new e$2.constructor.elem(e$2)])); /* */ $s = 26; case 26: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+				_r$5;
+				button = mouse$1.GetMouseButton(e$2.Button);
+				eventName = mouse$1.GetEventName(e$2.Direction, e$2.Button);
+				/* */ if (e$2.Direction === 1) { $s = 27; continue; }
+				/* */ if (e$2.Direction === 2) { $s = 28; continue; }
+				/* */ $s = 29; continue;
+				/* if (e$2.Direction === 1) { */ case 27:
+					$r = setDown(button); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 29; continue;
+				/* } else if (e$2.Direction === 2) { */ case 28:
+					$r = setUp(button); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 29:
+				mevent = new mouse$1.Event.ptr($fround(($fround(($fround(e$2.X - (windowRect.Min.X))) / ((windowRect.Max.X - windowRect.Min.X >> 0)))) * ($pkg.ScreenWidth)), $fround(($fround(($fround(e$2.Y - (windowRect.Min.Y))) / ((windowRect.Max.Y - windowRect.Min.Y >> 0)))) * ($pkg.ScreenHeight)), button, eventName);
+				mouse$1.Event.copy(mouse$1.LastMouseEvent, mevent);
 				eb.Trigger(eventName, new mevent.constructor.elem(mevent));
-				$r = mouse.Propagate(eventName + "On", $clone(mevent, mouse.Event)); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = mouse$1.Propagate(eventName + "On", $clone(mevent, mouse$1.Event)); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 14; continue;
 			/* } else if ($assertType(_ref, gesture.Event, true)[1]) { */ case 11:
 				e$3 = $clone(_ref.$val, gesture.Event);
-				_r$4 = new gesture.Type(e$3.Type).String(); /* */ $s = 31; case 31: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-				eventName$1 = "Gesture" + _r$4;
-				$r = dlog.Verb(new sliceType([new $String(eventName$1)])); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				eb.Trigger(eventName$1, (x = mouse.FromShinyGesture($clone(e$3, gesture.Event)), new x.constructor.elem(x)));
+				_r$6 = new gesture.Type(e$3.Type).String(); /* */ $s = 33; case 33: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+				eventName$1 = "Gesture" + _r$6;
+				$r = dlog.Verb(new sliceType([new $String(eventName$1)])); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				eb.Trigger(eventName$1, (x = mouse$1.FromShinyGesture($clone(e$3, gesture.Event)), new x.constructor.elem(x)));
 				$s = 14; continue;
 			/* } else if ($assertType(_ref, size.Event, true)[1]) { */ case 12:
 				e$4 = $clone(_ref.$val, size.Event);
-				$r = ChangeWindow(e$4.WidthPx, e$4.HeightPx); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = ChangeWindow(e$4.WidthPx, e$4.HeightPx); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 14; continue;
 			/* } else if ($assertType(_ref, $error, true)[1]) { */ case 13:
 				e$5 = _ref;
-				$r = dlog.Error(new sliceType([e$5])); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = dlog.Error(new sliceType([e$5])); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 14:
 			schedCt = schedCt + (1) >> 0;
-			/* */ if (schedCt > 100) { $s = 35; continue; }
-			/* */ $s = 36; continue;
-			/* if (schedCt > 100) { */ case 35:
+			/* */ if (schedCt > 100) { $s = 37; continue; }
+			/* */ $s = 38; continue;
+			/* if (schedCt > 100) { */ case 37:
 				schedCt = 0;
-				$r = runtime.Gosched(); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 36:
+				$r = runtime.Gosched(); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 38:
 		/* } */ $s = 5; continue; case 6:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: inputLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._ref = _ref; $f.button = button; $f.e = e; $f.e$1 = e$1; $f.e$2 = e$2; $f.e$3 = e$3; $f.e$4 = e$4; $f.e$5 = e$5; $f.eventName = eventName; $f.eventName$1 = eventName$1; $f.k = k; $f.mevent = mevent; $f.schedCt = schedCt; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: inputLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._ref = _ref; $f.button = button; $f.e = e; $f.e$1 = e$1; $f.e$2 = e$2; $f.e$3 = e$3; $f.e$4 = e$4; $f.e$5 = e$5; $f.eventName = eventName; $f.eventName$1 = eventName$1; $f.k = k; $f.mevent = mevent; $f.schedCt = schedCt; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	GetKeyBind = function(key$1) {
 		var _entry, _tuple, key$1, ok, v, $s, $deferred, $r;
@@ -61757,7 +61782,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 			$r = event.ResetBus(); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = dlog.Verb(new sliceType([new $String("Event Bus Reset")])); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			collision.Clear();
-			mouse.Clear();
+			mouse$1.Clear();
 			$r = event.ResetEntities(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = render.ResetDrawStack(); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = render.PreDraw(); /* */ $s = 40; case 40: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
@@ -61801,19 +61826,69 @@ $packages["github.com/oakmound/oak"] = (function() {
 	JSScreen.ptr.prototype.NewWindow = function(opts) {
 		var _r, bdy, canvas, document, jsc, jss, opts, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; bdy = $f.bdy; canvas = $f.canvas; document = $f.document; jsc = $f.jsc; jss = $f.jss; opts = $f.opts; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		canvas = [canvas];
+		jsc = [jsc];
 		jss = this;
 		_r = fmt.Println(new sliceType([new $String("New JS Window")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r;
-		jsc = new JSWindow.ptr(null, null, null);
+		jsc[0] = new JSWindow.ptr(null, null, null, sliceType.nil, new sync.Mutex.ptr(0, 0));
 		document = $global.document;
-		canvas = document.createElement($externalize("canvas", $String));
-		canvas.style.display = $externalize("block", $String);
-		canvas.width = $pkg.ScreenWidth;
-		canvas.height = $pkg.ScreenHeight;
-		jsc.ctx = canvas.getContext($externalize("2d", $String));
+		canvas[0] = document.createElement($externalize("canvas", $String));
+		canvas[0].style.display = $externalize("block", $String);
+		canvas[0].width = $pkg.ScreenWidth;
+		canvas[0].height = $pkg.ScreenHeight;
+		jsc[0].ctx = canvas[0].getContext($externalize("2d", $String));
 		bdy = document.body;
-		bdy.appendChild(canvas);
-		$s = -1; return [jsc, $ifaceNil];
+		bdy.appendChild(canvas[0]);
+		canvas[0].addEventListener($externalize("mousemove", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+			var ev, rect$1, x, x$1, y, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			rect$1 = canvas[0].getBoundingClientRect();
+			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
+			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
+			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, 0, 0, 0), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
+		canvas[0].addEventListener($externalize("mousedown", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+			var button, ev, rect$1, x, x$1, y, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; button = $f.button; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			rect$1 = canvas[0].getBoundingClientRect();
+			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
+			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
+			button = jsMouseButton($parseInt(ev.button) >> 0);
+			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 1), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.button = button; $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
+		canvas[0].addEventListener($externalize("mouseup", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+			var button, ev, rect$1, x, x$1, y, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; button = $f.button; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			rect$1 = canvas[0].getBoundingClientRect();
+			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
+			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
+			button = jsMouseButton($parseInt(ev.button) >> 0);
+			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 2), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.button = button; $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
+		$global.addEventListener($externalize("keydown", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+			var ev, k, x, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; k = $f.k; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			k = $parseInt(ev.keyCode) >> 0;
+			$r = jsc[0].Send((x = new key.Event.ptr(0, jsKey(k), 0, 1), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.k = k; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
+		$global.addEventListener($externalize("keyup", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+			var ev, k, x, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; k = $f.k; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			k = $parseInt(ev.keyCode) >> 0;
+			$r = jsc[0].Send((x = new key.Event.ptr(0, jsKey(k), 0, 2), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.k = k; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
+		$s = -1; return [jsc[0], $ifaceNil];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewWindow }; } $f._r = _r; $f.bdy = bdy; $f.canvas = canvas; $f.document = document; $f.jsc = jsc; $f.jss = jss; $f.opts = opts; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	JSScreen.prototype.NewWindow = function(opts) { return this.$val.NewWindow(opts); };
@@ -61823,7 +61898,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		jss = this;
 		_r = fmt.Println(new sliceType([new $String("New JS Texture")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r;
-		txt = new JSTexture.ptr(new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$7.nil));
+		txt = new JSTexture.ptr(new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$8.nil));
 		$s = -1; return [txt, $ifaceNil];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewTexture }; } $f._r = _r; $f.jss = jss; $f.p = p; $f.txt = txt; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -61908,7 +61983,9 @@ $packages["github.com/oakmound/oak"] = (function() {
 		var event$1, jsc, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; event$1 = $f.event$1; jsc = $f.jsc; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		jsc = this;
-		$r = dlog.Error(new sliceType([new $String("Send is not yet supported for JSWindow")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = jsc.eventLock.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		jsc.events = $append(jsc.events, event$1);
+		$r = jsc.eventLock.Unlock(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.Send }; } $f.event$1 = event$1; $f.jsc = jsc; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -61923,9 +62000,20 @@ $packages["github.com/oakmound/oak"] = (function() {
 	};
 	JSWindow.prototype.SendFirst = function(event$1) { return this.$val.SendFirst(event$1); };
 	JSWindow.ptr.prototype.NextEvent = function() {
-		var jsc;
+		var ev, jsc, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; jsc = $f.jsc; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		jsc = this;
-		return $ifaceNil;
+		/* */ if (jsc.events.$length > 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (jsc.events.$length > 0) { */ case 1:
+			$r = jsc.eventLock.Lock(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			ev = (x = jsc.events, (0 >= x.$length ? ($throwRuntimeError("index out of range"), undefined) : x.$array[x.$offset + 0]));
+			jsc.events = $subslice(jsc.events, 1);
+			$r = jsc.eventLock.Unlock(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return ev;
+		/* } */ case 2:
+		$s = -1; return $ifaceNil;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.NextEvent }; } $f.ev = ev; $f.jsc = jsc; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	JSWindow.prototype.NextEvent = function() { return this.$val.NextEvent(); };
 	JSWindow.ptr.prototype.Upload = function(dp, src, sr) {
@@ -61969,17 +62057,17 @@ $packages["github.com/oakmound/oak"] = (function() {
 		jsc = this;
 	};
 	JSWindow.prototype.Scale = function(dr, src, sr, op, opts) { return this.$val.Scale(dr, src, sr, op, opts); };
-	ptrType$8.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Size", name: "Size", pkg: "", typ: $funcType([], [image.Point], false)}, {prop: "Bounds", name: "Bounds", pkg: "", typ: $funcType([], [image.Rectangle], false)}, {prop: "RGBA", name: "RGBA", pkg: "", typ: $funcType([], [ptrType$7], false)}];
-	ptrType$10.methods = [{prop: "NewBuffer", name: "NewBuffer", pkg: "", typ: $funcType([image.Point], [screen.Buffer, $error], false)}, {prop: "NewWindow", name: "NewWindow", pkg: "", typ: $funcType([ptrType$9], [screen.Window, $error], false)}, {prop: "NewTexture", name: "NewTexture", pkg: "", typ: $funcType([image.Point], [screen.Texture, $error], false)}];
-	ptrType$11.methods = [{prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}];
-	ptrType$12.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Publish", name: "Publish", pkg: "", typ: $funcType([], [screen.PublishResult], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "SendFirst", name: "SendFirst", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "NextEvent", name: "NextEvent", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}, {prop: "Draw", name: "Draw", pkg: "", typ: $funcType([f64.Aff3, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "DrawUniform", name: "DrawUniform", pkg: "", typ: $funcType([f64.Aff3, color.Color, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Copy", name: "Copy", pkg: "", typ: $funcType([image.Point, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Scale", name: "Scale", pkg: "", typ: $funcType([image.Rectangle, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}];
-	JSBuffer.init("github.com/oakmound/oak", [{prop: "rect", name: "rect", anonymous: false, exported: false, typ: image.Rectangle, tag: ""}, {prop: "rgba", name: "rgba", anonymous: false, exported: false, typ: ptrType$7, tag: ""}]);
+	ptrType$9.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Size", name: "Size", pkg: "", typ: $funcType([], [image.Point], false)}, {prop: "Bounds", name: "Bounds", pkg: "", typ: $funcType([], [image.Rectangle], false)}, {prop: "RGBA", name: "RGBA", pkg: "", typ: $funcType([], [ptrType$8], false)}];
+	ptrType$11.methods = [{prop: "NewBuffer", name: "NewBuffer", pkg: "", typ: $funcType([image.Point], [screen.Buffer, $error], false)}, {prop: "NewWindow", name: "NewWindow", pkg: "", typ: $funcType([ptrType$10], [screen.Window, $error], false)}, {prop: "NewTexture", name: "NewTexture", pkg: "", typ: $funcType([image.Point], [screen.Texture, $error], false)}];
+	ptrType$12.methods = [{prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}];
+	ptrType$13.methods = [{prop: "Release", name: "Release", pkg: "", typ: $funcType([], [], false)}, {prop: "Publish", name: "Publish", pkg: "", typ: $funcType([], [screen.PublishResult], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "SendFirst", name: "SendFirst", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "NextEvent", name: "NextEvent", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Upload", name: "Upload", pkg: "", typ: $funcType([image.Point, screen.Buffer, image.Rectangle], [], false)}, {prop: "Fill", name: "Fill", pkg: "", typ: $funcType([image.Rectangle, color.Color, draw.Op], [], false)}, {prop: "Draw", name: "Draw", pkg: "", typ: $funcType([f64.Aff3, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "DrawUniform", name: "DrawUniform", pkg: "", typ: $funcType([f64.Aff3, color.Color, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Copy", name: "Copy", pkg: "", typ: $funcType([image.Point, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}, {prop: "Scale", name: "Scale", pkg: "", typ: $funcType([image.Rectangle, screen.Texture, image.Rectangle, draw.Op, ptrType$2], [], false)}];
+	JSBuffer.init("github.com/oakmound/oak", [{prop: "rect", name: "rect", anonymous: false, exported: false, typ: image.Rectangle, tag: ""}, {prop: "rgba", name: "rgba", anonymous: false, exported: false, typ: ptrType$8, tag: ""}]);
 	Config.init("", [{prop: "Assets", name: "Assets", anonymous: false, exported: true, typ: Assets, tag: "json:\"assets\""}, {prop: "Debug", name: "Debug", anonymous: false, exported: true, typ: Debug, tag: "json:\"debug\""}, {prop: "Screen", name: "Screen", anonymous: false, exported: true, typ: Screen, tag: "json:\"screen\""}, {prop: "Font", name: "Font", anonymous: false, exported: true, typ: Font, tag: "json:\"font\""}, {prop: "FrameRate", name: "FrameRate", anonymous: false, exported: true, typ: $Int, tag: "json:\"frameRate\""}, {prop: "DrawFrameRate", name: "DrawFrameRate", anonymous: false, exported: true, typ: $Int, tag: "json:\"drawFrameRate\""}, {prop: "Language", name: "Language", anonymous: false, exported: true, typ: $String, tag: "json:\"language\""}, {prop: "Title", name: "Title", anonymous: false, exported: true, typ: $String, tag: "json:\"title\""}, {prop: "BatchLoad", name: "BatchLoad", anonymous: false, exported: true, typ: $Bool, tag: "json:\"batchLoad\""}, {prop: "GestureSupport", name: "GestureSupport", anonymous: false, exported: true, typ: $Bool, tag: "json:\"gestureSupport\""}, {prop: "DisableKeyhold", name: "DisableKeyhold", anonymous: false, exported: true, typ: $Bool, tag: "json:\"disableKeyHold\""}]);
 	Assets.init("", [{prop: "AssetPath", name: "AssetPath", anonymous: false, exported: true, typ: $String, tag: "json:\"assetPath\""}, {prop: "AudioPath", name: "AudioPath", anonymous: false, exported: true, typ: $String, tag: "json:\"audioPath\""}, {prop: "ImagePath", name: "ImagePath", anonymous: false, exported: true, typ: $String, tag: "json:\"imagePath\""}, {prop: "FontPath", name: "FontPath", anonymous: false, exported: true, typ: $String, tag: "json:\"fontPath\""}]);
 	Debug.init("", [{prop: "Filter", name: "Filter", anonymous: false, exported: true, typ: $String, tag: "json:\"filter\""}, {prop: "Level", name: "Level", anonymous: false, exported: true, typ: $String, tag: "json:\"level\""}]);
 	Screen.init("", [{prop: "Height", name: "Height", anonymous: false, exported: true, typ: $Int, tag: "json:\"height\""}, {prop: "Width", name: "Width", anonymous: false, exported: true, typ: $Int, tag: "json:\"width\""}, {prop: "Scale", name: "Scale", anonymous: false, exported: true, typ: $Int, tag: "json:\"scale\""}]);
 	Font.init("", [{prop: "Hinting", name: "Hinting", anonymous: false, exported: true, typ: $String, tag: "json:\"hinting\""}, {prop: "Size", name: "Size", anonymous: false, exported: true, typ: $Float64, tag: "json:\"size\""}, {prop: "DPI", name: "DPI", anonymous: false, exported: true, typ: $Float64, tag: "json:\"dpi\""}, {prop: "File", name: "File", anonymous: false, exported: true, typ: $String, tag: "json:\"file\""}, {prop: "Color", name: "Color", anonymous: false, exported: true, typ: $String, tag: "json:\"color\""}]);
-	transitionFunction.init([ptrType$7, $Int], [$Bool], false);
+	transitionFunction.init([ptrType$8, $Int], [$Bool], false);
 	Scene.init("github.com/oakmound/oak", [{prop: "active", name: "active", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "start", name: "start", anonymous: false, exported: false, typ: SceneStart, tag: ""}, {prop: "loop", name: "loop", anonymous: false, exported: false, typ: SceneUpdate, tag: ""}, {prop: "end", name: "end", anonymous: false, exported: false, typ: SceneEnd, tag: ""}]);
 	SceneResult.init("", [{prop: "NextSceneInput", name: "NextSceneInput", anonymous: false, exported: true, typ: $emptyInterface, tag: ""}, {prop: "Transition", name: "Transition", anonymous: false, exported: true, typ: transitionFunction, tag: ""}]);
 	SceneEnd.init([], [$String, ptrType$3], false);
@@ -61988,7 +62076,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 	JSScreen.init("", []);
 	JSTexture.init("", [{prop: "JSBuffer", name: "JSBuffer", anonymous: true, exported: true, typ: JSBuffer, tag: ""}]);
 	rect.init("github.com/oakmound/oak", [{prop: "minX", name: "minX", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "minY", name: "minY", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "maxX", name: "maxX", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "maxY", name: "maxY", anonymous: false, exported: false, typ: $Int, tag: ""}]);
-	JSWindow.init("github.com/oakmound/oak", [{prop: "ctx", name: "ctx", anonymous: false, exported: false, typ: ptrType$13, tag: ""}, {prop: "jsUint8", name: "jsUint8", anonymous: false, exported: false, typ: ptrType$13, tag: ""}, {prop: "imgData", name: "imgData", anonymous: false, exported: false, typ: ptrType$13, tag: ""}]);
+	JSWindow.init("github.com/oakmound/oak", [{prop: "ctx", name: "ctx", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "jsUint8", name: "jsUint8", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "imgData", name: "imgData", anonymous: false, exported: false, typ: ptrType$7, tag: ""}, {prop: "events", name: "events", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "eventLock", name: "eventLock", anonymous: false, exported: false, typ: sync.Mutex, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -62003,7 +62091,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		$r = dlog.$init(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = event.$init(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = fileutil.$init(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = mouse.$init(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = mouse$1.$init(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = physics.$init(); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = render.$init(); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = mod.$init(); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
@@ -62013,7 +62101,7 @@ $packages["github.com/oakmound/oak"] = (function() {
 		$r = f64.$init(); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = key.$init(); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = lifecycle.$init(); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = mouse$1.$init(); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = mouse.$init(); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = size.$init(); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = image.$init(); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = color.$init(); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
@@ -62059,6 +62147,8 @@ $packages["github.com/oakmound/oak"] = (function() {
 		debugResetCh = new $Chan($Bool, 0);
 		viewportCh = new $Chan(arrayType, 0);
 		zeroPoint = new image.Point.ptr(0, 0);
+		jsMouseButtons = $makeMap($Int.keyFor, [{ k: 0, v: 1 }, { k: 1, v: 2 }, { k: 2, v: 3 }]);
+		jsKeys = $makeMap($Int.keyFor, [{ k: 9, v: 43 }, { k: 13, v: 40 }, { k: 32, v: 44 }, { k: 33, v: 75 }, { k: 34, v: 78 }, { k: 35, v: 77 }, { k: 36, v: 74 }, { k: 37, v: 80 }, { k: 38, v: 82 }, { k: 39, v: 79 }, { k: 40, v: 81 }, { k: 45, v: 73 }, { k: 46, v: 42 }, { k: 49, v: 39 }, { k: 50, v: 30 }, { k: 51, v: 31 }, { k: 52, v: 32 }, { k: 53, v: 33 }, { k: 54, v: 34 }, { k: 55, v: 35 }, { k: 56, v: 36 }, { k: 57, v: 37 }, { k: 58, v: 38 }, { k: 61, v: 46 }, { k: 65, v: 4 }, { k: 66, v: 5 }, { k: 67, v: 6 }, { k: 68, v: 7 }, { k: 69, v: 8 }, { k: 70, v: 9 }, { k: 71, v: 10 }, { k: 72, v: 11 }, { k: 73, v: 12 }, { k: 74, v: 13 }, { k: 75, v: 14 }, { k: 76, v: 15 }, { k: 77, v: 16 }, { k: 78, v: 17 }, { k: 79, v: 18 }, { k: 80, v: 19 }, { k: 81, v: 20 }, { k: 82, v: 21 }, { k: 83, v: 22 }, { k: 84, v: 23 }, { k: 85, v: 24 }, { k: 86, v: 25 }, { k: 87, v: 26 }, { k: 88, v: 27 }, { k: 89, v: 28 }, { k: 90, v: 29 }]);
 		keyBinds = {};
 		keyBindLock = new sync.RWMutex.ptr(new sync.Mutex.ptr(0, 0), 0, 0, 0, 0);
 		keyState = {};
@@ -62066,25 +62156,23 @@ $packages["github.com/oakmound/oak"] = (function() {
 		keyLock = new sync.RWMutex.ptr(new sync.Mutex.ptr(0, 0), 0, 0, 0, 0);
 		durationLock = new sync.RWMutex.ptr(new sync.Mutex.ptr(0, 0), 0, 0, 0, 0);
 		drawLoopPublishDef = (function $b(tx) {
-			var _arg, _arg$1, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _r, _r$1, _r$2, _r$3, tx, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; tx = $f.tx; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			_r = fmt.Println(new sliceType([new $String("Publishing")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
+			var _arg, _arg$1, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _r, _r$1, _r$2, tx, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; tx = $f.tx; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			_arg = $clone(zeroPoint, image.Point);
 			_arg$1 = winBuffer;
-			_r$1 = winBuffer.Bounds(); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_arg$2 = $clone(_r$1, image.Rectangle);
-			$r = tx.Upload(_arg, _arg$1, _arg$2); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = winBuffer.Bounds(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_arg$2 = $clone(_r, image.Rectangle);
+			$r = tx.Upload(_arg, _arg$1, _arg$2); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			_arg$3 = $clone(windowRect, image.Rectangle);
 			_arg$4 = tx;
-			_r$2 = tx.Bounds(); /* */ $s = 4; case 4: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_arg$5 = $clone(_r$2, image.Rectangle);
+			_r$1 = tx.Bounds(); /* */ $s = 3; case 3: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_arg$5 = $clone(_r$1, image.Rectangle);
 			_arg$6 = ptrType$2.nil;
-			$r = windowControl.Scale(_arg$3, _arg$4, _arg$5, 1, _arg$6); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$3 = windowControl.Publish(); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			_r$3;
+			$r = windowControl.Scale(_arg$3, _arg$4, _arg$5, 1, _arg$6); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$2 = windowControl.Publish(); /* */ $s = 5; case 5: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_r$2;
 			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f.tx = tx; $f.$s = $s; $f.$r = $r; return $f;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.tx = tx; $f.$s = $s; $f.$r = $r; return $f;
 		});
 		drawLoopPublish = drawLoopPublishDef;
 		windowUpdateCh = new $Chan($Bool, 0);
