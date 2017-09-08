@@ -3,7 +3,6 @@
 package oak
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -18,7 +17,6 @@ func AddCommand(s string, fn func([]string)) {
 func AddCheat(s string, fn func([]string)) {}
 
 func defaultDebugConsole() {
-	fmt.Println("Ditching JS debug console")
 }
 
 func debugConsole(resetCh, skipScene chan bool, input io.Reader) {}

@@ -1,7 +1,6 @@
 package oak
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/oakmound/oak/collision"
@@ -27,17 +26,14 @@ func sceneLoop(firstScene string) {
 	result := new(SceneResult)
 
 	dlog.Info("First Scene Start")
-	fmt.Println("First scene start")
 
 	// Scene goroutine waits here to send these signals.
 	drawCh <- true
 	drawCh <- true
 
 	dlog.Verb("Draw Channel Activated")
-	fmt.Println("Draw Channel Activated")
 
 	for {
-		fmt.Println("Scene start")
 		ViewPos = image.Point{0, 0}
 		updateScreen(0, 0)
 		useViewBounds = false

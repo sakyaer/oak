@@ -1,7 +1,6 @@
 package oak
 
 import (
-	"fmt"
 	"image"
 	"image/draw"
 
@@ -35,14 +34,11 @@ func drawLoop() {
 
 	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
 	drawLoopPublish(tx)
-	fmt.Println("First publish done")
 
 	DrawTicker = timing.NewDynamicTicker()
-	fmt.Println("Dynamic Ticker gotten")
 	DrawTicker.SetTick(timing.FPSToDuration(DrawFrameRate))
 
 	dlog.Verb("Draw Loop Start")
-	fmt.Println("Draw Loop Start")
 	for {
 	drawSelect:
 		select {
@@ -52,7 +48,6 @@ func drawLoop() {
 			dlog.Verb("Got something from draw channel")
 			<-drawCh
 			dlog.Verb("Starting loading")
-			fmt.Println("Starting loading")
 			for {
 				<-DrawTicker.C
 				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)

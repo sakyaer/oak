@@ -60208,7 +60208,7 @@ $packages["github.com/oakmound/oak/render"] = (function() {
 		_r$3 = buff.Bounds(); /* */ $s = 1; case 1: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_arg$1 = $clone(_r$3, image.Rectangle);
 		_arg$2 = img;
-		_arg$3 = new image.Point.ptr(x$1, y);
+		_arg$3 = new image.Point.ptr(-x$1, -y);
 		$r = draw.Draw(_arg, _arg$1, _arg$2, _arg$3, 0); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: ShinyDraw }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._r$3 = _r$3; $f.buff = buff; $f.img = img; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;

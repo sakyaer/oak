@@ -81,7 +81,7 @@ func SetStringDebugLevel(debugL string) {
 		dLevel = NONE
 	default:
 		dLevel = ERROR
-		fmt.Println("setting dlog level to \"", debugL, "\" failed, it is now set to ERROR")
+		fmt.Println("Setting dlog level to \"", debugL, "\" failed, it is now set to ERROR")
 	}
 
 	SetDebugLevel(dLevel)

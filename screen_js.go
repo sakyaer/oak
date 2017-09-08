@@ -3,7 +3,6 @@
 package oak
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -15,7 +14,6 @@ import (
 type JSScreen struct{}
 
 func (jss *JSScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
-	fmt.Println("New JS Buffer")
 	rect := image.Rect(0, 0, p.X, p.Y)
 	rgba := image.NewRGBA(rect)
 	buffer := &JSBuffer{
@@ -26,7 +24,6 @@ func (jss *JSScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
 }
 
 func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, error) {
-	fmt.Println("New JS Window")
 	jsc := new(JSWindow)
 
 	document := js.Global.Get("document")
@@ -63,10 +60,6 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 		jsc.Send(mouse.Event{X: x, Y: y, Button: button, Direction: mouse.DirRelease})
 	}, false)
 
-	// js.Global.Call("addEventListener", "keypress", func(ev *js.Object) {
-
-	// }, false)
-
 	js.Global.Call("addEventListener", "keydown", func(ev *js.Object) {
 		k := ev.Get("keyCode").Int()
 		jsc.Send(key.Event{Code: jsKey(k), Direction: key.DirPress})
@@ -81,7 +74,6 @@ func (jss *JSScreen) NewWindow(opts *screen.NewWindowOptions) (screen.Window, er
 }
 
 func (jss *JSScreen) NewTexture(p image.Point) (screen.Texture, error) {
-	fmt.Println("New JS Texture")
 	txt := new(JSTexture)
 	return txt, nil
 }

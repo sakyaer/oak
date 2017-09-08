@@ -1,7 +1,6 @@
 package oak
 
 import (
-	"fmt"
 	"runtime"
 
 	"github.com/oakmound/oak/dlog"
@@ -19,8 +18,6 @@ var (
 )
 
 func inputLoop() {
-	// This never happens on JS
-	fmt.Println("Input loop goroutine start")
 	// Obtain input events in a manner dependant on config settings
 	if conf.GestureSupport {
 		eFilter = gesture.EventFilter{EventDeque: windowControl}
@@ -33,7 +30,6 @@ func inputLoop() {
 	}
 	schedCt := 0
 	for {
-		//fmt.Println("Waiting on input")
 		switch e := eventFn().(type) {
 		// We only currently respond to death lifecycle events.
 		case lifecycle.Event:
@@ -51,10 +47,9 @@ func inputLoop() {
 		// The specific key that is pressed is passed as the data interface for
 		// the former events, but not for the latter.
 		case key.Event:
-			fmt.Println("Key event", e)
+			dlog.Verb("Key event", e)
 			k := GetKeyBind(e.Code.String()[4:])
 			if e.Direction == key.DirPress {
-				//dlog.Verb("--------------------", e.Code.String()[4:], k)
 				setDown(k)
 				eb.Trigger("KeyDown", k)
 				eb.Trigger("KeyDown"+k, nil)
@@ -78,7 +73,7 @@ func inputLoop() {
 		//
 		// Mouse events all receive an x, y, and button string.
 		case mouse.Event:
-			fmt.Println("Mouse event", e)
+			dlog.Verb("Mouse event", e)
 
 			button := pmouse.GetMouseButton(e.Button)
 			eventName := pmouse.GetEventName(e.Direction, e.Button)

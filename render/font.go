@@ -1,7 +1,6 @@
 package render
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"path/filepath"
@@ -68,8 +67,6 @@ func (fg *FontGenerator) Generate() *Font {
 	if fg.Color == nil {
 		fg.Color = defaultColor
 	}
-
-	fmt.Println("Making a font at", dir, fg.File)
 
 	return &Font{
 		FontGenerator: *fg,
@@ -173,7 +170,6 @@ func LoadFont(dir string, fontFile string) *truetype.Font {
 		var fontBytes []byte
 		var err error
 		if dir == filepath.Join("default_assets", "font") {
-			fmt.Println("Dir is default")
 			fontBytes, err = binaryFonts(filepath.Join(dir, fontFile))
 		} else {
 			fontBytes, err = fileutil.ReadFile(filepath.Join(dir, fontFile))

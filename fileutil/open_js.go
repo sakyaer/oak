@@ -76,7 +76,6 @@ func (f *file) Stat() (os.FileInfo, error) {
 }
 
 func OpenOS(path string) (File, error) {
-	fmt.Println("Open JS")
 	var err error
 	var content *js.Object
 	ch := make(chan struct{})
@@ -86,7 +85,6 @@ func OpenOS(path string) (File, error) {
 	req.Set("responseType", "arraybuffer")
 	req.Call("addEventListener", "load", func() {
 		defer close(ch)
-		fmt.Println("UHHH")
 		status := req.Get("status").Int()
 		if 200 <= status && status < 400 {
 			content = req.Get("response")
@@ -96,12 +94,10 @@ func OpenOS(path string) (File, error) {
 	})
 	req.Call("addEventListener", "error", func() {
 		defer close(ch)
-		fmt.Println("error")
 		err = errors.New(fmt.Sprintf("XMLHttpRequest error: %s", req.Get("statusText").String()))
 	})
 	req.Call("send")
 
-	fmt.Println("Waiting on channel")
 	<-ch
 	if err != nil {
 		return nil, err
@@ -109,7 +105,6 @@ func OpenOS(path string) (File, error) {
 
 	data := js.Global.Get("Uint8Array").New(content).Interface().([]uint8)
 	f := &file{bytes.NewReader(data)}
-	fmt.Println("Open JS END")
 	return f, nil
 }
 
