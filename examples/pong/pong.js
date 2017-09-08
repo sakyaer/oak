@@ -61807,6 +61807,9 @@ $packages["github.com/oakmound/oak"] = (function() {
 		jsc = new JSWindow.ptr(null, null, null);
 		document = $global.document;
 		canvas = document.createElement($externalize("canvas", $String));
+		canvas.style.display = $externalize("block", $String);
+		canvas.width = $pkg.ScreenWidth;
+		canvas.height = $pkg.ScreenHeight;
 		jsc.ctx = canvas.getContext($externalize("2d", $String));
 		bdy = document.body;
 		bdy.appendChild(canvas);
