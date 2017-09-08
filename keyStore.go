@@ -1,14 +1,13 @@
 package oak
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
 
 var (
 	keyState     = make(map[string]bool)
-	keyDurations = make(map[string]time.Duration)
+	keyDurations = make(map[string]time.Time)
 	keyLock      = sync.RWMutex{}
 	durationLock = sync.RWMutex{}
 )
@@ -29,6 +28,7 @@ func setUp(key string) {
 func setDown(key string) {
 	keyLock.Lock()
 	keyState[key] = true
+	keyDurations[key] = time.Now()
 	keyLock.Unlock()
 }
 
@@ -47,27 +47,8 @@ func IsHeld(key string) (k bool, d time.Duration) {
 	keyLock.RUnlock()
 	if k {
 		durationLock.RLock()
-		d = keyDurations[key]
+		d = time.Since(keyDurations[key])
 		durationLock.RUnlock()
 	}
 	return
-}
-
-func keyHoldLoop() {
-	var next time.Time
-	var delta time.Duration
-	now := time.Now()
-	for {
-		fmt.Println("Keyhold loop")
-		next = time.Now()
-		delta = next.Sub(now)
-		now = next
-		keyLock.RLock()
-		for k := range keyState {
-			durationLock.Lock()
-			keyDurations[k] += delta
-			durationLock.Unlock()
-		}
-		keyLock.RUnlock()
-	}
 }

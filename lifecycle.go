@@ -67,12 +67,6 @@ func lifecycleLoop(s screen.Screen) {
 
 	dlog.Info("Starting draw loop")
 	go drawLoop()
-	fmt.Println("Draw loop started")
-	if !conf.DisableKeyhold {
-		dlog.Info("Starting key hold loop")
-		go keyHoldLoop()
-		fmt.Println("Keyhold loop started")
-	}
 	dlog.Info("Starting input loop")
 	go inputLoop()
 	fmt.Println("Input loop started")
