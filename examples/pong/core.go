@@ -23,10 +23,10 @@ func main() {
 	oak.AddScene("pong",
 		func(prevScene string, data interface{}) {
 			newPaddle(20, 200, 1)
-			newPaddle(590, 200, 2)
+			newPaddle(600, 200, 2)
 			newBall(320, 240)
 			render.Draw(render.DefFont().NewIntText(&score2, 200, 20), 3)
-			render.Draw(render.DefFont().NewIntText(&score1, 400, 20), 3)
+			render.Draw(render.DefFont().NewIntText(&score1, 440, 20), 3)
 		}, func() bool { return true },
 		func() (string, *oak.SceneResult) { return "pong", nil })
 	oak.Init("pong")
@@ -57,7 +57,7 @@ func newBall(x, y float64) {
 			b.Delta.SetX(0)
 			b.Delta.SetY(0)
 			b.SetPos(320, 240)
-		} else if b.Y() < 0 || b.Y() > 440-b.H {
+		} else if b.Y() < 0 || b.Y() > 480-b.H {
 			b.Delta.SetY(-1 * b.Delta.Y())
 		}
 		return 0
@@ -87,7 +87,7 @@ func enterPaddle(up, down string) func(int, interface{}) int {
 			p.Delta.SetY(p.Speed.Y())
 		}
 		p.ShiftY(p.Delta.Y())
-		if p.Y() < 0 || p.Y() > (440-p.H) {
+		if p.Y() < 0 || p.Y() > (480-p.H) {
 			p.ShiftY(-p.Delta.Y())
 		}
 		return 0

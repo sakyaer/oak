@@ -28317,7 +28317,7 @@ $packages["github.com/oakmound/oak/dlog"] = (function() {
 				$s = 8; continue;
 			/* } else { */ case 7:
 				dLevel = 1;
-				_r = fmt.Println(new sliceType$1([new $String("setting dlog level to \""), new $String(debugL), new $String("\" failed, it is now set to ERROR")])); /* */ $s = 9; case 9: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_r = fmt.Println(new sliceType$1([new $String("Setting dlog level to \""), new $String(debugL), new $String("\" failed, it is now set to ERROR")])); /* */ $s = 9; case 9: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				_r;
 			/* } */ case 8:
 		case 1:
@@ -30013,8 +30013,7 @@ $packages["github.com/200sc/rtreego"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/oakmound/oak/timing"] = (function() {
-	var $pkg = {}, $init, fmt, dlog, math, time, DynamicTicker, ptrType, sliceType, ptrType$1, chanType, ptrType$2, chanType$1, chanType$2, nanoPerSecond, DoAfter, NewDynamicTicker, FPSToDuration;
-	fmt = $packages["fmt"];
+	var $pkg = {}, $init, dlog, math, time, DynamicTicker, ptrType, ptrType$1, sliceType, ptrType$2, chanType, chanType$1, chanType$2, nanoPerSecond, DoAfter, NewDynamicTicker, FPSToDuration;
 	dlog = $packages["github.com/oakmound/oak/dlog"];
 	math = $packages["math"];
 	time = $packages["time"];
@@ -30033,11 +30032,11 @@ $packages["github.com/oakmound/oak/timing"] = (function() {
 		this.forceTick = forceTick_;
 	});
 	ptrType = $ptrType(time.Ticker);
-	sliceType = $sliceType($emptyInterface);
 	ptrType$1 = $ptrType(time.Location);
-	chanType = $chanType(ptrType, false, false);
+	sliceType = $sliceType($emptyInterface);
 	ptrType$2 = $ptrType(DynamicTicker);
-	chanType$1 = $chanType(time.Time, false, false);
+	chanType = $chanType(time.Time, false, false);
+	chanType$1 = $chanType(ptrType, false, false);
 	chanType$2 = $chanType($Bool, false, false);
 	DoAfter = function(d, f) {
 		var _r, _selection, d, f, $s, $r;
@@ -30060,93 +30059,83 @@ $packages["github.com/oakmound/oak/timing"] = (function() {
 		var dt;
 		dt = new DynamicTicker.ptr(time.NewTicker(new time.Duration(838190, 1362165760)), new $Chan(time.Time, 0), new $Chan(ptrType, 0), new $Chan($Bool, 0));
 		$go((function $b(dt$1) {
-			var _r, _r$1, _r$2, _r$3, _r$4, _selection, _selection$1, _selection$2, dt$1, r, r$1, r$2, ticker, ticker$1, ticker$2, v, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _selection = $f._selection; _selection$1 = $f._selection$1; _selection$2 = $f._selection$2; dt$1 = $f.dt$1; r = $f.r; r$1 = $f.r$1; r$2 = $f.r$2; ticker = $f.ticker; ticker$1 = $f.ticker$1; ticker$2 = $f.ticker$2; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			_r = fmt.Println(new sliceType([new $String("dynamic ticker goroutine started")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-			/* while (true) { */ case 2:
-				_r$1 = $select([[dt$1.ticker.C], [dt$1.resetCh], [dt$1.forceTick]]); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_selection = _r$1;
-				/* */ if (_selection[0] === 0) { $s = 5; continue; }
-				/* */ if (_selection[0] === 1) { $s = 6; continue; }
-				/* */ if (_selection[0] === 2) { $s = 7; continue; }
-				/* */ $s = 8; continue;
-				/* if (_selection[0] === 0) { */ case 5:
+			var _r, _r$1, _r$2, _selection, _selection$1, _selection$2, dt$1, r, r$1, r$2, ticker, ticker$1, ticker$2, v, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _selection$1 = $f._selection$1; _selection$2 = $f._selection$2; dt$1 = $f.dt$1; r = $f.r; r$1 = $f.r$1; r$2 = $f.r$2; ticker = $f.ticker; ticker$1 = $f.ticker$1; ticker$2 = $f.ticker$2; v = $f.v; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			/* while (true) { */ case 1:
+				_r = $select([[dt$1.ticker.C], [dt$1.resetCh], [dt$1.forceTick]]); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_selection = _r;
+				/* */ if (_selection[0] === 0) { $s = 4; continue; }
+				/* */ if (_selection[0] === 1) { $s = 5; continue; }
+				/* */ if (_selection[0] === 2) { $s = 6; continue; }
+				/* */ $s = 7; continue;
+				/* if (_selection[0] === 0) { */ case 4:
 					v = $clone(_selection[1][0], time.Time);
-					/* while (true) { */ case 9:
-						_r$2 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, $clone(v, time.Time)]]); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-						_selection$1 = _r$2;
+					/* while (true) { */ case 8:
+						_r$1 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, $clone(v, time.Time)]]); /* */ $s = 10; case 10: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+						_selection$1 = _r$1;
 						if (_selection$1[0] === 0) {
 							r = _selection$1[1][0];
 							if (!r) {
 								dt$1.close();
 								$s = -1; return;
 							}
-							/* continue; */ $s = 9; continue;
+							/* continue; */ $s = 8; continue;
 						} else if (_selection$1[0] === 1) {
 							ticker = _selection$1[1][0];
 							dt$1.ticker.Stop();
 							dt$1.ticker = ticker;
-							/* break tickLoop; */ $s = 10; continue s;
+							/* break tickLoop; */ $s = 9; continue s;
 						} else if (_selection$1[0] === 2) {
-							/* break tickLoop; */ $s = 10; continue s;
+							/* break tickLoop; */ $s = 9; continue s;
 						}
-					/* } */ $s = 9; continue; case 10:
-					$s = 8; continue;
-				/* } else if (_selection[0] === 1) { */ case 6:
+					/* } */ $s = 8; continue; case 9:
+					$s = 7; continue;
+				/* } else if (_selection[0] === 1) { */ case 5:
 					ticker$1 = _selection[1][0];
-					_r$3 = fmt.Println(new sliceType([new $String("Received tick reset signal")])); /* */ $s = 12; case 12: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-					_r$3;
 					dt$1.ticker.Stop();
 					dt$1.ticker = ticker$1;
-					$s = 8; continue;
-				/* } else if (_selection[0] === 2) { */ case 7:
+					$s = 7; continue;
+				/* } else if (_selection[0] === 2) { */ case 6:
 					r$1 = _selection[1][0];
 					if (!r$1) {
 						dt$1.close();
 						$s = -1; return;
 					}
-					/* while (true) { */ case 13:
-						_r$4 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$1.nil)]]); /* */ $s = 15; case 15: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-						_selection$2 = _r$4;
+					/* while (true) { */ case 11:
+						_r$2 = $select([[dt$1.forceTick], [dt$1.resetCh], [dt$1.C, new time.Time.ptr(new $Uint64(0, 0), new $Int64(0, 0), ptrType$1.nil)]]); /* */ $s = 13; case 13: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+						_selection$2 = _r$2;
 						if (_selection$2[0] === 0) {
 							r$2 = _selection$2[1][0];
 							if (!r$2) {
 								dt$1.close();
 								$s = -1; return;
 							}
-							/* continue; */ $s = 13; continue;
+							/* continue; */ $s = 11; continue;
 						} else if (_selection$2[0] === 1) {
 							ticker$2 = _selection$2[1][0];
 							dt$1.ticker.Stop();
 							dt$1.ticker = ticker$2;
-							/* break forceLoop; */ $s = 14; continue s;
+							/* break forceLoop; */ $s = 12; continue s;
 						} else if (_selection$2[0] === 2) {
-							/* break forceLoop; */ $s = 14; continue s;
+							/* break forceLoop; */ $s = 12; continue s;
 						}
-					/* } */ $s = 13; continue; case 14:
-				/* } */ case 8:
-			/* } */ $s = 2; continue; case 3:
+					/* } */ $s = 11; continue; case 12:
+				/* } */ case 7:
+			/* } */ $s = 1; continue; case 2:
 			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._selection = _selection; $f._selection$1 = _selection$1; $f._selection$2 = _selection$2; $f.dt$1 = dt$1; $f.r = r; $f.r$1 = r$1; $f.r$2 = r$2; $f.ticker = ticker; $f.ticker$1 = ticker$1; $f.ticker$2 = ticker$2; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._selection$1 = _selection$1; $f._selection$2 = _selection$2; $f.dt$1 = dt$1; $f.r = r; $f.r$1 = r$1; $f.r$2 = r$2; $f.ticker = ticker; $f.ticker$1 = ticker$1; $f.ticker$2 = ticker$2; $f.v = v; $f.$s = $s; $f.$r = $r; return $f;
 		}), [dt]);
 		return dt;
 	};
 	$pkg.NewDynamicTicker = NewDynamicTicker;
 	DynamicTicker.ptr.prototype.SetTick = function(d) {
-		var _r, _r$1, _r$2, d, dt, tck, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; d = $f.d; dt = $f.dt; tck = $f.tck; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var d, dt, tck, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; d = $f.d; dt = $f.dt; tck = $f.tck; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		dt = this;
-		_r = fmt.Println(new sliceType([new $String("Setting tick")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
 		tck = time.NewTicker(d);
-		_r$1 = fmt.Println(new sliceType([new $String("Got ticker"), tck, new chanType(dt.resetCh)])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		$r = $send(dt.resetCh, tck); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$2 = fmt.Println(new sliceType([new $String("Tick set accomplished")])); /* */ $s = 4; case 4: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_r$2;
+		$r = $send(dt.resetCh, tck); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: DynamicTicker.ptr.prototype.SetTick }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.d = d; $f.dt = dt; $f.tck = tck; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: DynamicTicker.ptr.prototype.SetTick }; } $f.d = d; $f.dt = dt; $f.tck = tck; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	DynamicTicker.prototype.SetTick = function(d) { return this.$val.SetTick(d); };
 	DynamicTicker.ptr.prototype.close = function() {
@@ -30198,14 +30187,13 @@ $packages["github.com/oakmound/oak/timing"] = (function() {
 	};
 	$pkg.FPSToDuration = FPSToDuration;
 	ptrType$2.methods = [{prop: "SetTick", name: "SetTick", pkg: "", typ: $funcType([time.Duration], [], false)}, {prop: "close", name: "close", pkg: "github.com/oakmound/oak/timing", typ: $funcType([], [], false)}, {prop: "Step", name: "Step", pkg: "", typ: $funcType([], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
-	DynamicTicker.init("github.com/oakmound/oak/timing", [{prop: "ticker", name: "ticker", anonymous: false, exported: false, typ: ptrType, tag: ""}, {prop: "C", name: "C", anonymous: false, exported: true, typ: chanType$1, tag: ""}, {prop: "resetCh", name: "resetCh", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "forceTick", name: "forceTick", anonymous: false, exported: false, typ: chanType$2, tag: ""}]);
+	DynamicTicker.init("github.com/oakmound/oak/timing", [{prop: "ticker", name: "ticker", anonymous: false, exported: false, typ: ptrType, tag: ""}, {prop: "C", name: "C", anonymous: false, exported: true, typ: chanType, tag: ""}, {prop: "resetCh", name: "resetCh", anonymous: false, exported: false, typ: chanType$1, tag: ""}, {prop: "forceTick", name: "forceTick", anonymous: false, exported: false, typ: chanType$2, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		$r = fmt.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = dlog.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = math.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = time.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = math.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = time.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$pkg.ClearDelayCh = new $Chan($Bool, 0);
 		nanoPerSecond = math.Pow(10, 9);
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
@@ -32490,14 +32478,12 @@ $packages["github.com/oakmound/oak/fileutil"] = (function() {
 	};
 	file.prototype.Stat = function() { return this.$val.Stat(); };
 	OpenOS = function(path) {
-		var _r, _r$1, _r$2, _r$3, ch, content, data, err, f, path, req, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; ch = $f.ch; content = $f.content; data = $f.data; err = $f.err; f = $f.f; path = $f.path; req = $f.req; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, ch, content, data, err, f, path, req, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; ch = $f.ch; content = $f.content; data = $f.data; err = $f.err; f = $f.f; path = $f.path; req = $f.req; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		ch = [ch];
 		content = [content];
 		err = [err];
 		req = [req];
-		_r = fmt.Println(new sliceType$1([new $String("Open JS")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
 		err[0] = $ifaceNil;
 		content[0] = null;
 		ch[0] = new $Chan(structType, 0);
@@ -32505,48 +32491,40 @@ $packages["github.com/oakmound/oak/fileutil"] = (function() {
 		req[0].open($externalize("GET", $String), $externalize(path, $String), $externalize(true, $Bool));
 		req[0].responseType = $externalize("arraybuffer", $String);
 		req[0].addEventListener($externalize("load", $String), $externalize((function(ch, content, err, req) { return function $b() {
-			var _arg, _r$1, _r$2, _r$3, status, $s, $deferred, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; status = $f.status; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+			var _arg, _r, _r$1, status, $s, $deferred, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; status = $f.status; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 			$deferred.push([function(_arg) { $close(_arg); }, [ch[0]]]);
-			_r$1 = fmt.Println(new sliceType$1([new $String("UHHH")])); /* */ $s = 1; case 1: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_r$1;
 			status = $parseInt(req[0].status) >> 0;
 			if (200 <= status && status < 400) {
 				content[0] = req[0].response;
 				$s = -1; return;
 			}
-			_r$2 = fmt.Sprintf("http error: %d", new sliceType$1([new $Int(status)])); /* */ $s = 2; case 2: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_r$3 = errors.New(_r$2); /* */ $s = 3; case 3: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			err[0] = _r$3;
+			_r = fmt.Sprintf("http error: %d", new sliceType$1([new $Int(status)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = errors.New(_r); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			err[0] = _r$1;
 			$s = -1; return;
-			/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f.status = status; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.status = status; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 		}; })(ch, content, err, req), funcType));
 		req[0].addEventListener($externalize("error", $String), $externalize((function(ch, content, err, req) { return function $b() {
-			var _arg, _r$1, _r$2, _r$3, $s, $deferred, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+			var _arg, _r, _r$1, $s, $deferred, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 			$deferred.push([function(_arg) { $close(_arg); }, [ch[0]]]);
-			_r$1 = fmt.Println(new sliceType$1([new $String("error")])); /* */ $s = 1; case 1: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_r$1;
-			_r$2 = fmt.Sprintf("XMLHttpRequest error: %s", new sliceType$1([new $String($internalize(req[0].statusText, $String))])); /* */ $s = 2; case 2: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_r$3 = errors.New(_r$2); /* */ $s = 3; case 3: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			err[0] = _r$3;
+			_r = fmt.Sprintf("XMLHttpRequest error: %s", new sliceType$1([new $String($internalize(req[0].statusText, $String))])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = errors.New(_r); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			err[0] = _r$1;
 			$s = -1; return;
-			/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 		}; })(ch, content, err, req), funcType));
 		req[0].send();
-		_r$1 = fmt.Println(new sliceType$1([new $String("Waiting on channel")])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		_r$2 = $recv(ch[0]); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_r$2[0];
+		_r = $recv(ch[0]); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r[0];
 		if (!($interfaceIsEqual(err[0], $ifaceNil))) {
 			$s = -1; return [$ifaceNil, err[0]];
 		}
 		data = $assertType($internalize(new ($global.Uint8Array)(content[0]), $emptyInterface), sliceType);
 		f = new file.ptr(bytes.NewReader(data));
-		_r$3 = fmt.Println(new sliceType$1([new $String("Open JS END")])); /* */ $s = 4; case 4: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-		_r$3;
 		$s = -1; return [f, $ifaceNil];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: OpenOS }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f.ch = ch; $f.content = content; $f.data = data; $f.err = err; $f.f = f; $f.path = path; $f.req = req; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: OpenOS }; } $f._r = _r; $f.ch = ch; $f.content = content; $f.data = data; $f.err = err; $f.f = f; $f.path = path; $f.req = req; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.OpenOS = OpenOS;
 	Getwd = function() {
@@ -59501,8 +59479,8 @@ $packages["github.com/oakmound/oak/render"] = (function() {
 	};
 	$pkg.DefFont = DefFont;
 	FontGenerator.ptr.prototype.Generate = function() {
-		var _arg, _arg$1, _r$3, _r$4, _r$5, _r$6, dir$1, fg, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; dir$1 = $f.dir$1; fg = $f.fg; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _arg, _arg$1, _r$3, _r$4, _r$5, dir$1, fg, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; dir$1 = $f.dir$1; fg = $f.fg; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		fg = this;
 		dir$1 = fontdir;
 		if (fg.File === "") {
@@ -59522,15 +59500,13 @@ $packages["github.com/oakmound/oak/render"] = (function() {
 		if ($interfaceIsEqual(fg.Color, $ifaceNil)) {
 			fg.Color = defaultColor;
 		}
-		_r$3 = fmt.Println(new sliceType$12([new $String("Making a font at"), new $String(dir$1), new $String(fg.File)])); /* */ $s = 1; case 1: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-		_r$3;
-		_r$4 = LoadFont(dir$1, fg.File); /* */ $s = 2; case 2: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-		_arg = _r$4;
-		_r$5 = parseFontHinting(fg.Hinting); /* */ $s = 3; case 3: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-		_arg$1 = new truetype.Options.ptr(fg.Size, fg.DPI, _r$5, 0, 0, 0);
-		_r$6 = truetype.NewFace(_arg, _arg$1); /* */ $s = 4; case 4: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-		$s = -1; return new Font.ptr($clone(fg, FontGenerator), new font.Drawer.ptr($ifaceNil, fg.Color, _r$6, new fixed.Point26_6.ptr(0, 0)));
-		/* */ } return; } if ($f === undefined) { $f = { $blk: FontGenerator.ptr.prototype.Generate }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f.dir$1 = dir$1; $f.fg = fg; $f.$s = $s; $f.$r = $r; return $f;
+		_r$3 = LoadFont(dir$1, fg.File); /* */ $s = 1; case 1: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		_arg = _r$3;
+		_r$4 = parseFontHinting(fg.Hinting); /* */ $s = 2; case 2: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+		_arg$1 = new truetype.Options.ptr(fg.Size, fg.DPI, _r$4, 0, 0, 0);
+		_r$5 = truetype.NewFace(_arg, _arg$1); /* */ $s = 3; case 3: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+		$s = -1; return new Font.ptr($clone(fg, FontGenerator), new font.Drawer.ptr($ifaceNil, fg.Color, _r$5, new fixed.Point26_6.ptr(0, 0)));
+		/* */ } return; } if ($f === undefined) { $f = { $blk: FontGenerator.ptr.prototype.Generate }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f.dir$1 = dir$1; $f.fg = fg; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	FontGenerator.prototype.Generate = function() { return this.$val.Generate(); };
 	FontGenerator.ptr.prototype.Copy = function() {
@@ -59639,8 +59615,8 @@ $packages["github.com/oakmound/oak/render"] = (function() {
 	};
 	$pkg.FontColor = FontColor;
 	LoadFont = function(dir$1, fontFile) {
-		var _entry, _entry$1, _key, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _tuple$3, _tuple$4, _tuple$5, _tuple$6, dir$1, err, font$1, fontBytes, fontFile, ok, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _key = $f._key; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _tuple$3 = $f._tuple$3; _tuple$4 = $f._tuple$4; _tuple$5 = $f._tuple$5; _tuple$6 = $f._tuple$6; dir$1 = $f.dir$1; err = $f.err; font$1 = $f.font$1; fontBytes = $f.fontBytes; fontFile = $f.fontFile; ok = $f.ok; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _entry, _entry$1, _key, _r$3, _r$4, _r$5, _r$6, _r$7, _tuple$3, _tuple$4, _tuple$5, _tuple$6, dir$1, err, font$1, fontBytes, fontFile, ok, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _key = $f._key; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _tuple$3 = $f._tuple$3; _tuple$4 = $f._tuple$4; _tuple$5 = $f._tuple$5; _tuple$6 = $f._tuple$6; dir$1 = $f.dir$1; err = $f.err; font$1 = $f.font$1; fontBytes = $f.fontBytes; fontFile = $f.fontFile; ok = $f.ok; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_tuple$3 = (_entry = loadedFonts[$String.keyFor(fontFile)], _entry !== undefined ? [_entry.v, true] : [ptrType$6.nil, false]);
 		ok = _tuple$3[1];
 		/* */ if (!ok) { $s = 1; continue; }
@@ -59651,41 +59627,39 @@ $packages["github.com/oakmound/oak/render"] = (function() {
 			/* */ if (dir$1 === filepath.Join(new sliceType$1(["default_assets", "font"]))) { $s = 3; continue; }
 			/* */ $s = 4; continue;
 			/* if (dir$1 === filepath.Join(new sliceType$1(["default_assets", "font"]))) { */ case 3:
-				_r$3 = fmt.Println(new sliceType$12([new $String("Dir is default")])); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-				_r$3;
-				_r$4 = binaryFonts(filepath.Join(new sliceType$1([dir$1, fontFile]))); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-				_tuple$4 = _r$4;
+				_r$3 = binaryFonts(filepath.Join(new sliceType$1([dir$1, fontFile]))); /* */ $s = 6; case 6: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				_tuple$4 = _r$3;
 				fontBytes = _tuple$4[0];
 				err = _tuple$4[1];
 				$s = 5; continue;
 			/* } else { */ case 4:
-				_r$5 = fileutil.ReadFile(filepath.Join(new sliceType$1([dir$1, fontFile]))); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-				_tuple$5 = _r$5;
+				_r$4 = fileutil.ReadFile(filepath.Join(new sliceType$1([dir$1, fontFile]))); /* */ $s = 7; case 7: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+				_tuple$5 = _r$4;
 				fontBytes = _tuple$5[0];
 				err = _tuple$5[1];
 			/* } */ case 5:
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 9; continue; }
-			/* */ $s = 10; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 9:
-				_r$6 = err.Error(); /* */ $s = 11; case 11: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-				$r = dlog.Error(new sliceType$12([new $String(_r$6)])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 8; continue; }
+			/* */ $s = 9; continue;
+			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 8:
+				_r$5 = err.Error(); /* */ $s = 10; case 10: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+				$r = dlog.Error(new sliceType$12([new $String(_r$5)])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return ptrType$6.nil;
-			/* } */ case 10:
-			_r$7 = truetype.Parse(fontBytes); /* */ $s = 13; case 13: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-			_tuple$6 = _r$7;
+			/* } */ case 9:
+			_r$6 = truetype.Parse(fontBytes); /* */ $s = 12; case 12: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+			_tuple$6 = _r$6;
 			font$1 = _tuple$6[0];
 			err = _tuple$6[1];
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 14; continue; }
-			/* */ $s = 15; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 14:
-				_r$8 = err.Error(); /* */ $s = 16; case 16: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
-				$r = dlog.Error(new sliceType$12([new $String(_r$8)])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 13; continue; }
+			/* */ $s = 14; continue;
+			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 13:
+				_r$7 = err.Error(); /* */ $s = 15; case 15: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+				$r = dlog.Error(new sliceType$12([new $String(_r$7)])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return ptrType$6.nil;
-			/* } */ case 15:
+			/* } */ case 14:
 			_key = fontFile; (loadedFonts || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: font$1 };
 		/* } */ case 2:
 		$s = -1; return (_entry$1 = loadedFonts[$String.keyFor(fontFile)], _entry$1 !== undefined ? _entry$1.v : ptrType$6.nil);
-		/* */ } return; } if ($f === undefined) { $f = { $blk: LoadFont }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._key = _key; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f._tuple$5 = _tuple$5; $f._tuple$6 = _tuple$6; $f.dir$1 = dir$1; $f.err = err; $f.font$1 = font$1; $f.fontBytes = fontBytes; $f.fontFile = fontFile; $f.ok = ok; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: LoadFont }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._key = _key; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f._tuple$5 = _tuple$5; $f._tuple$6 = _tuple$6; $f.dir$1 = dir$1; $f.err = err; $f.font$1 = font$1; $f.fontBytes = fontBytes; $f.fontFile = fontFile; $f.ok = ok; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.LoadFont = LoadFont;
 	Layered.ptr.prototype.GetLayer = function() {
@@ -61077,16 +61051,10 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: windowController }; } $f.ScreenHeight = ScreenHeight; $f.ScreenWidth = ScreenWidth; $f._r = _r; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	defaultDebugConsole = function() {
-		var _r, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = fmt.Println(new sliceType([new $String("Ditching JS debug console")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
-		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: defaultDebugConsole }; } $f._r = _r; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	drawLoop = function() {
-		var _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$14, _r$15, _r$16, _r$17, _r$18, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _selection, _selection$1, _tuple, err, tx, viewPoint, viewPoint$1, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$15 = $f._r$15; _r$16 = $f._r$16; _r$17 = $f._r$17; _r$18 = $f._r$18; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; err = $f.err; tx = $f.tx; viewPoint = $f.viewPoint; viewPoint$1 = $f.viewPoint$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _arg, _arg$1, _arg$10, _arg$11, _arg$2, _arg$3, _arg$4, _arg$5, _arg$6, _arg$7, _arg$8, _arg$9, _r, _r$1, _r$10, _r$11, _r$12, _r$13, _r$14, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _r$9, _selection, _selection$1, _tuple, err, tx, viewPoint, viewPoint$1, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _arg$1 = $f._arg$1; _arg$10 = $f._arg$10; _arg$11 = $f._arg$11; _arg$2 = $f._arg$2; _arg$3 = $f._arg$3; _arg$4 = $f._arg$4; _arg$5 = $f._arg$5; _arg$6 = $f._arg$6; _arg$7 = $f._arg$7; _arg$8 = $f._arg$8; _arg$9 = $f._arg$9; _r = $f._r; _r$1 = $f._r$1; _r$10 = $f._r$10; _r$11 = $f._r$11; _r$12 = $f._r$12; _r$13 = $f._r$13; _r$14 = $f._r$14; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _r$9 = $f._r$9; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; err = $f.err; tx = $f.tx; viewPoint = $f.viewPoint; viewPoint$1 = $f.viewPoint$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = $recv(drawCh); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r[0];
 		setPanicOnFault();
@@ -61106,89 +61074,81 @@ $packages["github.com/oakmound/oak"] = (function() {
 		_arg$3 = $clone(zeroPoint, image.Point);
 		$r = draw.Draw(_arg, _arg$1, _arg$2, _arg$3, 1); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = drawLoopPublish(tx); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$5 = fmt.Println(new sliceType([new $String("First publish done")])); /* */ $s = 8; case 8: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-		_r$5;
 		$pkg.DrawTicker = timing.NewDynamicTicker();
-		_r$6 = fmt.Println(new sliceType([new $String("Dynamic Ticker gotten")])); /* */ $s = 9; case 9: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-		_r$6;
-		$r = $pkg.DrawTicker.SetTick(timing.FPSToDuration($pkg.DrawFrameRate)); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = dlog.Verb(new sliceType([new $String("Draw Loop Start")])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$7 = fmt.Println(new sliceType([new $String("Draw Loop Start")])); /* */ $s = 12; case 12: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-		_r$7;
-		/* while (true) { */ case 13:
-			_r$8 = $select([[windowUpdateCh], [drawCh], [viewportCh], [$pkg.DrawTicker.C]]); /* */ $s = 15; case 15: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
-			_selection = _r$8;
-			/* */ if (_selection[0] === 0) { $s = 16; continue; }
-			/* */ if (_selection[0] === 1) { $s = 17; continue; }
-			/* */ if (_selection[0] === 2) { $s = 18; continue; }
-			/* */ if (_selection[0] === 3) { $s = 19; continue; }
-			/* */ $s = 20; continue;
-			/* switch (0) { default: if (_selection[0] === 0) { */ case 16:
-				_r$9 = $recv(windowUpdateCh); /* */ $s = 21; case 21: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
-				_r$9[0];
-				$s = 20; continue;
-			/* } else if (_selection[0] === 1) { */ case 17:
-				$r = dlog.Verb(new sliceType([new $String("Got something from draw channel")])); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_r$10 = $recv(drawCh); /* */ $s = 23; case 23: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
-				_r$10[0];
-				$r = dlog.Verb(new sliceType([new $String("Starting loading")])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_r$11 = fmt.Println(new sliceType([new $String("Starting loading")])); /* */ $s = 25; case 25: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
-				_r$11;
-				/* while (true) { */ case 26:
-					_r$12 = $recv($pkg.DrawTicker.C); /* */ $s = 28; case 28: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
-					_r$12[0];
-					_r$13 = winBuffer.RGBA(); /* */ $s = 29; case 29: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
-					_arg$4 = _r$13;
-					_r$14 = winBuffer.Bounds(); /* */ $s = 30; case 30: if($c) { $c = false; _r$14 = _r$14.$blk(); } if (_r$14 && _r$14.$blk !== undefined) { break s; }
-					_arg$5 = $clone(_r$14, image.Rectangle);
+		$r = $pkg.DrawTicker.SetTick(timing.FPSToDuration($pkg.DrawFrameRate)); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Verb(new sliceType([new $String("Draw Loop Start")])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* while (true) { */ case 10:
+			_r$5 = $select([[windowUpdateCh], [drawCh], [viewportCh], [$pkg.DrawTicker.C]]); /* */ $s = 12; case 12: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+			_selection = _r$5;
+			/* */ if (_selection[0] === 0) { $s = 13; continue; }
+			/* */ if (_selection[0] === 1) { $s = 14; continue; }
+			/* */ if (_selection[0] === 2) { $s = 15; continue; }
+			/* */ if (_selection[0] === 3) { $s = 16; continue; }
+			/* */ $s = 17; continue;
+			/* switch (0) { default: if (_selection[0] === 0) { */ case 13:
+				_r$6 = $recv(windowUpdateCh); /* */ $s = 18; case 18: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
+				_r$6[0];
+				$s = 17; continue;
+			/* } else if (_selection[0] === 1) { */ case 14:
+				$r = dlog.Verb(new sliceType([new $String("Got something from draw channel")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$7 = $recv(drawCh); /* */ $s = 20; case 20: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
+				_r$7[0];
+				$r = dlog.Verb(new sliceType([new $String("Starting loading")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* while (true) { */ case 22:
+					_r$8 = $recv($pkg.DrawTicker.C); /* */ $s = 24; case 24: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
+					_r$8[0];
+					_r$9 = winBuffer.RGBA(); /* */ $s = 25; case 25: if($c) { $c = false; _r$9 = _r$9.$blk(); } if (_r$9 && _r$9.$blk !== undefined) { break s; }
+					_arg$4 = _r$9;
+					_r$10 = winBuffer.Bounds(); /* */ $s = 26; case 26: if($c) { $c = false; _r$10 = _r$10.$blk(); } if (_r$10 && _r$10.$blk !== undefined) { break s; }
+					_arg$5 = $clone(_r$10, image.Rectangle);
 					_arg$6 = imageBlack;
 					_arg$7 = $clone(zeroPoint, image.Point);
-					$r = draw.Draw(_arg$4, _arg$5, _arg$6, _arg$7, 1); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					/* */ if (!($interfaceIsEqual($pkg.LoadingR, $ifaceNil))) { $s = 32; continue; }
-					/* */ $s = 33; continue;
-					/* if (!($interfaceIsEqual($pkg.LoadingR, $ifaceNil))) { */ case 32:
-						_r$15 = winBuffer.RGBA(); /* */ $s = 34; case 34: if($c) { $c = false; _r$15 = _r$15.$blk(); } if (_r$15 && _r$15.$blk !== undefined) { break s; }
-						$r = $pkg.LoadingR.Draw(_r$15); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					/* } */ case 33:
-					$r = drawLoopPublish(tx); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = draw.Draw(_arg$4, _arg$5, _arg$6, _arg$7, 1); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ if (!($interfaceIsEqual($pkg.LoadingR, $ifaceNil))) { $s = 28; continue; }
+					/* */ $s = 29; continue;
+					/* if (!($interfaceIsEqual($pkg.LoadingR, $ifaceNil))) { */ case 28:
+						_r$11 = winBuffer.RGBA(); /* */ $s = 30; case 30: if($c) { $c = false; _r$11 = _r$11.$blk(); } if (_r$11 && _r$11.$blk !== undefined) { break s; }
+						$r = $pkg.LoadingR.Draw(_r$11); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 29:
+					$r = drawLoopPublish(tx); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					_selection$1 = $select([[drawCh], [viewportCh], []]);
-					/* */ if (_selection$1[0] === 0) { $s = 37; continue; }
-					/* */ if (_selection$1[0] === 1) { $s = 38; continue; }
-					/* */ if (_selection$1[0] === 2) { $s = 39; continue; }
-					/* */ $s = 40; continue;
-					/* if (_selection$1[0] === 0) { */ case 37:
-						/* break drawSelect; */ $s = 20; continue s;
-						$s = 40; continue;
-					/* } else if (_selection$1[0] === 1) { */ case 38:
+					/* */ if (_selection$1[0] === 0) { $s = 33; continue; }
+					/* */ if (_selection$1[0] === 1) { $s = 34; continue; }
+					/* */ if (_selection$1[0] === 2) { $s = 35; continue; }
+					/* */ $s = 36; continue;
+					/* if (_selection$1[0] === 0) { */ case 33:
+						/* break drawSelect; */ $s = 17; continue s;
+						$s = 36; continue;
+					/* } else if (_selection$1[0] === 1) { */ case 34:
 						viewPoint = $clone(_selection$1[1][0], arrayType);
-						$r = dlog.Verb(new sliceType([new $String("Got something from viewport channel (waiting on draw)")])); /* */ $s = 41; case 41: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						$r = updateScreen(viewPoint[0], viewPoint[1]); /* */ $s = 42; case 42: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						$s = 40; continue;
-					/* } else if (_selection$1[0] === 2) { */ case 39:
-					/* } */ case 40:
-				/* } */ $s = 26; continue; case 27:
-				$s = 20; continue;
-			/* } else if (_selection[0] === 2) { */ case 18:
+						$r = dlog.Verb(new sliceType([new $String("Got something from viewport channel (waiting on draw)")])); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						$r = updateScreen(viewPoint[0], viewPoint[1]); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						$s = 36; continue;
+					/* } else if (_selection$1[0] === 2) { */ case 35:
+					/* } */ case 36:
+				/* } */ $s = 22; continue; case 23:
+				$s = 17; continue;
+			/* } else if (_selection[0] === 2) { */ case 15:
 				viewPoint$1 = $clone(_selection[1][0], arrayType);
-				$r = dlog.Verb(new sliceType([new $String("Got something from viewport channel")])); /* */ $s = 43; case 43: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = updateScreen(viewPoint$1[0], viewPoint$1[1]); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 20; continue;
-			/* } else if (_selection[0] === 3) { */ case 19:
-				_r$16 = winBuffer.RGBA(); /* */ $s = 45; case 45: if($c) { $c = false; _r$16 = _r$16.$blk(); } if (_r$16 && _r$16.$blk !== undefined) { break s; }
-				_arg$8 = _r$16;
-				_r$17 = winBuffer.Bounds(); /* */ $s = 46; case 46: if($c) { $c = false; _r$17 = _r$17.$blk(); } if (_r$17 && _r$17.$blk !== undefined) { break s; }
-				_arg$9 = $clone(_r$17, image.Rectangle);
+				$r = dlog.Verb(new sliceType([new $String("Got something from viewport channel")])); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = updateScreen(viewPoint$1[0], viewPoint$1[1]); /* */ $s = 40; case 40: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 17; continue;
+			/* } else if (_selection[0] === 3) { */ case 16:
+				_r$12 = winBuffer.RGBA(); /* */ $s = 41; case 41: if($c) { $c = false; _r$12 = _r$12.$blk(); } if (_r$12 && _r$12.$blk !== undefined) { break s; }
+				_arg$8 = _r$12;
+				_r$13 = winBuffer.Bounds(); /* */ $s = 42; case 42: if($c) { $c = false; _r$13 = _r$13.$blk(); } if (_r$13 && _r$13.$blk !== undefined) { break s; }
+				_arg$9 = $clone(_r$13, image.Rectangle);
 				_arg$10 = imageBlack;
 				_arg$11 = $clone(zeroPoint, image.Point);
-				$r = draw.Draw(_arg$8, _arg$9, _arg$10, _arg$11, 1); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = render.PreDraw(); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_r$18 = winBuffer.RGBA(); /* */ $s = 49; case 49: if($c) { $c = false; _r$18 = _r$18.$blk(); } if (_r$18 && _r$18.$blk !== undefined) { break s; }
-				$r = render.GlobalDrawStack.Draw(_r$18, $clone($pkg.ViewPos, image.Point), $pkg.ScreenWidth, $pkg.ScreenHeight); /* */ $s = 50; case 50: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = drawLoopPublish(tx); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } } */ case 20:
-		/* } */ $s = 13; continue; case 14:
+				$r = draw.Draw(_arg$8, _arg$9, _arg$10, _arg$11, 1); /* */ $s = 43; case 43: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = render.PreDraw(); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$14 = winBuffer.RGBA(); /* */ $s = 45; case 45: if($c) { $c = false; _r$14 = _r$14.$blk(); } if (_r$14 && _r$14.$blk !== undefined) { break s; }
+				$r = render.GlobalDrawStack.Draw(_r$14, $clone($pkg.ViewPos, image.Point), $pkg.ScreenWidth, $pkg.ScreenHeight); /* */ $s = 46; case 46: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = drawLoopPublish(tx); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } } */ case 17:
+		/* } */ $s = 10; continue; case 11:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: drawLoop }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$14 = _r$14; $f._r$15 = _r$15; $f._r$16 = _r$16; $f._r$17 = _r$17; $f._r$18 = _r$18; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f.err = err; $f.tx = tx; $f.viewPoint = viewPoint; $f.viewPoint$1 = viewPoint$1; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: drawLoop }; } $f._arg = _arg; $f._arg$1 = _arg$1; $f._arg$10 = _arg$10; $f._arg$11 = _arg$11; $f._arg$2 = _arg$2; $f._arg$3 = _arg$3; $f._arg$4 = _arg$4; $f._arg$5 = _arg$5; $f._arg$6 = _arg$6; $f._arg$7 = _arg$7; $f._arg$8 = _arg$8; $f._arg$9 = _arg$9; $f._r = _r; $f._r$1 = _r$1; $f._r$10 = _r$10; $f._r$11 = _r$11; $f._r$12 = _r$12; $f._r$13 = _r$13; $f._r$14 = _r$14; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._r$9 = _r$9; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f.err = err; $f.tx = tx; $f.viewPoint = viewPoint; $f.viewPoint$1 = viewPoint$1; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Init = function(firstScene) {
 		var _tuple, audioDir, firstScene, imageDir, wd, $s, $r;
@@ -61242,112 +61202,108 @@ $packages["github.com/oakmound/oak"] = (function() {
 		return 0;
 	};
 	inputLoop = function() {
-		var _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _ref, button, e, e$1, e$2, e$3, e$4, e$5, eventName, eventName$1, k, mevent, schedCt, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _ref = $f._ref; button = $f.button; e = $f.e; e$1 = $f.e$1; e$2 = $f.e$2; e$3 = $f.e$3; e$4 = $f.e$4; e$5 = $f.e$5; eventName = $f.eventName; eventName$1 = $f.eventName$1; k = $f.k; mevent = $f.mevent; schedCt = $f.schedCt; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = fmt.Println(new sliceType([new $String("Input loop goroutine start")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
-		/* */ if (conf.GestureSupport) { $s = 2; continue; }
-		/* */ $s = 3; continue;
-		/* if (conf.GestureSupport) { */ case 2:
+		var _r, _r$1, _r$2, _r$3, _ref, button, e, e$1, e$2, e$3, e$4, e$5, eventName, eventName$1, k, mevent, schedCt, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _ref = $f._ref; button = $f.button; e = $f.e; e$1 = $f.e$1; e$2 = $f.e$2; e$3 = $f.e$3; e$4 = $f.e$4; e$5 = $f.e$5; eventName = $f.eventName; eventName$1 = $f.eventName$1; k = $f.k; mevent = $f.mevent; schedCt = $f.schedCt; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* */ if (conf.GestureSupport) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (conf.GestureSupport) { */ case 1:
 			gesture.EventFilter.copy(eFilter, new gesture.EventFilter.ptr(windowControl, false, false, false, false, new gesture.Point.ptr(0, 0), 0, 0));
 			eventFn = (function $b() {
-				var _r$1, _r$2, $s, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _r$2 = $f._r$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				_r$1 = eFilter.EventDeque.NextEvent(); /* */ $s = 1; case 1: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_r$2 = eFilter.Filter(_r$1); /* */ $s = 2; case 2: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				$s = -1; return _r$2;
-				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f.$s = $s; $f.$r = $r; return $f;
+				var _r, _r$1, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				_r = eFilter.EventDeque.NextEvent(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_r$1 = eFilter.Filter(_r); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				$s = -1; return _r$1;
+				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r = _r; $f._r$1 = _r$1; $f.$s = $s; $f.$r = $r; return $f;
 			});
-			$s = 4; continue;
-		/* } else { */ case 3:
+			$s = 3; continue;
+		/* } else { */ case 2:
 			eventFn = $methodVal(windowControl, "NextEvent");
-		/* } */ case 4:
+		/* } */ case 3:
 		schedCt = 0;
-		/* while (true) { */ case 5:
-			_r$1 = eventFn(); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_ref = _r$1;
-			/* */ if ($assertType(_ref, lifecycle.Event, true)[1]) { $s = 8; continue; }
-			/* */ if ($assertType(_ref, key.Event, true)[1]) { $s = 9; continue; }
-			/* */ if ($assertType(_ref, mouse.Event, true)[1]) { $s = 10; continue; }
-			/* */ if ($assertType(_ref, gesture.Event, true)[1]) { $s = 11; continue; }
-			/* */ if ($assertType(_ref, size.Event, true)[1]) { $s = 12; continue; }
-			/* */ if ($assertType(_ref, $error, true)[1]) { $s = 13; continue; }
-			/* */ $s = 14; continue;
-			/* if ($assertType(_ref, lifecycle.Event, true)[1]) { */ case 8:
+		/* while (true) { */ case 4:
+			_r = eventFn(); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_ref = _r;
+			/* */ if ($assertType(_ref, lifecycle.Event, true)[1]) { $s = 7; continue; }
+			/* */ if ($assertType(_ref, key.Event, true)[1]) { $s = 8; continue; }
+			/* */ if ($assertType(_ref, mouse.Event, true)[1]) { $s = 9; continue; }
+			/* */ if ($assertType(_ref, gesture.Event, true)[1]) { $s = 10; continue; }
+			/* */ if ($assertType(_ref, size.Event, true)[1]) { $s = 11; continue; }
+			/* */ if ($assertType(_ref, $error, true)[1]) { $s = 12; continue; }
+			/* */ $s = 13; continue;
+			/* if ($assertType(_ref, lifecycle.Event, true)[1]) { */ case 7:
 				e = $clone(_ref.$val, lifecycle.Event);
-				/* */ if (e.To === 0) { $s = 15; continue; }
-				/* */ $s = 16; continue;
-				/* if (e.To === 0) { */ case 15:
-					$r = $send(quitCh, true); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (e.To === 0) { $s = 14; continue; }
+				/* */ $s = 15; continue;
+				/* if (e.To === 0) { */ case 14:
+					$r = $send(quitCh, true); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return;
-				/* } */ case 16:
-				$s = 14; continue;
-			/* } else if ($assertType(_ref, key.Event, true)[1]) { */ case 9:
+				/* } */ case 15:
+				$s = 13; continue;
+			/* } else if ($assertType(_ref, key.Event, true)[1]) { */ case 8:
 				e$1 = $clone(_ref.$val, key.Event);
-				_r$2 = fmt.Println(new sliceType([new $String("Key event"), new e$1.constructor.elem(e$1)])); /* */ $s = 18; case 18: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				_r$2;
-				_r$3 = new key.Code(e$1.Code).String(); /* */ $s = 19; case 19: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-				_r$4 = GetKeyBind($substring(_r$3, 4)); /* */ $s = 20; case 20: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-				k = _r$4;
-				/* */ if (e$1.Direction === 1) { $s = 21; continue; }
-				/* */ if (e$1.Direction === 2) { $s = 22; continue; }
-				/* */ $s = 23; continue;
-				/* if (e$1.Direction === 1) { */ case 21:
-					$r = setDown(k); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = dlog.Verb(new sliceType([new $String("Key event"), new e$1.constructor.elem(e$1)])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$1 = new key.Code(e$1.Code).String(); /* */ $s = 18; case 18: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_r$2 = GetKeyBind($substring(_r$1, 4)); /* */ $s = 19; case 19: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				k = _r$2;
+				/* */ if (e$1.Direction === 1) { $s = 20; continue; }
+				/* */ if (e$1.Direction === 2) { $s = 21; continue; }
+				/* */ $s = 22; continue;
+				/* if (e$1.Direction === 1) { */ case 20:
+					$r = setDown(k); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					eb.Trigger("KeyDown", new $String(k));
 					eb.Trigger("KeyDown" + k, $ifaceNil);
-					$s = 23; continue;
-				/* } else if (e$1.Direction === 2) { */ case 22:
-					$r = setUp(k); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 22; continue;
+				/* } else if (e$1.Direction === 2) { */ case 21:
+					$r = setUp(k); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					eb.Trigger("KeyUp", new $String(k));
 					eb.Trigger("KeyUp" + k, $ifaceNil);
-				/* } */ case 23:
-				$s = 14; continue;
-			/* } else if ($assertType(_ref, mouse.Event, true)[1]) { */ case 10:
+				/* } */ case 22:
+				$s = 13; continue;
+			/* } else if ($assertType(_ref, mouse.Event, true)[1]) { */ case 9:
 				e$2 = $clone(_ref.$val, mouse.Event);
-				_r$5 = fmt.Println(new sliceType([new $String("Mouse event"), new e$2.constructor.elem(e$2)])); /* */ $s = 26; case 26: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-				_r$5;
+				$r = dlog.Verb(new sliceType([new $String("Mouse event"), new e$2.constructor.elem(e$2)])); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				button = mouse$1.GetMouseButton(e$2.Button);
 				eventName = mouse$1.GetEventName(e$2.Direction, e$2.Button);
-				/* */ if (e$2.Direction === 1) { $s = 27; continue; }
-				/* */ if (e$2.Direction === 2) { $s = 28; continue; }
-				/* */ $s = 29; continue;
-				/* if (e$2.Direction === 1) { */ case 27:
-					$r = setDown(button); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 29; continue;
-				/* } else if (e$2.Direction === 2) { */ case 28:
-					$r = setUp(button); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 29:
+				/* */ if (e$2.Direction === 1) { $s = 26; continue; }
+				/* */ if (e$2.Direction === 2) { $s = 27; continue; }
+				/* */ $s = 28; continue;
+				/* if (e$2.Direction === 1) { */ case 26:
+					$r = setDown(button); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 28; continue;
+				/* } else if (e$2.Direction === 2) { */ case 27:
+					$r = setUp(button); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 28:
 				mevent = new mouse$1.Event.ptr($fround(($fround(($fround(e$2.X - (windowRect.Min.X))) / ((windowRect.Max.X - windowRect.Min.X >> 0)))) * ($pkg.ScreenWidth)), $fround(($fround(($fround(e$2.Y - (windowRect.Min.Y))) / ((windowRect.Max.Y - windowRect.Min.Y >> 0)))) * ($pkg.ScreenHeight)), button, eventName);
 				mouse$1.Event.copy(mouse$1.LastMouseEvent, mevent);
 				eb.Trigger(eventName, new mevent.constructor.elem(mevent));
-				$r = mouse$1.Propagate(eventName + "On", $clone(mevent, mouse$1.Event)); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 14; continue;
-			/* } else if ($assertType(_ref, gesture.Event, true)[1]) { */ case 11:
+				$r = mouse$1.Propagate(eventName + "On", $clone(mevent, mouse$1.Event)); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 13; continue;
+			/* } else if ($assertType(_ref, gesture.Event, true)[1]) { */ case 10:
 				e$3 = $clone(_ref.$val, gesture.Event);
-				_r$6 = new gesture.Type(e$3.Type).String(); /* */ $s = 33; case 33: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-				eventName$1 = "Gesture" + _r$6;
-				$r = dlog.Verb(new sliceType([new $String(eventName$1)])); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r$3 = new gesture.Type(e$3.Type).String(); /* */ $s = 32; case 32: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				eventName$1 = "Gesture" + _r$3;
+				$r = dlog.Verb(new sliceType([new $String(eventName$1)])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				eb.Trigger(eventName$1, (x = mouse$1.FromShinyGesture($clone(e$3, gesture.Event)), new x.constructor.elem(x)));
-				$s = 14; continue;
-			/* } else if ($assertType(_ref, size.Event, true)[1]) { */ case 12:
+				$s = 13; continue;
+			/* } else if ($assertType(_ref, size.Event, true)[1]) { */ case 11:
 				e$4 = $clone(_ref.$val, size.Event);
-				$r = ChangeWindow(e$4.WidthPx, e$4.HeightPx); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 14; continue;
-			/* } else if ($assertType(_ref, $error, true)[1]) { */ case 13:
+				$r = ChangeWindow(e$4.WidthPx, e$4.HeightPx); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 13; continue;
+			/* } else if ($assertType(_ref, $error, true)[1]) { */ case 12:
 				e$5 = _ref;
-				$r = dlog.Error(new sliceType([e$5])); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 14:
+				$r = dlog.Error(new sliceType([e$5])); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 13:
 			schedCt = schedCt + (1) >> 0;
-			/* */ if (schedCt > 100) { $s = 37; continue; }
-			/* */ $s = 38; continue;
-			/* if (schedCt > 100) { */ case 37:
+			/* */ if (schedCt > 100) { $s = 36; continue; }
+			/* */ $s = 37; continue;
+			/* if (schedCt > 100) { */ case 36:
 				schedCt = 0;
-				$r = runtime.Gosched(); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 38:
-		/* } */ $s = 5; continue; case 6:
+				$r = runtime.Gosched(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 37:
+		/* } */ $s = 4; continue; case 5:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: inputLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._ref = _ref; $f.button = button; $f.e = e; $f.e$1 = e$1; $f.e$2 = e$2; $f.e$3 = e$3; $f.e$4 = e$4; $f.e$5 = e$5; $f.eventName = eventName; $f.eventName$1 = eventName$1; $f.k = k; $f.mevent = mevent; $f.schedCt = schedCt; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: inputLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._ref = _ref; $f.button = button; $f.e = e; $f.e$1 = e$1; $f.e$2 = e$2; $f.e$3 = e$3; $f.e$4 = e$4; $f.e$5 = e$5; $f.eventName = eventName; $f.eventName$1 = eventName$1; $f.k = k; $f.mevent = mevent; $f.schedCt = schedCt; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	GetKeyBind = function(key$1) {
 		var _entry, _tuple, key$1, ok, v, $s, $deferred, $r;
@@ -61422,60 +61378,46 @@ $packages["github.com/oakmound/oak"] = (function() {
 	};
 	$pkg.SetLang = SetLang;
 	lifecycleLoop = function(s) {
-		var _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _r$7, _r$8, _tuple, err, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _r$7 = $f._r$7; _r$8 = $f._r$8; _tuple = $f._tuple; err = $f.err; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = fmt.Println(new sliceType([new $String("Starting lifecycle")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
-		$r = initControl.Lock(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ if (lifecycleInit) { $s = 3; continue; }
-		/* */ $s = 4; continue;
-		/* if (lifecycleInit) { */ case 3:
-			$r = dlog.Error(new sliceType([new $String("Started lifecycle twice, aborting second call")])); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = initControl.Unlock(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		var _r, _r$1, _tuple, err, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; err = $f.err; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = initControl.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ if (lifecycleInit) { $s = 2; continue; }
+		/* */ $s = 3; continue;
+		/* if (lifecycleInit) { */ case 2:
+			$r = dlog.Error(new sliceType([new $String("Started lifecycle twice, aborting second call")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = initControl.Unlock(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
-		/* } */ case 4:
+		/* } */ case 3:
 		lifecycleInit = true;
-		$r = initControl.Unlock(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = dlog.Info(new sliceType([new $String("Init Lifecycle")])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = initControl.Unlock(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Init Lifecycle")])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		screenControl = s;
 		err = $ifaceNil;
-		$r = dlog.Info(new sliceType([new $String("Creating window buffer")])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$1 = fmt.Println(new sliceType([new $String("Creating window buffer")])); /* */ $s = 10; case 10: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		_r$2 = screenControl.NewBuffer(new image.Point.ptr($pkg.ScreenWidth, $pkg.ScreenHeight)); /* */ $s = 11; case 11: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_tuple = _r$2;
+		$r = dlog.Info(new sliceType([new $String("Creating window buffer")])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		_r = screenControl.NewBuffer(new image.Point.ptr($pkg.ScreenWidth, $pkg.ScreenHeight)); /* */ $s = 9; case 9: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_tuple = _r;
 		winBuffer = _tuple[0];
 		err = _tuple[1];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 12; continue; }
-		/* */ $s = 13; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 12:
-			$r = dlog.Error(new sliceType([err])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 10; continue; }
+		/* */ $s = 11; continue;
+		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 10:
+			$r = dlog.Error(new sliceType([err])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
-		/* } */ case 13:
-		_r$3 = fmt.Println(new sliceType([new $String("Window buffer created")])); /* */ $s = 15; case 15: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-		_r$3;
-		$r = dlog.Info(new sliceType([new $String("Creating window controller")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = changeWindow($imul($pkg.ScreenWidth, conf.Screen.Scale), $imul($pkg.ScreenHeight, conf.Screen.Scale)); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$4 = fmt.Println(new sliceType([new $String("Window controller created")])); /* */ $s = 18; case 18: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-		_r$4;
-		$r = dlog.Info(new sliceType([new $String("Getting event bus")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 11:
+		$r = dlog.Info(new sliceType([new $String("Creating window controller")])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = changeWindow($imul($pkg.ScreenWidth, conf.Screen.Scale), $imul($pkg.ScreenHeight, conf.Screen.Scale)); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Getting event bus")])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		eb = event.GetBus();
-		_r$5 = fmt.Println(new sliceType([new $String("Event bus gotten")])); /* */ $s = 20; case 20: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-		_r$5;
-		$r = dlog.Info(new sliceType([new $String("Starting draw loop")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Starting draw loop")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$go(drawLoop, []);
-		$r = dlog.Info(new sliceType([new $String("Starting input loop")])); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Starting input loop")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$go(inputLoop, []);
-		_r$6 = fmt.Println(new sliceType([new $String("Input loop started")])); /* */ $s = 23; case 23: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-		_r$6;
-		$r = dlog.Info(new sliceType([new $String("Starting event handler")])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Starting event handler")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$go(event.ResolvePending, []);
-		_r$7 = fmt.Println(new sliceType([new $String("Event handler started")])); /* */ $s = 25; case 25: if($c) { $c = false; _r$7 = _r$7.$blk(); } if (_r$7 && _r$7.$blk !== undefined) { break s; }
-		_r$7;
-		_r$8 = $recv(quitCh); /* */ $s = 26; case 26: if($c) { $c = false; _r$8 = _r$8.$blk(); } if (_r$8 && _r$8.$blk !== undefined) { break s; }
-		_r$8[0];
+		_r$1 = $recv(quitCh); /* */ $s = 19; case 19: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		_r$1[0];
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: lifecycleLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._r$7 = _r$7; $f._r$8 = _r$8; $f._tuple = _tuple; $f.err = err; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: lifecycleLoop }; } $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.err = err; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	changeWindow = function(width, height) {
 		var _r, _tuple, err, height, wC, width, $s, $r;
@@ -61575,17 +61517,13 @@ $packages["github.com/oakmound/oak"] = (function() {
 		/* */ } return; } if ($f === undefined) { $f = { $blk: loadAssets }; } $f._r = _r; $f.audioDir = audioDir; $f.err = err; $f.imageDir = imageDir; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	endLoad = function() {
-		var _r, _r$1, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = fmt.Println(new sliceType([new $String("Done loading assets")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
-		$r = dlog.Info(new sliceType([new $String("Done Loading")])); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = $send(startupLoadCh, true); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = dlog.Info(new sliceType([new $String("Startup load signal sent")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$1 = fmt.Println(new sliceType([new $String("Loading goroutine complete")])); /* */ $s = 5; case 5: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
+		var $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = dlog.Info(new sliceType([new $String("Done Loading")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = $send(startupLoadCh, true); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = dlog.Info(new sliceType([new $String("Startup load signal sent")])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: endLoad }; } $f._r = _r; $f._r$1 = _r$1; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: endLoad }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	logicLoop = function() {
 		var ch;
@@ -61687,8 +61625,8 @@ $packages["github.com/oakmound/oak"] = (function() {
 	};
 	$pkg.AddScene = AddScene;
 	sceneLoop = function(firstScene) {
-		var _entry, _entry$1, _entry$2, _r, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _selection, _selection$1, _tuple, _tuple$1, cont, firstScene, logicTicker, ok, prevScene, result, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; _r$6 = $f._r$6; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; cont = $f.cont; firstScene = $f.firstScene; logicTicker = $f.logicTicker; ok = $f.ok; prevScene = $f.prevScene; result = $f.result; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _entry, _entry$1, _entry$2, _r, _r$1, _r$2, _r$3, _selection, _selection$1, _tuple, _tuple$1, cont, firstScene, logicTicker, ok, prevScene, result, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; cont = $f.cont; firstScene = $f.firstScene; logicTicker = $f.logicTicker; ok = $f.ok; prevScene = $f.prevScene; result = $f.result; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		prevScene = [prevScene];
 		result = [result];
 		prevScene[0] = "";
@@ -61706,20 +61644,14 @@ $packages["github.com/oakmound/oak"] = (function() {
 		$pkg.CurrentScene = "loading";
 		result[0] = new SceneResult.ptr($ifaceNil, $throwNilPointerError);
 		$r = dlog.Info(new sliceType([new $String("First Scene Start")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r = fmt.Println(new sliceType([new $String("First scene start")])); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
+		$r = $send(drawCh, true); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = $send(drawCh, true); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = $send(drawCh, true); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = dlog.Verb(new sliceType([new $String("Draw Channel Activated")])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r$1 = fmt.Println(new sliceType([new $String("Draw Channel Activated")])); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		/* while (true) { */ case 10:
-			_r$2 = fmt.Println(new sliceType([new $String("Scene start")])); /* */ $s = 12; case 12: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			_r$2;
+		$r = dlog.Verb(new sliceType([new $String("Draw Channel Activated")])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* while (true) { */ case 8:
 			image.Point.copy($pkg.ViewPos, new image.Point.ptr(0, 0));
-			$r = updateScreen(0, 0); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = updateScreen(0, 0); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			useViewBounds = false;
-			$r = dlog.Info(new sliceType([new $String("Scene Start"), new $String($pkg.CurrentScene)])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Info(new sliceType([new $String("Scene Start"), new $String($pkg.CurrentScene)])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$go((function(prevScene, result) { return function $b() {
 				var _entry$1, _tuple$1, ok$1, s$1, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry$1 = $f._entry$1; _tuple$1 = $f._tuple$1; ok$1 = $f.ok$1; s$1 = $f.s$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -61738,55 +61670,55 @@ $packages["github.com/oakmound/oak"] = (function() {
 				$s = -1; return;
 				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._entry$1 = _entry$1; $f._tuple$1 = _tuple$1; $f.ok$1 = ok$1; $f.s$1 = s$1; $f.$s = $s; $f.$r = $r; return $f;
 			}; })(prevScene, result), []);
-			$r = sceneTransition(result[0]); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = dlog.Info(new sliceType([new $String("Starting load animation")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = $send(drawCh, true); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = dlog.Info(new sliceType([new $String("Getting Transition Signal")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$3 = $recv(transitionCh); /* */ $s = 19; case 19: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			_r$3[0];
-			$r = dlog.Info(new sliceType([new $String("Resume Drawing")])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = $send(drawCh, true); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = dlog.Info(new sliceType([new $String("Looping Scene")])); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = sceneTransition(result[0]); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Info(new sliceType([new $String("Starting load animation")])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = $send(drawCh, true); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Info(new sliceType([new $String("Getting Transition Signal")])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = $recv(transitionCh); /* */ $s = 16; case 16: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r[0];
+			$r = dlog.Info(new sliceType([new $String("Resume Drawing")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = $send(drawCh, true); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Info(new sliceType([new $String("Looping Scene")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			cont = true;
 			logicTicker = logicLoop();
-			/* while (true) { */ case 23:
-				/* if (!(cont)) { break; } */ if(!(cont)) { $s = 24; continue; }
-				_r$4 = $select([[sceneCh], [skipSceneCh]]); /* */ $s = 25; case 25: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-				_selection = _r$4;
-				/* */ if (_selection[0] === 0) { $s = 26; continue; }
-				/* */ if (_selection[0] === 1) { $s = 27; continue; }
-				/* */ $s = 28; continue;
-				/* if (_selection[0] === 0) { */ case 26:
-					_r$5 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? _entry$1.v : ptrType$5.nil).loop(); /* */ $s = 29; case 29: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-					cont = _r$5;
-					$s = 28; continue;
-				/* } else if (_selection[0] === 1) { */ case 27:
+			/* while (true) { */ case 20:
+				/* if (!(cont)) { break; } */ if(!(cont)) { $s = 21; continue; }
+				_r$1 = $select([[sceneCh], [skipSceneCh]]); /* */ $s = 22; case 22: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_selection = _r$1;
+				/* */ if (_selection[0] === 0) { $s = 23; continue; }
+				/* */ if (_selection[0] === 1) { $s = 24; continue; }
+				/* */ $s = 25; continue;
+				/* if (_selection[0] === 0) { */ case 23:
+					_r$2 = (_entry$1 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$1 !== undefined ? _entry$1.v : ptrType$5.nil).loop(); /* */ $s = 26; case 26: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+					cont = _r$2;
+					$s = 25; continue;
+				/* } else if (_selection[0] === 1) { */ case 24:
 					cont = false;
-				/* } */ case 28:
-			/* } */ $s = 23; continue; case 24:
-			$r = dlog.Info(new sliceType([new $String("Scene End"), new $String($pkg.CurrentScene)])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = $send(logicTicker, true); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 25:
+			/* } */ $s = 20; continue; case 21:
+			$r = dlog.Info(new sliceType([new $String("Scene End"), new $String($pkg.CurrentScene)])); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = $send(logicTicker, true); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$close(logicTicker);
 			prevScene[0] = $pkg.CurrentScene;
-			$r = $send(drawCh, true); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* while (true) { */ case 33:
+			$r = $send(drawCh, true); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* while (true) { */ case 30:
 				_selection$1 = $select([[timing.ClearDelayCh, true], []]);
 				if (_selection$1[0] === 0) {
 				} else if (_selection$1[0] === 1) {
-					/* break delayLabel; */ $s = 34; continue s;
+					/* break delayLabel; */ $s = 31; continue s;
 				}
-			/* } */ $s = 33; continue; case 34:
-			$r = dlog.Verb(new sliceType([new $String("Resetting Engine")])); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = event.ResetBus(); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = dlog.Verb(new sliceType([new $String("Event Bus Reset")])); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ $s = 30; continue; case 31:
+			$r = dlog.Verb(new sliceType([new $String("Resetting Engine")])); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = event.ResetBus(); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Verb(new sliceType([new $String("Event Bus Reset")])); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			collision.Clear();
 			mouse$1.Clear();
-			$r = event.ResetEntities(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = render.ResetDrawStack(); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = render.PreDraw(); /* */ $s = 40; case 40: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = dlog.Verb(new sliceType([new $String("Engine Reset")])); /* */ $s = 41; case 41: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$6 = (_entry$2 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$2 !== undefined ? _entry$2.v : ptrType$5.nil).end(); /* */ $s = 42; case 42: if($c) { $c = false; _r$6 = _r$6.$blk(); } if (_r$6 && _r$6.$blk !== undefined) { break s; }
-			_tuple$1 = _r$6;
+			$r = event.ResetEntities(); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = render.ResetDrawStack(); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = render.PreDraw(); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = dlog.Verb(new sliceType([new $String("Engine Reset")])); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$3 = (_entry$2 = sceneMap[$String.keyFor($pkg.CurrentScene)], _entry$2 !== undefined ? _entry$2.v : ptrType$5.nil).end(); /* */ $s = 39; case 39: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			_tuple$1 = _r$3;
 			$pkg.CurrentScene = _tuple$1[0];
 			result[0] = _tuple$1[1];
 			if (result[0] === ptrType$2.nil) {
@@ -61804,101 +61736,87 @@ $packages["github.com/oakmound/oak"] = (function() {
 					/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
 				}; })(prevScene, result), []);
 			}
-		/* } */ $s = 10; continue; case 11:
+		/* } */ $s = 8; continue; case 9:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: sceneLoop }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._r$6 = _r$6; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.cont = cont; $f.firstScene = firstScene; $f.logicTicker = logicTicker; $f.ok = ok; $f.prevScene = prevScene; $f.result = result; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: sceneLoop }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.cont = cont; $f.firstScene = firstScene; $f.logicTicker = logicTicker; $f.ok = ok; $f.prevScene = prevScene; $f.result = result; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	JSScreen.ptr.prototype.NewBuffer = function(p) {
-		var _r, buffer, jss, p, rect$1, rgba, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; buffer = $f.buffer; jss = $f.jss; p = $f.p; rect$1 = $f.rect$1; rgba = $f.rgba; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var buffer, jss, p, rect$1, rgba;
 		jss = this;
-		_r = fmt.Println(new sliceType([new $String("New JS Buffer")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
 		rect$1 = $clone(image.Rect(0, 0, p.X, p.Y), image.Rectangle);
 		rgba = image.NewRGBA($clone(rect$1, image.Rectangle));
 		buffer = new JSBuffer.ptr($clone(rect$1, image.Rectangle), rgba);
-		$s = -1; return [buffer, $ifaceNil];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewBuffer }; } $f._r = _r; $f.buffer = buffer; $f.jss = jss; $f.p = p; $f.rect$1 = rect$1; $f.rgba = rgba; $f.$s = $s; $f.$r = $r; return $f;
+		return [buffer, $ifaceNil];
 	};
 	JSScreen.prototype.NewBuffer = function(p) { return this.$val.NewBuffer(p); };
 	JSScreen.ptr.prototype.NewWindow = function(opts) {
-		var _r, bdy, canvas, document, jsc, jss, opts, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; bdy = $f.bdy; canvas = $f.canvas; document = $f.document; jsc = $f.jsc; jss = $f.jss; opts = $f.opts; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		canvas = [canvas];
-		jsc = [jsc];
+		var bdy, canvas, document, jsc, jss, opts;
 		jss = this;
-		_r = fmt.Println(new sliceType([new $String("New JS Window")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
-		jsc[0] = new JSWindow.ptr(null, null, null, sliceType.nil, new sync.Mutex.ptr(0, 0));
+		jsc = new JSWindow.ptr(null, null, null, sliceType.nil, new sync.Mutex.ptr(0, 0));
 		document = $global.document;
-		canvas[0] = document.createElement($externalize("canvas", $String));
-		canvas[0].style.display = $externalize("block", $String);
-		canvas[0].width = $pkg.ScreenWidth;
-		canvas[0].height = $pkg.ScreenHeight;
-		jsc[0].ctx = canvas[0].getContext($externalize("2d", $String));
+		canvas = document.createElement($externalize("canvas", $String));
+		canvas.style.display = $externalize("block", $String);
+		canvas.width = $pkg.ScreenWidth;
+		canvas.height = $pkg.ScreenHeight;
+		jsc.ctx = canvas.getContext($externalize("2d", $String));
 		bdy = document.body;
-		bdy.appendChild(canvas[0]);
-		canvas[0].addEventListener($externalize("mousemove", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+		bdy.appendChild(canvas);
+		canvas.addEventListener($externalize("mousemove", $String), $externalize((function $b(ev) {
 			var ev, rect$1, x, x$1, y, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			rect$1 = canvas[0].getBoundingClientRect();
+			rect$1 = canvas.getBoundingClientRect();
 			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
 			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
-			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, 0, 0, 0), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = jsc.Send((x$1 = new mouse.Event.ptr(x, y, 0, 0, 0), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
-		canvas[0].addEventListener($externalize("mousedown", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+		}), funcType), $externalize(false, $Bool));
+		canvas.addEventListener($externalize("mousedown", $String), $externalize((function $b(ev) {
 			var button, ev, rect$1, x, x$1, y, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; button = $f.button; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			rect$1 = canvas[0].getBoundingClientRect();
+			rect$1 = canvas.getBoundingClientRect();
 			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
 			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
 			button = jsMouseButton($parseInt(ev.button) >> 0);
-			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 1), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = jsc.Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 1), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.button = button; $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
-		canvas[0].addEventListener($externalize("mouseup", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+		}), funcType), $externalize(false, $Bool));
+		canvas.addEventListener($externalize("mouseup", $String), $externalize((function $b(ev) {
 			var button, ev, rect$1, x, x$1, y, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; button = $f.button; ev = $f.ev; rect$1 = $f.rect$1; x = $f.x; x$1 = $f.x$1; y = $f.y; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			rect$1 = canvas[0].getBoundingClientRect();
+			rect$1 = canvas.getBoundingClientRect();
 			x = (((($parseInt(ev.clientX) >> 0) - ($parseInt(rect$1.left) >> 0) >> 0)));
 			y = (((($parseInt(ev.clientY) >> 0) - ($parseInt(rect$1.top) >> 0) >> 0)));
 			button = jsMouseButton($parseInt(ev.button) >> 0);
-			$r = jsc[0].Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 2), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = jsc.Send((x$1 = new mouse.Event.ptr(x, y, button, 0, 2), new x$1.constructor.elem(x$1))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.button = button; $f.ev = ev; $f.rect$1 = rect$1; $f.x = x; $f.x$1 = x$1; $f.y = y; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
-		$global.addEventListener($externalize("keydown", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+		}), funcType), $externalize(false, $Bool));
+		$global.addEventListener($externalize("keydown", $String), $externalize((function $b(ev) {
 			var ev, k, x, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; k = $f.k; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			k = $parseInt(ev.keyCode) >> 0;
-			$r = jsc[0].Send((x = new key.Event.ptr(0, jsKey(k), 0, 1), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = jsc.Send((x = new key.Event.ptr(0, jsKey(k), 0, 1), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.k = k; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
-		$global.addEventListener($externalize("keyup", $String), $externalize((function(canvas, jsc) { return function $b(ev) {
+		}), funcType), $externalize(false, $Bool));
+		$global.addEventListener($externalize("keyup", $String), $externalize((function $b(ev) {
 			var ev, k, x, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; ev = $f.ev; k = $f.k; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			k = $parseInt(ev.keyCode) >> 0;
-			$r = jsc[0].Send((x = new key.Event.ptr(0, jsKey(k), 0, 2), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = jsc.Send((x = new key.Event.ptr(0, jsKey(k), 0, 2), new x.constructor.elem(x))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.ev = ev; $f.k = k; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(canvas, jsc), funcType), $externalize(false, $Bool));
-		$s = -1; return [jsc[0], $ifaceNil];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewWindow }; } $f._r = _r; $f.bdy = bdy; $f.canvas = canvas; $f.document = document; $f.jsc = jsc; $f.jss = jss; $f.opts = opts; $f.$s = $s; $f.$r = $r; return $f;
+		}), funcType), $externalize(false, $Bool));
+		return [jsc, $ifaceNil];
 	};
 	JSScreen.prototype.NewWindow = function(opts) { return this.$val.NewWindow(opts); };
 	JSScreen.ptr.prototype.NewTexture = function(p) {
-		var _r, jss, p, txt, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; jss = $f.jss; p = $f.p; txt = $f.txt; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var jss, p, txt;
 		jss = this;
-		_r = fmt.Println(new sliceType([new $String("New JS Texture")])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_r;
 		txt = new JSTexture.ptr(new JSBuffer.ptr(new image.Rectangle.ptr(new image.Point.ptr(0, 0), new image.Point.ptr(0, 0)), ptrType$7.nil));
-		$s = -1; return [txt, $ifaceNil];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: JSScreen.ptr.prototype.NewTexture }; } $f._r = _r; $f.jss = jss; $f.p = p; $f.txt = txt; $f.$s = $s; $f.$r = $r; return $f;
+		return [txt, $ifaceNil];
 	};
 	JSScreen.prototype.NewTexture = function(p) { return this.$val.NewTexture(p); };
 	JSTexture.ptr.prototype.Upload = function(dp, src, sr) {
@@ -62015,19 +61933,15 @@ $packages["github.com/oakmound/oak"] = (function() {
 	};
 	JSWindow.prototype.NextEvent = function() { return this.$val.NextEvent(); };
 	JSWindow.ptr.prototype.Upload = function(dp, src, sr) {
-		var _arg, _r, _r$1, _r$2, dp, jsc, sr, src, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; dp = $f.dp; jsc = $f.jsc; sr = $f.sr; src = $f.src; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, dp, jsc, sr, src, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; dp = $f.dp; jsc = $f.jsc; sr = $f.sr; src = $f.src; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		jsc = this;
 		_r = src.RGBA(); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		_arg = new $Int(_r.Pix.$length);
-		_r$1 = fmt.Println(new sliceType([new $String("len"), _arg])); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		_r$2 = src.RGBA(); /* */ $s = 3; case 3: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		jsc.jsUint8 = new ($global.Uint8ClampedArray)($externalize(_r$2.Pix, sliceType$3), sr.Max.X, sr.Max.Y);
+		jsc.jsUint8 = new ($global.Uint8ClampedArray)($externalize(_r.Pix, sliceType$3), sr.Max.X, sr.Max.Y);
 		jsc.imgData = new ($global.ImageData)(jsc.jsUint8, sr.Max.X, sr.Max.Y);
 		jsc.ctx.putImageData(jsc.imgData, dp.X, dp.Y);
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.Upload }; } $f._arg = _arg; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f.dp = dp; $f.jsc = jsc; $f.sr = sr; $f.src = src; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: JSWindow.ptr.prototype.Upload }; } $f._r = _r; $f.dp = dp; $f.jsc = jsc; $f.sr = sr; $f.src = src; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	JSWindow.prototype.Upload = function(dp, src, sr) { return this.$val.Upload(dp, src, sr); };
 	JSWindow.ptr.prototype.Fill = function(dr, src, op) {
@@ -62648,14 +62562,14 @@ $packages["github.com/oakmound/oak/examples/pong"] = (function() {
 			var _r, _r$1, _r$2, _r$3, _r$4, _r$5, data, prevScene, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _r$5 = $f._r$5; data = $f.data; prevScene = $f.prevScene; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			$r = newPaddle(20, 200, 1); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = newPaddle(590, 200, 2); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = newPaddle(600, 200, 2); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = newBall(320, 240); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			_r = render.DefFont(); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_r$1 = _r.NewIntText((score2$24ptr || (score2$24ptr = new ptrType(function() { return score2; }, function($v) { score2 = $v; }))), 200, 20); /* */ $s = 5; case 5: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_r$2 = render.Draw(_r$1, 3); /* */ $s = 6; case 6: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 			_r$2;
 			_r$3 = render.DefFont(); /* */ $s = 7; case 7: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
-			_r$4 = _r$3.NewIntText((score1$24ptr || (score1$24ptr = new ptrType(function() { return score1; }, function($v) { score1 = $v; }))), 400, 20); /* */ $s = 8; case 8: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+			_r$4 = _r$3.NewIntText((score1$24ptr || (score1$24ptr = new ptrType(function() { return score1; }, function($v) { score1 = $v; }))), 440, 20); /* */ $s = 8; case 8: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
 			_r$5 = render.Draw(_r$4, 3); /* */ $s = 9; case 9: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
 			_r$5;
 			$s = -1; return;
@@ -62711,7 +62625,7 @@ $packages["github.com/oakmound/oak/examples/pong"] = (function() {
 				_r$8;
 			/* } */ case 9:
 			/* */ if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).X() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).X() > 640) { $s = 12; continue; }
-			/* */ if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > 440 - b[0].Solid.H) { $s = 13; continue; }
+			/* */ if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > 480 - b[0].Solid.H) { $s = 13; continue; }
 			/* */ $s = 14; continue;
 			/* if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).X() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).X() > 640) { */ case 12:
 				if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).X() < 0) {
@@ -62723,7 +62637,7 @@ $packages["github.com/oakmound/oak/examples/pong"] = (function() {
 				$clone(b[0].vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).SetY(0);
 				$r = b[0].Solid.SetPos(320, 240); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 14; continue;
-			/* } else if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > 440 - b[0].Solid.H) { */ case 13:
+			/* } else if ($clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(b[0].Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > 480 - b[0].Solid.H) { */ case 13:
 				$clone(b[0].vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).SetY(-1 * $clone(b[0].vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).Y());
 			/* } */ case 14:
 			$s = -1; return 0;
@@ -62776,9 +62690,9 @@ $packages["github.com/oakmound/oak/examples/pong"] = (function() {
 				$clone(p.vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).SetY($clone(p.vMoving.Speed, $packages["github.com/oakmound/oak/physics"].Vector).Y());
 			/* } */ case 3:
 			$r = p.Solid.ShiftY($clone(p.vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).Y()); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ if ($clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > (440 - p.Solid.H)) { $s = 7; continue; }
+			/* */ if ($clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > (480 - p.Solid.H)) { $s = 7; continue; }
 			/* */ $s = 8; continue;
-			/* if ($clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > (440 - p.Solid.H)) { */ case 7:
+			/* if ($clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() < 0 || $clone(p.Solid.Doodad.Point.Vector, $packages["github.com/oakmound/oak/physics"].Vector).Y() > (480 - p.Solid.H)) { */ case 7:
 				$r = p.Solid.ShiftY(-$clone(p.vMoving.Delta, $packages["github.com/oakmound/oak/physics"].Vector).Y()); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 8:
 			$s = -1; return 0;
