@@ -4,10 +4,6 @@ package oak
 
 import "golang.org/x/exp/shiny/screen"
 
-func initDriver() {
-	lifecycleLoop(new(JSScreen))
-}
-
 func windowController(s screen.Screen, ScreenWidth, ScreenHeight int) (screen.Window, error) {
 	return s.NewWindow(&screen.NewWindowOptions{
 		Width:  ScreenWidth,

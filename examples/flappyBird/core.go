@@ -30,6 +30,7 @@ const (
 )
 
 func main() {
+
 	oak.AddScene("bounce", func(string, interface{}) {
 		score = 0
 		// 1. Make Player

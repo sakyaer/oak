@@ -25,8 +25,7 @@ func logicLoop() chan bool {
 	ch := make(chan bool)
 	framesElapsed = 0
 	go func(doneCh chan bool) {
-		LogicTicker = timing.NewDynamicTicker()
-		LogicTicker.SetTick(timing.FPSToDuration(FrameRate))
+		LogicTicker = logicTickerInit()
 		for {
 			select {
 			case <-LogicTicker.C:
@@ -40,4 +39,18 @@ func logicLoop() chan bool {
 		}
 	}(ch)
 	return ch
+}
+
+func logicTickerInit() *timing.DynamicTicker {
+	LogicTicker = timing.NewDynamicTicker()
+	LogicTicker.SetTick(timing.FPSToDuration(FrameRate))
+	return LogicTicker
+}
+
+func logicLoopSingle(LogicTicker *timing.DynamicTicker) {
+	select {
+	case <-LogicTicker.C:
+		<-eb.TriggerBack("EnterFrame", framesElapsed)
+		framesElapsed++
+	}
 }

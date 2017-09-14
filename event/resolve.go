@@ -14,28 +14,7 @@ import (
 func ResolvePending() {
 	schedCt := 0
 	for {
-		if len(unbindAllAndRebinds) > 0 {
-			resolveUnbindAllAndRebinds()
-		}
-		// Specific unbinds
-		if len(unbinds) > 0 {
-			resolveUnbinds()
-		}
-
-		// A full set of unbind settings
-		if len(fullUnbinds) > 0 {
-			resolveFullUnbinds()
-		}
-
-		// A partial set of unbind settings
-		if len(partUnbinds) > 0 {
-			resolvePartialUnbinds()
-		}
-
-		// Bindings
-		if len(binds) > 0 {
-			resolveBindings()
-		}
+		ResolvePendingSingle()
 
 		// This is a tight loop that can cause a pseudo-deadlock
 		// by refusing to release control to the go scheduler.
@@ -47,6 +26,33 @@ func ResolvePending() {
 			// JS: this is never reached
 			runtime.Gosched()
 		}
+	}
+}
+
+// ResolvePendingSingle calls a single iteration of event resolution.
+// It's designed for use in single-routine implementations.
+func ResolvePendingSingle() {
+	if len(unbindAllAndRebinds) > 0 {
+		resolveUnbindAllAndRebinds()
+	}
+	// Specific unbinds
+	if len(unbinds) > 0 {
+		resolveUnbinds()
+	}
+
+	// A full set of unbind settings
+	if len(fullUnbinds) > 0 {
+		resolveFullUnbinds()
+	}
+
+	// A partial set of unbind settings
+	if len(partUnbinds) > 0 {
+		resolvePartialUnbinds()
+	}
+
+	// Bindings
+	if len(binds) > 0 {
+		resolveBindings()
 	}
 }
 
