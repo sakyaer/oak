@@ -102,3 +102,7 @@ Oak supports Windows with no dependencies and Linux with limited audio dependenc
 ## Package-specific Usage
 
 ... Pending! See examples or godoc!
+
+## About branches
+
+Ext-1.4 is a halfway point between 1.4 and 2.0 that we're internally using to develop Agent Blue with, so we can pull in new display options with our shiny fork and a couple of other necessary things without completely porting over all of our code.
