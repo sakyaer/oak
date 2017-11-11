@@ -13,8 +13,10 @@ import (
 )
 
 var (
-	imageBlack = image.Black
-	// DrawTicker is an unused parallel to LogicTicker to set the draw framerate
+	// Background is the color drawn to the screen before everything
+	// in the global draw stack is drawn.
+	Background = image.Black
+	// DrawTicker is a parallel to LogicTicker to set the draw framerate
 	DrawTicker *timing.DynamicTicker
 )
 
@@ -36,7 +38,7 @@ func drawLoop() {
 		panic(err)
 	}
 
-	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, draw.Src)
+	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 	drawLoopPublish(tx)
 
 	DrawTicker = timing.NewDynamicTicker()
@@ -54,7 +56,7 @@ func drawLoop() {
 			dlog.Verb("Starting loading")
 			for {
 				<-DrawTicker.C
-				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, draw.Src)
+				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 				if LoadingR != nil {
 					LoadingR.Draw(winBuffer.RGBA())
 				}
@@ -73,7 +75,7 @@ func drawLoop() {
 			dlog.Verb("Got something from viewport channel")
 			updateScreen(viewPoint[0], viewPoint[1])
 		case <-DrawTicker.C:
-			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, draw.Src)
+			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 			render.PreDraw()
 			render.GlobalDrawStack.Draw(winBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
 			drawLoopPublish(tx)
