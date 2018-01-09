@@ -5,6 +5,7 @@ import (
 	"image/draw"
 	"strconv"
 
+	"github.com/oakmound/oak/alg"
 	"github.com/oakmound/oak/physics"
 	"golang.org/x/image/math/fixed"
 )
@@ -45,6 +46,15 @@ func (t *Text) Draw(buff draw.Image) {
 // SetFont sets the drawer which renders the text each frame
 func (t *Text) SetFont(f *Font) {
 	t.d = f
+}
+
+// GetDims reports the width and height of a text renderable
+func (t *Text) GetDims() (int, int) {
+	// BUG: reported height is too low, test this impl:
+	// bounds, adv := t.d.BoundString(t.text.String())
+	// return adv.Round(), bounds.Max.Y.Round()
+	textWidth := t.d.MeasureString(t.text.String()).Round()
+	return textWidth, alg.RoundF64(t.d.Size)
 }
 
 // Center will shift the text so that the existing leftmost point

@@ -19,10 +19,10 @@ import (
 var (
 	fontdir string
 
-	defaultHinting  font.Hinting
-	defaultSize     float64
-	defaultDPI      float64
-	defaultColor    image.Image
+	defaultHinting              = font.HintingNone
+	defaultSize                 = 12.0
+	defaultDPI                  = 72.0
+	defaultColor    image.Image = image.White
 	defaultFontFile string
 
 	// DefFontGenerator is a default font generator of no options
@@ -71,6 +71,7 @@ func (fg *FontGenerator) Generate() *Font {
 	}
 
 	fnt := LoadFont(dir, fg.File)
+	// This logic is copied from truetype for their face scaling
 	scl := fixed.Int26_6(0.5 + (fg.Size * fg.DPI * 64 / 72))
 	bds := fnt.Bounds(scl)
 	intBds := intgeom.NewRect(
