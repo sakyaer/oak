@@ -14,7 +14,6 @@ import (
 	"github.com/oakmound/oak/alg/intgeom"
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/fileutil"
-	"github.com/oakmound/oak/render/internal/fonts"
 )
 
 var (
@@ -28,7 +27,6 @@ var (
 
 	// DefFontGenerator is a default font generator of no options
 	DefFontGenerator = FontGenerator{}
-	binaryFonts      = fonts.Asset
 
 	loadedFonts = make(map[string]*truetype.Font)
 )
