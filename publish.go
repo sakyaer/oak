@@ -2,12 +2,16 @@
 
 package oak
 
-import "golang.org/x/exp/shiny/screen"
+import (
+	"image/draw"
+
+	"github.com/oakmound/shiny/screen"
+)
 
 var (
 	drawLoopPublishDef = func(tx screen.Texture) {
 		tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-		windowControl.Scale(windowRect, tx, tx.Bounds(), screen.Src, nil)
+		windowControl.Scale(windowRect, tx, tx.Bounds(), draw.Src)
 		windowControl.Publish()
 	}
 )

@@ -3,6 +3,7 @@ package render
 import (
 	"image"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -56,7 +57,8 @@ func (fg *FontGenerator) Generate() *Font {
 		if defaultFontFile != "" {
 			fg.File = defaultFontFile
 		} else {
-			dir = filepath.Join("default_assets", "font")
+			_, curFile, _, _ := runtime.Caller(1)
+			dir = filepath.Join(filepath.Dir(curFile), "default_assets", "font")
 			fg.File = "luxisr.ttf"
 		}
 	}
@@ -182,13 +184,7 @@ func FontColor(s string) image.Image {
 // directory will be tried at generation time.
 func LoadFont(dir string, fontFile string) *truetype.Font {
 	if _, ok := loadedFonts[fontFile]; !ok {
-		var fontBytes []byte
-		var err error
-		if dir == filepath.Join("default_assets", "font") {
-			fontBytes, err = binaryFonts(filepath.Join(dir, fontFile))
-		} else {
-			fontBytes, err = fileutil.ReadFile(filepath.Join(dir, fontFile))
-		}
+		fontBytes, err := fileutil.ReadFile(filepath.Join(dir, fontFile))
 		if err != nil {
 			dlog.Error(err.Error())
 			return nil

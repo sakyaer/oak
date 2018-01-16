@@ -2,6 +2,7 @@ package fileutil
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,6 +32,7 @@ func TestReadFile(t *testing.T) {
 	_, err := ReadFile("notafile")
 	assert.NotNil(t, err)
 	BindataFn = func(s string) ([]byte, error) {
+		fmt.Println(s)
 		if s == "exists" {
 			return []byte{0}, nil
 		}

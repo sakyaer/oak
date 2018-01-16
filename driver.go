@@ -4,8 +4,8 @@ package oak
 
 import (
 	"github.com/oakmound/oak/dlog"
-	"golang.org/x/exp/shiny/driver"
-	"golang.org/x/exp/shiny/screen"
+	"github.com/oakmound/shiny/driver"
+	"github.com/oakmound/shiny/screen"
 )
 
 func initDriver(firstScene, imageDir, audioDir string) {

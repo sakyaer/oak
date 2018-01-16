@@ -1,5 +1,3 @@
-//+build !nolog
-
 package dlog
 
 import "strings"

@@ -6,7 +6,6 @@ import (
 
 	"github.com/oakmound/oak/alg"
 	"github.com/oakmound/oak/dlog"
-	"golang.org/x/exp/shiny/screen"
 )
 
 var (
@@ -14,10 +13,10 @@ var (
 	windowUpdateCh = make(chan bool)
 )
 
-func changeWindow(width, height int) {
+func changeWindow(x, y int32, width, height int) {
 	// The window controller handles incoming hardware or platform events and
 	// publishes image data to the screen.
-	wC, err := windowController(screenControl, width, height)
+	wC, err := windowController(screenControl, x, y, width, height)
 	if err != nil {
 		dlog.Error(err)
 		panic(err)
@@ -47,9 +46,9 @@ func ChangeWindow(width, height int) {
 	// Draw a black frame to cover up smears
 	// Todo: could restrict the black to -just- the area not covered by the
 	// scaled screen buffer
-	buff, err := screenControl.NewBuffer(image.Point{width, height})
+	buff, err := screenControl.NewImage(image.Point{width, height})
 	if err == nil {
-		draw.Draw(buff.RGBA(), buff.Bounds(), imageBlack, zeroPoint, screen.Src)
+		draw.Draw(buff.RGBA(), buff.Bounds(), Background, zeroPoint, draw.Src)
 		windowControl.Upload(zeroPoint, buff, buff.Bounds())
 	} else {
 		dlog.Error(err)

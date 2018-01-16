@@ -12,10 +12,12 @@ import (
 func ReadFile(file string) ([]byte, error) {
 	if BindataFn != nil {
 		rel, err := filepath.Rel(wd, file)
-		if err == nil {
-			return BindataFn(rel)
+		if err != nil {
+			dlog.Warn(err)
+			// Try the relative path by itself when we can't form an absolute path
+			rel = file
 		}
-		dlog.Warn("Error in rel", err)
+		return BindataFn(rel)
 	}
 	f, err := OpenOS(file)
 	if err != nil {

@@ -1,4 +1,4 @@
-//+build !js
+//+build js
 
 package dlog
 
@@ -6,11 +6,9 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"os"
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type logger struct {
@@ -27,11 +25,6 @@ func NewLogger() Logger {
 		byt:        bytes.NewBuffer(make([]byte, 0)),
 		debugLevel: ERROR,
 	}
-}
-
-// GetLogLevel returns the current log level, i.e WARN or INFO...
-func (l *logger) GetLogLevel() Level {
-	return l.debugLevel
 }
 
 // dLog, the primary function of the package,
@@ -83,12 +76,6 @@ func (l *logger) dLog(console, override bool, in ...interface{}) {
 	}
 }
 
-// FileWrite runs dLog, but JUST writes to file instead
-// of also to stdout.
-func (l *logger) FileWrite(in ...interface{}) {
-	l.dLog(false, true, in...)
-}
-
 func (l *logger) checkFilter(f string, in ...interface{}) bool {
 	ret := false
 	for _, elem := range in {
@@ -113,24 +100,6 @@ func (l *logger) SetDebugLevel(dL Level) {
 	} else {
 		l.debugLevel = dL
 	}
-}
-
-// CreateLogFile creates a file in the 'logs' directory
-// of the starting point of this program to write logs to
-func (l *logger) CreateLogFile() {
-	file := "logs/dlog"
-	file += time.Now().Format("_Jan_2_15-04-05_2006")
-	file += ".txt"
-	fHandle, err := os.Create(file)
-	if err != nil {
-		// We can't log an error that comes from
-		// our error logging functions
-		//panic(err)
-		// But this is also not an error we want to panic on!
-		fmt.Println("[oak]-------- No logs directory found. No logs will be written to file.")
-		return
-	}
-	l.writer = bufio.NewWriter(fHandle)
 }
 
 // Error will write a dlog if the debug level is not NONE

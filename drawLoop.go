@@ -7,7 +7,6 @@ import (
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/render"
 	"github.com/oakmound/oak/timing"
-	"github.com/oakmound/shiny/screen"
 )
 
 var (
@@ -79,10 +78,5 @@ func drawLoop() {
 }
 
 var (
-	drawLoopPublishDef = func(tx screen.Texture) {
-		tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
-		windowControl.Scale(windowRect, tx, tx.Bounds(), draw.Src)
-		windowControl.Publish()
-	}
 	drawLoopPublish = drawLoopPublishDef
 )

@@ -32,12 +32,7 @@ const (
 )
 
 func main() {
-<<<<<<< HEAD
-
-	oak.AddScene("bounce", func(string, interface{}) {
-=======
 	oak.Add("bounce", func(string, interface{}) {
->>>>>>> release/2.0.0
 		score = 0
 		// 1. Make Player
 		newFlappy(90, 140)
