@@ -3,6 +3,7 @@ package particle
 import (
 	"github.com/200sc/go-dist/floatrange"
 	"github.com/200sc/go-dist/intrange"
+	"github.com/oakmound/oak/alg"
 	"github.com/oakmound/oak/physics"
 )
 
@@ -23,7 +24,7 @@ func NewPerFrame(npf floatrange.Range) func(Generator) {
 	}
 }
 
-// Pos sets the position of a generator
+// Pos sets the initial position of spawned particles
 func Pos(x, y float64) func(Generator) {
 	return func(g Generator) {
 		g.SetPos(x, y)
@@ -37,10 +38,10 @@ func LifeSpan(ls floatrange.Range) func(Generator) {
 	}
 }
 
-// Angle sets the initial angle of a particle
+// Angle sets the initial angle of a particle in degrees
 func Angle(a floatrange.Range) func(Generator) {
 	return func(g Generator) {
-		g.GetBaseGenerator().Angle = a
+		g.GetBaseGenerator().Angle = a.Mult(alg.DegToRad)
 	}
 }
 

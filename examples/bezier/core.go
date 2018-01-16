@@ -7,21 +7,35 @@ import (
 
 	"github.com/oakmound/oak"
 	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/mouse"
 	"github.com/oakmound/oak/render"
+	"github.com/oakmound/oak/scene"
+	"github.com/oakmound/oak/shape"
 )
 
 var (
-	bz          render.Bezier
-	progressInc = 0.01
-	progress    float64
+	cmp *render.Composite
 )
+
+func renderCurve(floats []float64) {
+	bz, err := shape.BezierCurve(floats...)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if cmp != nil {
+		cmp.Undraw()
+	}
+	cmp = bezierDraw(bz)
+	render.Draw(cmp, 0)
+}
 
 func main() {
 
-	// c bezier accepts the same inputs as BezierCurve.
-	// The indicator will follow the path given here.
+	// c bezier X Y X Y X Y ...
+	// for defining custom points without using the mouse.
+	// does not interact with the mouse points tracked through left clicks.
 	oak.AddCommand("bezier", func(tokens []string) {
-		if len(tokens) < 2 {
+		if len(tokens) < 4 {
 			return
 		}
 		tokens = tokens[1:]
@@ -34,53 +48,52 @@ func main() {
 				return
 			}
 		}
-		bz, err = render.BezierCurve(floats...)
-		if err != nil {
-			fmt.Println(err)
-		}
+		renderCurve(floats)
 	})
 
-	// This command changes how fast the curve will advance.
-	// Todo: add utilities to shorthand commands for modifying
-	// float and int pointers.
-	oak.AddCommand("speed", func(tokens []string) {
-		if len(tokens) < 2 {
-			return
-		}
-		tokens = tokens[1:]
-		f, err := strconv.ParseFloat(tokens[0], 64)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		progressInc = f
-	})
-
-	oak.AddScene("bezier", func(string, interface{}) {
-
-		// Use a color box to indicate where we are on the curve.
-		cb := render.NewColorBox(3, 3, color.RGBA{255, 0, 0, 255})
-		cb.SetPos(320, 240)
-		render.Draw(cb, 0)
-
-		// Every frame, move the bezier indicator along the curve.
-		event.GlobalBind(func(int, interface{}) int {
-			if bz == nil {
-				return 0
-			}
-			cb.SetPos(bz.Pos(progress))
-			progress += progressInc
-			if progress > 1.0 {
-				progress = 0.0
+	oak.Add("bezier", func(string, interface{}) {
+		mouseFloats := []float64{}
+		event.GlobalBind(func(_ int, mouseEvent interface{}) int {
+			me := mouseEvent.(mouse.Event)
+			// Left click to add a point to the curve
+			if me.Button == "LeftMouse" {
+				mouseFloats = append(mouseFloats, float64(me.X()), float64(me.Y()))
+				renderCurve(mouseFloats)
+				// Perform any other click to reset the drawn curve
+			} else {
+				mouseFloats = []float64{}
+				cmp.Undraw()
 			}
 			return 0
-		}, "EnterFrame")
-
-		// Stubs
+		}, "MousePress")
 	}, func() bool {
 		return true
-	}, func() (string, *oak.SceneResult) {
+	}, func() (string, *scene.Result) {
 		return "bezier", nil
 	})
 	oak.Init("bezier")
 }
+
+func bezierDraw(b shape.Bezier) *render.Composite {
+	list := render.NewComposite()
+	bezierDrawRec(b, list, 255)
+	return list
+}
+
+func bezierDrawRec(b shape.Bezier, list *render.Composite, alpha uint8) {
+	switch bzn := b.(type) {
+	case shape.BezierNode:
+		sp := render.BezierLine(b, color.RGBA{alpha, 0, 0, alpha})
+		list.Append(sp)
+
+		bezierDrawRec(bzn.Left, list, uint8(float64(alpha)*.5))
+		bezierDrawRec(bzn.Right, list, uint8(float64(alpha)*.5))
+	case shape.BezierPoint:
+		sp := render.NewColorBox(5, 5, color.RGBA{255, 255, 255, 255})
+		sp.SetPos(bzn.X-2, bzn.Y-2)
+		list.Append(sp)
+	}
+}
+
+// Todo: could add a little animation that follows each of the bezier curves
+// around as progress increases

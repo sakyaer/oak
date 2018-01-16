@@ -9,7 +9,7 @@ import (
 	"github.com/oakmound/oak/physics"
 	"github.com/stretchr/testify/assert"
 
-	"golang.org/x/exp/shiny/gesture"
+	"github.com/oakmound/shiny/gesture"
 )
 
 func TestGestureIdentity(t *testing.T) {
@@ -19,8 +19,8 @@ func TestGestureIdentity(t *testing.T) {
 		Drag:        true,
 		LongPress:   false,
 		DoublePress: false,
-		InitialPos:  gesture.Point{X:2.0, Y:3.0},
-		CurrentPos:  gesture.Point{X:4.0, Y:5.0},
+		InitialPos:  gesture.Point{X: 2.0, Y: 3.0},
+		CurrentPos:  gesture.Point{X: 4.0, Y: 5.0},
 		Time:        tm,
 	}
 	mge := FromShinyGesture(ge)

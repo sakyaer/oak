@@ -5,14 +5,13 @@ import (
 	"errors"
 	"image"
 	"image/color"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/oakmound/oak/oakerr"
 
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/fileutil"
@@ -21,12 +20,6 @@ import (
 var (
 	regexpSingleNumber, _ = regexp.Compile(`^\d+$`)
 	regexpTwoNumbers, _   = regexp.Compile(`^\d+x\d+$`)
-	supportedFileEndings  = map[string]bool{
-		"jpeg": true,
-		".jpg": true,
-		".gif": true,
-		".png": true,
-	}
 )
 
 var (
@@ -60,16 +53,13 @@ func loadImage(directory, fileName string) (*image.RGBA, error) {
 			}
 		}()
 
-		ext := fileName[len(fileName)-4:]
-		var img image.Image
-		switch ext {
-		case ".png":
-			img, err = png.Decode(imgFile)
-		case ".gif":
-			img, err = gif.Decode(imgFile)
-		case "jpeg", ".jpg":
-			img, err = jpeg.Decode(imgFile)
+		ext := strings.ToLower(fileName[len(fileName)-4:])
+		decoder, ok := fileDecoders[ext]
+		if !ok {
+			return nil, errors.New("No decoder available for file type: " + ext)
 		}
+		img, err := decoder(imgFile)
+
 		if err != nil {
 			loadLock.Unlock()
 			return nil, err
@@ -93,13 +83,13 @@ func loadImage(directory, fileName string) (*image.RGBA, error) {
 }
 
 // LoadSprite loads the input fileName into a Sprite
-func LoadSprite(fileName string) *Sprite {
+func LoadSprite(fileName string) (*Sprite, error) {
 	r, err := loadImage(dir, fileName)
-	if err != nil {
+	if err != nil || r == nil {
 		dlog.Error(err)
-		return nil
+		return nil, err
 	}
-	return NewSprite(0, 0, r)
+	return NewSprite(0, 0, r), nil
 }
 
 // GetSheet tries to find the given file in the set of loaded sheets.
@@ -156,7 +146,7 @@ func LoadSheet(directory, fileName string, w, h, pad int) (*Sheet, error) {
 		widthBuffers != sheetW-1 ||
 		heightBuffers != sheetH-1 {
 		dlog.Error("Bad dimensions given to load sheet")
-		return nil, errors.New("Bad dimensions given to load sheet")
+		return nil, oakerr.InvalidInput{InputName: "w,h"}
 	}
 
 	sheet := make(Sheet, sheetW)
@@ -177,19 +167,19 @@ func LoadSheet(directory, fileName string, w, h, pad int) (*Sheet, error) {
 	return loadedSheets[fileName], nil
 }
 
-// LoadSheetAnimation loads a sheet and then calls LoadAnimation on that sheet
-func LoadSheetAnimation(fileName string, w, h, pad int, fps float64, frames []int) (*Animation, error) {
+// LoadSheetSequence loads a sheet and then calls LoadSequence on that sheet
+func LoadSheetSequence(fileName string, w, h, pad int, fps float64, frames ...int) (*Sequence, error) {
 	sheet, err := LoadSheet(dir, fileName, w, h, pad)
 	if err != nil {
 		return nil, err
 	}
-	return LoadAnimation(sheet, w, h, pad, fps, frames)
+	return LoadSequence(sheet, w, h, pad, fps, frames...)
 }
 
-// LoadAnimation takes in a sheet with sheet dimensions, a frame rate and a list of frames where
+// LoadSequence takes in a sheet with sheet dimensions, a frame rate and a list of frames where
 // frames are in x,y pairs ([0,0,1,0,2,0] for (0,0) (1,0) (2,0)) and returns an animation from that
-func LoadAnimation(sheet *Sheet, w, h, pad int, fps float64, frames []int) (*Animation, error) {
-	animation, err := NewAnimation(sheet, fps, frames)
+func LoadSequence(sheet *Sheet, w, h, pad int, fps float64, frames ...int) (*Sequence, error) {
+	animation, err := NewSheetSequence(sheet, fps, frames...)
 	if err != nil {
 		return nil, err
 	}
@@ -228,7 +218,7 @@ func BatchLoad(baseFolder string) error {
 		dlog.Verb("folder ", i, folder.Name())
 		if folder.IsDir() {
 
-			frameW, frameH, err := parseLoadFolderName(aliases, folder.Name())
+			frameW, frameH, possibleSheet, err := parseLoadFolderName(aliases, folder.Name())
 			if err != nil {
 				return err
 			}
@@ -237,7 +227,7 @@ func BatchLoad(baseFolder string) error {
 			for _, file := range files {
 				if !file.IsDir() {
 					name := file.Name()
-					if _, ok := supportedFileEndings[name[len(name)-4:]]; ok {
+					if _, ok := fileDecoders[strings.ToLower(name[len(name)-4:])]; ok {
 						dlog.Verb("loading file ", name)
 						buff, err := loadImage(baseFolder, filepath.Join(folder.Name(), name))
 						if err != nil {
@@ -249,20 +239,18 @@ func BatchLoad(baseFolder string) error {
 
 						dlog.Verb("buffer: ", w, h, " frame: ", frameW, frameH)
 
-						if frameW == 0 || frameH == 0 {
+						if !possibleSheet {
 							continue
 						} else if w < frameW || h < frameH {
 							dlog.Error("File ", name, " in folder", folder.Name(), " is too small for folder dimensions", frameW, frameH)
-							return errors.New("File in folder is too small for these folder dimensions")
+							return errors.New("File in folder is too small for folder dimensions: " + strconv.Itoa(w) + ", " + strconv.Itoa(h))
 
 							// Load this as a sheet if it is greater
 							// than the folder size's frame size
 						} else if w != frameW || h != frameH {
 							dlog.Verb("Loading as sprite sheet")
 							_, err = LoadSheet(baseFolder, filepath.Join(folder.Name(), name), frameW, frameH, defaultPad)
-							if err != nil {
-								dlog.Error(err)
-							}
+							dlog.ErrorCheck(err)
 						}
 					} else {
 						dlog.Error("Unsupported file ending for batchLoad: ", name)
@@ -288,12 +276,9 @@ func parseAliasFile(baseFolder string) map[string]string {
 	return aliases
 }
 
-func parseLoadFolderName(aliases map[string]string, name string) (int, int, error) {
+func parseLoadFolderName(aliases map[string]string, name string) (int, int, bool, error) {
 	var frameW, frameH int
-	if name == "raw" {
-		frameW = 0
-		frameH = 0
-	} else if result := regexpTwoNumbers.Find([]byte(name)); result != nil {
+	if result := regexpTwoNumbers.Find([]byte(name)); result != nil {
 		vals := strings.Split(string(result), "x")
 		dlog.Verb("Extracted dimensions: ", vals)
 		frameW, _ = strconv.Atoi(vals[0])
@@ -314,11 +299,20 @@ func parseLoadFolderName(aliases map[string]string, name string) (int, int, erro
 				frameW = val
 				frameH = val
 			} else {
-				return 0, 0, errors.New("Alias value not parseable as a frame width and height pair")
+				return 0, 0, false, errors.New("Alias value not parseable as a frame width and height pair")
 			}
 		} else {
-			return 0, 0, errors.New("Alias name not found in alias file")
+			dlog.Info("Folder name", name, "parsed to 0x0 (unbound) dimensions.")
+			frameW = 0
+			frameH = 0
 		}
 	}
-	return frameW, frameH, nil
+	return frameW, frameH, frameW != 0 && frameH != 0, nil
+}
+
+// SetAssetPaths sets the directories that files are loaded from when using
+// the LoadSprite utility (and others). Oak will call this with SetupConfig.Assets
+// joined with SetupConfig.Images after Init.
+func SetAssetPaths(imagedir string) {
+	dir = imagedir
 }

@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-// A RenderableHeap managed a set of renderables to be drawn in explicit layered
+// A RenderableHeap manages a set of renderables to be drawn in explicit layered
 // order, using an internal heap to manage that order.
 type RenderableHeap struct {
 	rs      []Renderable
@@ -30,8 +30,10 @@ func NewHeap(static bool) *RenderableHeap {
 }
 
 //Add stages a new Renderable to add to the heap
-func (rh *RenderableHeap) Add(r Renderable, layer int) Renderable {
-	r.SetLayer(layer)
+func (rh *RenderableHeap) Add(r Renderable, layers ...int) Renderable {
+	if len(layers) > 0 {
+		r.SetLayer(layers[0])
+	}
 	rh.addLock.Lock()
 	rh.toPush = append(rh.toPush, r)
 	rh.addLock.Unlock()
@@ -41,7 +43,7 @@ func (rh *RenderableHeap) Add(r Renderable, layer int) Renderable {
 //Replace adds a Renderable and removes an old one
 func (rh *RenderableHeap) Replace(r1, r2 Renderable, layer int) {
 	rh.Add(r2, layer)
-	r1.UnDraw()
+	r1.Undraw()
 }
 
 // Satisfying the Heap interface
@@ -56,16 +58,9 @@ func (rh *RenderableHeap) Swap(i, j int) { rh.rs[i], rh.rs[j] = rh.rs[j], rh.rs[
 
 //Push adds to the renderable heap
 func (rh *RenderableHeap) Push(r interface{}) {
-	// defer func() {
-	// 	if x := recover(); x != nil {
-	// 		dlog.Error("Invalid Memory address pushed to Draw Heap")
-	// 	}
-	// }()
 	if r == nil {
 		return
 	}
-	// This can cause a 'name offset base pointer out of range' error
-	// Maybe having incrementing sizes instead of appending could help that?
 	rh.rs = append(rh.rs, r.(Renderable))
 }
 
@@ -80,15 +75,6 @@ func (rh *RenderableHeap) Pop() interface{} {
 // PreDraw parses through renderables to be pushed
 // and adds them to the drawheap.
 func (rh *RenderableHeap) PreDraw() {
-	// defer func() {
-	// 	if x := recover(); x != nil {
-	// 		dlog.Error("Invalid Memory Address in Draw heap")
-	// 		// This does not work-- all addresses following the bad address
-	// 		// at i are also bad
-	// 		//rh.toPush = rh.toPush[i+1:]
-	// 		rh.toPush = []Renderable{}
-	// 	}
-	// }()
 	rh.addLock.Lock()
 	for _, r := range rh.toPush {
 		if r != nil {
@@ -101,7 +87,7 @@ func (rh *RenderableHeap) PreDraw() {
 
 // Copy on a renderableHeap does not include any of its elements,
 // as renderables cannot be copied.
-func (rh *RenderableHeap) Copy() Addable {
+func (rh *RenderableHeap) Copy() Stackable {
 	return NewHeap(rh.static)
 }
 
@@ -126,8 +112,8 @@ func (rh *RenderableHeap) draw(world draw.Image, viewPos image.Point, screenW, s
 			if intf != nil {
 				r := intf.(Renderable)
 				if r.GetLayer() != Undraw {
-					x2 := int(r.GetX())
-					y2 := int(r.GetY())
+					x2 := int(r.X())
+					y2 := int(r.Y())
 					w, h := r.GetDims()
 					x := w + x2
 					y := h + y2

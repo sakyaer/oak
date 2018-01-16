@@ -2,13 +2,15 @@ package render
 
 import (
 	"image"
-	"image/color"
 	"path/filepath"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/colornames"
 	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
 
+	"github.com/oakmound/oak/alg/intgeom"
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/fileutil"
 	"github.com/oakmound/oak/render/internal/fonts"
@@ -17,10 +19,10 @@ import (
 var (
 	fontdir string
 
-	defaultHinting  font.Hinting
-	defaultSize     float64
-	defaultDPI      float64
-	defaultColor    image.Image
+	defaultHinting              = font.HintingNone
+	defaultSize                 = 12.0
+	defaultDPI                  = 72.0
+	defaultColor    image.Image = image.White
 	defaultFontFile string
 
 	// DefFontGenerator is a default font generator of no options
@@ -68,6 +70,20 @@ func (fg *FontGenerator) Generate() *Font {
 		fg.Color = defaultColor
 	}
 
+	fnt := LoadFont(dir, fg.File)
+	if fnt == nil {
+		return nil
+	}
+	// This logic is copied from truetype for their face scaling
+	scl := fixed.Int26_6(0.5 + (fg.Size * fg.DPI * 64 / 72))
+	bds := fnt.Bounds(scl)
+	intBds := intgeom.NewRect(
+		bds.Min.X.Round(),
+		bds.Min.Y.Round(),
+		bds.Max.X.Round(),
+		bds.Max.Y.Round(),
+	)
+
 	return &Font{
 		FontGenerator: *fg,
 		Drawer: font.Drawer{
@@ -75,12 +91,13 @@ func (fg *FontGenerator) Generate() *Font {
 			// by their respective parse functions in the
 			// zero case.
 			Src: fg.Color,
-			Face: truetype.NewFace(LoadFont(dir, fg.File), &truetype.Options{
+			Face: truetype.NewFace(fnt, &truetype.Options{
 				Size:    fg.Size,
 				DPI:     fg.DPI,
 				Hinting: parseFontHinting(fg.Hinting),
 			}),
 		},
+		bounds: intBds,
 	}
 
 }
@@ -97,6 +114,7 @@ func (fg *FontGenerator) Copy() *FontGenerator {
 type Font struct {
 	FontGenerator
 	font.Drawer
+	bounds intgeom.Rect
 }
 
 // Refresh regenerates this font
@@ -142,29 +160,26 @@ func parseFontHinting(hintType string) (faceHinting font.Hinting) {
 		dlog.Error("Unable to parse font hinting, ", hintType)
 		fallthrough
 	case "":
-		// Don't warn about undefined hinting
 		faceHinting = font.HintingNone
 	}
 	return faceHinting
 }
 
-//FontColor converts a small set of strings to colors
-//TODO: Implement a better version or pull in an outside library already doing this as this should be a fairly common utility function
+// FontColor accesses x/image/colornames and returns an image.Image for the input
+// string. If the string is not defined in x/image/colornames, it will return defaultColor
+// as defined by SetFontDefaults. The set of colors as defined by x/image/colornames matches
+// the set of colors as defined by the SVG 1.1 spec.
 func FontColor(s string) image.Image {
 	s = strings.ToLower(s)
-	switch s {
-	case "white":
-		return image.White
-	case "black":
-		return image.Black
-	case "green":
-		return image.NewUniform(color.RGBA{0, 255, 0, 255})
-	default:
-		return defaultColor
+	if c, ok := colornames.Map[s]; ok {
+		return image.NewUniform(c)
 	}
+	return defaultColor
 }
 
-//LoadFont loads in a font file and stores it with the given name. This is necessary before using the fonttype for a Font
+// LoadFont loads in a font file and stores it with the given fontFile name.
+// This is necessary before using that file in a generator, otherwise the default
+// directory will be tried at generation time.
 func LoadFont(dir string, fontFile string) *truetype.Font {
 	if _, ok := loadedFonts[fontFile]; !ok {
 		var fontBytes []byte

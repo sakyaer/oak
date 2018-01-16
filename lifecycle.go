@@ -4,33 +4,20 @@ package oak
 
 import (
 	"image"
-	"sync"
 
 	"github.com/oakmound/oak/dlog"
-	"github.com/oakmound/oak/event"
+	"golang.org/x/mobile/event/lifecycle"
 
-	"golang.org/x/exp/shiny/screen"
+	"github.com/oakmound/shiny/screen"
 )
 
 var (
-	winBuffer     screen.Buffer
+	winBuffer     screen.Image
 	screenControl screen.Screen
 	windowControl screen.Window
-
-	initControl = sync.Mutex{}
-
-	lifecycleInit bool
 )
 
 func lifecycleLoop(s screen.Screen) {
-	initControl.Lock()
-	if lifecycleInit {
-		dlog.Error("Started lifecycle twice, aborting second call")
-		initControl.Unlock()
-		return
-	}
-	lifecycleInit = true
-	initControl.Unlock()
 	dlog.Info("Init Lifecycle")
 
 	screenControl = s
@@ -39,29 +26,27 @@ func lifecycleLoop(s screen.Screen) {
 	// The window buffer represents the subsection of the world which is available to
 	// be shown in a window.
 	dlog.Info("Creating window buffer")
-	winBuffer, err = screenControl.NewBuffer(image.Point{ScreenWidth, ScreenHeight})
+	winBuffer, err = screenControl.NewImage(image.Point{ScreenWidth, ScreenHeight})
 	if err != nil {
 		dlog.Error(err)
 		return
 	}
 
-	// The window controller handles incoming hardware or platform events and
-	// publishes image data to the screen.\
 	dlog.Info("Creating window controller")
-	changeWindow(ScreenWidth*conf.Screen.Scale, ScreenHeight*conf.Screen.Scale)
-
-	dlog.Info("Getting event bus")
-	eb = event.GetBus()
+	changeWindow(int32(conf.Screen.X), int32(conf.Screen.Y), ScreenWidth*conf.Screen.Scale, ScreenHeight*conf.Screen.Scale)
 
 	dlog.Info("Starting draw loop")
 	go drawLoop()
 	dlog.Info("Starting input loop")
 	go inputLoop()
 
-	dlog.Info("Starting event handler")
-	go event.ResolvePending()
 	// The quit channel represents a signal
 	// for the engine to stop.
 	// Lifecycle goroutine reaches here.
 	<-quitCh
+}
+
+// Quit sends a signal to the window to close itself, ending oak.
+func Quit() {
+	windowControl.Send(lifecycle.Event{To: lifecycle.StageDead})
 }

@@ -9,8 +9,10 @@ var (
 	drawPolygon      polyclip.Polygon
 )
 
+// Todo 2.0: draw polygons should be stack or stack-item specific, not global
+
 // SetDrawPolygon sets the draw polygon and flags that draw functions
-// should check for containment in the polygon before running
+// should check for containment in the polygon before drawing elements
 func SetDrawPolygon(p polyclip.Polygon) {
 	usingDrawPolygon = true
 	drawPolygon = p
@@ -26,13 +28,13 @@ func ClearDrawPolygon() {
 
 // DrawPolygonDim returns the dimensions of the draw polygon, or all zeroes
 // if there is none.
-// Todo 2.0: This should return floats, and as a rectangle instead of as four elements.
-func DrawPolygonDim() (int, int, int, int) {
+// Todo 2.0: This should return a rectangle instead of four elements.
+func DrawPolygonDim() (float64, float64, float64, float64) {
 	if !usingDrawPolygon {
 		return 0, 0, 0, 0
 	}
 	mbr := drawPolygon.BoundingBox()
-	return int(mbr.Min.X), int(mbr.Min.Y), int(mbr.Max.X), int(mbr.Max.Y)
+	return mbr.Min.X, mbr.Min.Y, mbr.Max.X, mbr.Max.Y
 }
 
 // InDrawPolygon returns whehter a coordinate and dimension set should be drawn

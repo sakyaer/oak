@@ -9,6 +9,7 @@ import (
 	"github.com/oakmound/oak/entities"
 	"github.com/oakmound/oak/event"
 	"github.com/oakmound/oak/render"
+	"github.com/oakmound/oak/scene"
 )
 
 var (
@@ -20,7 +21,7 @@ const (
 )
 
 func main() {
-	oak.AddScene("pong",
+	oak.Add("pong",
 		func(prevScene string, data interface{}) {
 			newPaddle(20, 200, 1)
 			newPaddle(600, 200, 2)
@@ -28,12 +29,15 @@ func main() {
 			render.Draw(render.DefFont().NewIntText(&score2, 200, 20), 3)
 			render.Draw(render.DefFont().NewIntText(&score1, 440, 20), 3)
 		}, func() bool { return true },
-		func() (string, *oak.SceneResult) { return "pong", nil })
+		func() (string, *scene.Result) { return "pong", nil })
 	oak.Init("pong")
 }
 
+// Todo: this was written before we had vectors, then changed at release 1.0 to be a lot
+// more verbose once we had vectors, but we'd really like it to not be so
+// wordy.
 func newBall(x, y float64) {
-	b := entities.NewMoving(x, y, 10, 10, render.NewColorBox(10, 10, color.RGBA{0, 255, 0, 255}), 0, 0)
+	b := entities.NewMoving(x, y, 10, 10, render.NewColorBox(10, 10, color.RGBA{0, 255, 0, 255}), nil, 0, 0)
 	render.Draw(b.R, 2)
 	b.Bind(func(id int, nothing interface{}) int {
 		if b.Delta.X() == 0 && b.Delta.Y() == 0 {
@@ -61,18 +65,18 @@ func newBall(x, y float64) {
 			b.Delta.SetY(-1 * b.Delta.Y())
 		}
 		return 0
-	}, "EnterFrame")
+	}, event.Enter)
 }
 
 func newPaddle(x, y float64, player int) {
-	p := entities.NewMoving(x, y, 20, 100, render.NewColorBox(20, 100, color.RGBA{255, 0, 0, 255}), 0, 0)
+	p := entities.NewMoving(x, y, 20, 100, render.NewColorBox(20, 100, color.RGBA{255, 0, 0, 255}), nil, 0, 0)
 	p.Speed.SetY(4)
 	render.Draw(p.R, 1)
 	p.Space.UpdateLabel(paddle)
 	if player == 1 {
-		p.Bind(enterPaddle("UpArrow", "DownArrow"), "EnterFrame")
+		p.Bind(enterPaddle("UpArrow", "DownArrow"), event.Enter)
 	} else {
-		p.Bind(enterPaddle("W", "S"), "EnterFrame")
+		p.Bind(enterPaddle("W", "S"), event.Enter)
 	}
 	p.SetPos(x, y)
 }

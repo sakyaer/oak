@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"strconv"
+
 	"github.com/oakmound/oak/event"
 	"github.com/oakmound/oak/render"
 )
@@ -50,7 +52,7 @@ func (d *Doodad) GetRenderable() render.Renderable {
 // two tiers of draw layers
 func (d *Doodad) SetRenderable(r render.Renderable) {
 	if d.R != nil {
-		d.R.UnDraw()
+		d.R.Undraw()
 	}
 	d.R = r
 	render.Draw(d.R, d.R.GetLayer())
@@ -60,7 +62,7 @@ func (d *Doodad) SetRenderable(r render.Renderable) {
 // entity mapping for this Doodad
 func (d *Doodad) Destroy() {
 	if d.R != nil {
-		d.R.UnDraw()
+		d.R.Undraw()
 	}
 	d.CID.UnbindAll()
 	event.DestroyEntity(int(d.CID))
@@ -79,10 +81,8 @@ func (d *Doodad) SetPos(x, y float64) {
 func (d *Doodad) String() string {
 	s := "Doodad: \nP{ "
 	s += d.Point.String()
-	s += " }\nR:{ "
-	s += d.R.String()
 	s += " }\nID:{ "
-	s += d.CID.String()
+	s += strconv.Itoa(int(d.CID))
 	s += " }"
 	return s
 }

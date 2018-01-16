@@ -4,8 +4,10 @@ import (
 	"runtime"
 
 	"github.com/oakmound/oak/dlog"
-	pmouse "github.com/oakmound/oak/mouse"
-	"golang.org/x/exp/shiny/gesture"
+	okey "github.com/oakmound/oak/key"
+	omouse "github.com/oakmound/oak/mouse"
+	"github.com/oakmound/oak/physics"
+	"github.com/oakmound/shiny/gesture"
 	"golang.org/x/mobile/event/key"
 	"golang.org/x/mobile/event/lifecycle"
 	"golang.org/x/mobile/event/mouse"
@@ -28,7 +30,7 @@ func inputLoop() {
 		schedCt++
 		if schedCt > 100 {
 			schedCt = 0
-			runtime.Gosched()
+			runtime.Gosched() 
 		}
 	}
 }
@@ -44,94 +46,80 @@ func inputLoopInit() {
 		// Standard input
 		eventFn = windowControl.NextEvent
 	}
-}
+} 
 
-// inputLoopSwitch is a single instance of the input loop. Intended
-// for use in single-threaded engine implementations.
 func inputLoopSwitch() {
-	switch e := eventFn().(type) {
-	// We only currently respond to death lifecycle events.
-	case lifecycle.Event:
-		if e.To == lifecycle.StageDead {
-			quitCh <- true
-			return
-		}
-		// ... this is where we would respond to window focus events
+	select {
+		// Send key events
+		//
+		// Key events have two varieties:
+		// The "KeyDown" and "KeyUp" events, which trigger for all keys
+		// and specific "KeyDown$key", etc events which trigger only for $key.
+		// The specific key that is pressed is passed as the data interface for
+		// the former events, but not for the latter.
+		case key.Event:
+			// key.Code strings all begin with "Code". This strips that off.
+			k := GetKeyBind(e.Code.String()[4:])
+			if e.Direction == key.DirPress {
+				setDown(k)
+				logicHandler.Trigger(okey.Down, k)
+				logicHandler.Trigger(okey.Down+k, nil)
+			} else if e.Direction == key.DirRelease {
+				setUp(k)
+				logicHandler.Trigger(okey.Up, k)
+				logicHandler.Trigger(okey.Up+k, nil)
+			}
 
-	// Send key events
-	//
-	// Key events have two varieties:
-	// The "KeyDown" and "KeyUp" events, which trigger for all keys
-	// and specific "KeyDown$key", etc events which trigger only for $key.
-	// The specific key that is pressed is passed as the data interface for
-	// the former events, but not for the latter.
-	case key.Event:
-		dlog.Verb("Key event", e)
-		k := GetKeyBind(e.Code.String()[4:])
-		if e.Direction == key.DirPress {
-			setDown(k)
-			eb.Trigger("KeyDown", k)
-			eb.Trigger("KeyDown"+k, nil)
-		} else if e.Direction == key.DirRelease {
-			setUp(k)
-			eb.Trigger("KeyUp", k)
-			eb.Trigger("KeyUp"+k, nil)
-		}
+		// Send mouse events
+		//
+		// Mouse events are parsed based on their button
+		// and direction into an event name and then triggered:
+		// 'MousePress', 'MouseRelease', 'MouseScrollDown', 'MouseScrollUp', and 'MouseDrag'
+		//
+		// The basic event name is meant for entities which
+		// want to respond to the mouse event happening -anywhere-.
+		//
+		// For events which have mouse collision enabled, they'll receive
+		// $eventName+"On" when the event occurs within their collision area.
+		//
+		// Mouse events all receive an x, y, and button string.
+		case mouse.Event:
+			button := omouse.GetMouseButton(e.Button)
+			eventName := omouse.GetEventName(e.Direction, e.Button)
+			if e.Direction == mouse.DirPress {
+				setDown(button)
+			} else if e.Direction == mouse.DirRelease {
+				setUp(button)
+			}
+			// The event triggered for mouse events has the same scaling as the
+			// render and collision space. I.e. if the viewport is at 0, the mouse's
+			// position is exactly the same as the position of a visible entity
+			// on screen. When not at zero, the offset will be exactly the viewport.
+			// Todo: consider incorporating viewport into the event, see the
+			// workaround needed in mouseDetails, and how mouse events might not
+			// propagate to their expected position.
+			mevent := omouse.Event{
+				Vector: physics.NewVector32((((e.X - float32(windowRect.Min.X)) / float32(windowRect.Max.X-windowRect.Min.X)) * float32(ScreenWidth)),
+					(((e.Y - float32(windowRect.Min.Y)) / float32(windowRect.Max.Y-windowRect.Min.Y)) * float32(ScreenHeight))),
+				Button: button,
+				Event:  eventName,
+			}
 
-	// Send mouse events
-	//
-	// Mouse events are parsed based on their button
-	// and direction into an event name and then triggered:
-	// 'MousePress', 'MouseRelease', 'MouseScrollDown', 'MouseScrollUp', and 'MouseDrag'
-	//
-	// The basic event name is meant for entities which
-	// want to respond to the mouse event happening -anywhere-.
-	//
-	// For events which have mouse collision enabled, they'll receive
-	// $eventName+"On" when the event occurs within their collision area.
-	//
-	// Mouse events all receive an x, y, and button string.
-	case mouse.Event:
-		dlog.Verb("Mouse event", e)
+			omouse.Propagate(eventName+"On", mevent)
+			logicHandler.Trigger(eventName, mevent)
 
-		button := pmouse.GetMouseButton(e.Button)
-		eventName := pmouse.GetEventName(e.Direction, e.Button)
-		if e.Direction == mouse.DirPress {
-			setDown(button)
-		} else if e.Direction == mouse.DirRelease {
-			setUp(button)
-		}
-		// The event triggered for mouse events has the same scaling as the
-		// render and collision space. I.e. if the viewport is at 0, the mouse's
-		// position is exactly the same as the position of a visible entity
-		// on screen. When not at zero, the offset will be exactly the viewport.
-		// Todo: consider incorporating viewport into the event, see the
-		// workaround needed in mouseDetails, and how mouse events might not
-		// propagate to their expected position.
-		mevent := pmouse.Event{
-			X:      (((e.X - float32(windowRect.Min.X)) / float32(windowRect.Max.X-windowRect.Min.X)) * float32(ScreenWidth)),
-			Y:      (((e.Y - float32(windowRect.Min.Y)) / float32(windowRect.Max.Y-windowRect.Min.Y)) * float32(ScreenHeight)),
-			Button: button,
-			Event:  eventName,
-		}
-
-		pmouse.LastMouseEvent = mevent
+		case gesture.Event:
+			eventName := "Gesture" + e.Type.String()
+			dlog.Verb(eventName)
+			logicHandler.Trigger(eventName, omouse.FromShinyGesture(e))
 
 		eb.Trigger(eventName, mevent)
 		pmouse.Propagate(eventName+"On", mevent)
 
-	case gesture.Event:
-		eventName := "Gesture" + e.Type.String()
-		dlog.Verb(eventName)
-		eb.Trigger(eventName, pmouse.FromShinyGesture(e))
-
-	// There's something called a paint event that we don't respond to
-
-	// Size events update what we scale the screen to
-	case size.Event:
-		//dlog.Verb("Got size event", e)
-		ChangeWindow(e.WidthPx, e.HeightPx)
-	case error:
-		dlog.Error(e)
+		// Size events update what we scale the screen to
+		case size.Event:
+			//dlog.Verb("Got size event", e)
+			ChangeWindow(e.WidthPx, e.HeightPx)
+		}
 	}
 }

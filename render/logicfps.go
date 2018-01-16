@@ -39,13 +39,13 @@ func (lf *LogicFPS) PreDraw() {
 	// NewDrawFPS is called, DefFont() does not exist.
 	if lf.txt == nil {
 		lf.Init()
-		lf.Bind(logicFPSBind, "EnterFrame")
+		lf.Bind(logicFPSBind, event.Enter)
 		lf.txt = DefFont().NewIntText(&lf.fps, 10, 30)
 	}
 }
 
 // Add does nothing for a drawFPS
-func (lf *LogicFPS) Add(Renderable, int) Renderable {
+func (lf *LogicFPS) Add(Renderable, ...int) Renderable {
 	//NOP
 	return nil
 }
@@ -56,7 +56,7 @@ func (lf *LogicFPS) Replace(Renderable, Renderable, int) {
 }
 
 // Copy does effectively nothing for a drawFPS
-func (lf *LogicFPS) Copy() Addable {
+func (lf *LogicFPS) Copy() Stackable {
 	return new(LogicFPS)
 }
 

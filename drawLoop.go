@@ -7,21 +7,22 @@ import (
 	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/render"
 	"github.com/oakmound/oak/timing"
-	"golang.org/x/exp/shiny/screen"
+	"github.com/oakmound/shiny/screen"
 )
 
 var (
-	imageBlack = image.Black
-	// DrawTicker is an unused parallel to LogicTicker to set the draw framerate
+	// Background is the uniform color drawn to the screen in between draw frames
+	Background = image.Black
+	// DrawTicker is the parallel to LogicTicker to set the draw framerate
 	DrawTicker *timing.DynamicTicker
 )
 
 // DrawLoop
 // Unless told to stop, the draw channel will repeatedly
-// 1. draw black to a temporary buffer
-// 2. draw all elements onto the temporary buffer.
-// 3. scale the buffer's data at the viewport's position to a texture.
-// 4. publish the texture to display on screen.
+// 1. draw the background color to a temporary buffer
+// 2. draw all visible rendered elements onto the temporary buffer.
+// 3. draw the buffer's data at the viewport's position to the screen.
+// 4. publish the screen to display in window.
 func drawLoop() {
 	<-drawCh
 
@@ -32,7 +33,7 @@ func drawLoop() {
 		panic(err)
 	}
 
-	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
+	draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 	drawLoopPublish(tx)
 
 	DrawTicker = timing.NewDynamicTicker()
@@ -50,7 +51,7 @@ func drawLoop() {
 			dlog.Verb("Starting loading")
 			for {
 				<-DrawTicker.C
-				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
+				draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 				if LoadingR != nil {
 					LoadingR.Draw(winBuffer.RGBA())
 				}
@@ -69,7 +70,7 @@ func drawLoop() {
 			dlog.Verb("Got something from viewport channel")
 			updateScreen(viewPoint[0], viewPoint[1])
 		case <-DrawTicker.C:
-			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), imageBlack, zeroPoint, screen.Src)
+			draw.Draw(winBuffer.RGBA(), winBuffer.Bounds(), Background, zeroPoint, draw.Src)
 			render.PreDraw()
 			render.GlobalDrawStack.Draw(winBuffer.RGBA(), ViewPos, ScreenWidth, ScreenHeight)
 			drawLoopPublish(tx)
@@ -78,5 +79,10 @@ func drawLoop() {
 }
 
 var (
+	drawLoopPublishDef = func(tx screen.Texture) {
+		tx.Upload(zeroPoint, winBuffer, winBuffer.Bounds())
+		windowControl.Scale(windowRect, tx, tx.Bounds(), draw.Src)
+		windowControl.Publish()
+	}
 	drawLoopPublish = drawLoopPublishDef
 )

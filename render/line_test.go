@@ -67,11 +67,32 @@ func TestGradientLine(t *testing.T) {
 	}
 }
 
-func TestDrawLineOnto(t *testing.T) {
+func TestDrawLine(t *testing.T) {
 	l := NewLine(0, 0, 10, 10, color.RGBA{255, 255, 255, 255})
 	rgba := l.GetRGBA()
 	// See height addition in line
 	rgba2 := image.NewRGBA(image.Rect(0, 0, 10, 11))
-	DrawLineOnto(rgba2, 0, 0, 10, 10, color.RGBA{255, 255, 255, 255})
+	DrawLine(rgba2, 0, 0, 10, 10, color.RGBA{255, 255, 255, 255})
 	assert.Equal(t, rgba, rgba2)
+}
+
+func TestThickLinePoint(t *testing.T) {
+	// p1 = p2
+	l := NewThickLine(0, 0, 0, 0, color.RGBA{255, 0, 0, 255}, 4)
+	rgba := l.GetRGBA()
+	for i := 0; i < 9; i++ {
+		for j := 0; j < 9; j++ {
+			assert.Equal(t, rgba.At(i, j), color.RGBA{255, 0, 0, 255})
+		}
+	}
+}
+func TestThickLineVert(t *testing.T) {
+	// Vertical
+	l := NewThickLine(0, 0, 0, 10, color.RGBA{255, 0, 0, 255}, 4)
+	rgba := l.GetRGBA()
+	for i := 0; i < 5; i++ {
+		for j := 0; j < 18; j++ {
+			assert.Equal(t, rgba.At(i, j), color.RGBA{255, 0, 0, 255})
+		}
+	}
 }

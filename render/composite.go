@@ -4,7 +4,8 @@ import (
 	"image"
 	"image/draw"
 
-	"github.com/oakmound/oak/physics"
+	"github.com/oakmound/oak/alg/floatgeom"
+	"github.com/oakmound/oak/render/mod"
 )
 
 // Composite Types, distinct from Compound Types,
@@ -16,39 +17,49 @@ type Composite struct {
 	rs []Modifiable
 }
 
-//NewComposite creates a Composite
-func NewComposite(sl []Modifiable) *Composite {
+// NewComposite creates a Composite
+func NewComposite(sl ...Modifiable) *Composite {
 	cs := new(Composite)
 	cs.LayeredPoint = NewLayeredPoint(0, 0, 0)
 	cs.rs = sl
 	return cs
 }
 
-//AppendOffset adds a new offset modifiable to the composite
-func (cs *Composite) AppendOffset(r Modifiable, v physics.Vector) {
-	r.SetPos(v.X(), v.Y())
-	cs.rs = append(cs.rs, r)
+// AppendOffset adds a new offset modifiable to the composite
+func (cs *Composite) AppendOffset(r Modifiable, p floatgeom.Point2) {
+	r.SetPos(p.X(), p.Y())
+	cs.Append(r)
 }
 
-//Append adds a renderable as is to the composite
+// Append adds a renderable as is to the composite
 func (cs *Composite) Append(r Modifiable) {
 	cs.rs = append(cs.rs, r)
 }
 
-//Add places a renderable at a certain point in the composites renderable slice
-func (cs *Composite) Add(i int, r Modifiable) {
+// Prepend adds a new renderable to the front of the CompositeR.
+func (cs *Composite) Prepend(r Modifiable) {
+	cs.rs = append([]Modifiable{r}, cs.rs...)
+}
+
+// SetIndex places a renderable at a certain point in the composites renderable slice
+func (cs *Composite) SetIndex(i int, r Modifiable) {
 	cs.rs[i] = r
 }
 
-//AddOffset offsets all renderables in the composite by a vector
-func (cs *Composite) AddOffset(i int, v physics.Vector) {
+// Len returns the number of renderables in this composite.
+func (cs *Composite) Len() int {
+	return len(cs.rs)
+}
+
+// AddOffset offsets all renderables in the composite by a vector
+func (cs *Composite) AddOffset(i int, p floatgeom.Point2) {
 	if i < len(cs.rs) {
-		cs.rs[i].SetPos(v.X(), v.Y())
+		cs.rs[i].SetPos(p.X(), p.Y())
 	}
 }
 
-//SetOffsets applies the initial offsets to the entire Composite
-func (cs *Composite) SetOffsets(vs []physics.Vector) {
+// SetOffsets applies the initial offsets to the entire Composite
+func (cs *Composite) SetOffsets(vs ...floatgeom.Point2) {
 	for i, v := range vs {
 		if i < len(cs.rs) {
 			cs.rs[i].SetPos(v.X(), v.Y())
@@ -56,52 +67,54 @@ func (cs *Composite) SetOffsets(vs []physics.Vector) {
 	}
 }
 
-//Get returns a renderable at the given index within the composite
+// Get returns a renderable at the given index within the composite
 func (cs *Composite) Get(i int) Modifiable {
 	return cs.rs[i]
 }
 
-//DrawOffset draws the Composite with some offset from its logical position (and therefore sub renderables logical positions).
+// DrawOffset draws the Composite with some offset from its logical position (and therefore sub renderables logical positions).
 func (cs *Composite) DrawOffset(buff draw.Image, xOff, yOff float64) {
 	for _, c := range cs.rs {
 		c.DrawOffset(buff, cs.X()+xOff, cs.Y()+yOff)
 	}
 }
 
-//Draw draws the Composite at its logical position
+// Draw draws the Composite at its logical position
 func (cs *Composite) Draw(buff draw.Image) {
 	for _, c := range cs.rs {
 		c.DrawOffset(buff, cs.X(), cs.Y())
 	}
 }
 
-//UnDraw stops the composite from being drawn
-func (cs *Composite) UnDraw() {
+// Undraw stops the composite from being drawn
+func (cs *Composite) Undraw() {
 	cs.layer = Undraw
 	for _, c := range cs.rs {
-		c.UnDraw()
+		c.Undraw()
 	}
 }
 
-//GetRGBA does not work on a composite and therefore returns nil
+// GetRGBA does not work on a composite and therefore returns nil
 func (cs *Composite) GetRGBA() *image.RGBA {
 	return nil
 }
 
-//AlwaysDirty shows that the Composite always needs updating
-func (cs *Composite) AlwaysDirty() bool {
-	return true
-}
-
-//Modify applies modifications to the composite
-func (cs *Composite) Modify(ms ...Modification) Modifiable {
+// Modify applies mods to the composite
+func (cs *Composite) Modify(ms ...mod.Mod) Modifiable {
 	for _, r := range cs.rs {
 		r.Modify(ms...)
 	}
 	return cs
 }
 
-//Copy makes a new Composite with the same renderables
+// Filter filters each component part of this composite by all of the inputs.
+func (cs *Composite) Filter(fs ...mod.Filter) {
+	for _, r := range cs.rs {
+		r.Filter(fs...)
+	}
+}
+
+// Copy makes a new Composite with the same renderables
 func (cs *Composite) Copy() Modifiable {
 	cs2 := new(Composite)
 	cs2.layer = cs.layer
@@ -113,24 +126,15 @@ func (cs *Composite) Copy() Modifiable {
 	return cs2
 }
 
-func (cs *Composite) String() string {
-	s := "Composite{"
-	for _, v := range cs.rs {
-		s += v.String() + "\n"
-	}
-	s += "}"
-	return s
-}
-
-//CompositeR keeps track of a set of renderables at a location
+// CompositeR keeps track of a set of renderables at a location
 type CompositeR struct {
 	LayeredPoint
 	toPush []Renderable
 	rs     []Renderable
 }
 
-//NewCompositeR creates a new CompositeR from a slice of renderables
-func NewCompositeR(sl []Renderable) *CompositeR {
+// NewCompositeR creates a new CompositeR from a slice of renderables
+func NewCompositeR(sl ...Renderable) *CompositeR {
 	cs := new(CompositeR)
 	cs.LayeredPoint = NewLayeredPoint(0, 0, 0)
 	cs.toPush = make([]Renderable, 0)
@@ -138,37 +142,93 @@ func NewCompositeR(sl []Renderable) *CompositeR {
 	return cs
 }
 
-//AppendOffset adds a new renderable to CompositeR with an offset
-func (cs *CompositeR) AppendOffset(r Renderable, v physics.Vector) {
-	r.SetPos(v.X(), v.Y())
-	cs.rs = append(cs.rs, r)
+// AppendOffset adds a new renderable to CompositeR with an offset
+func (cs *CompositeR) AppendOffset(r Renderable, p floatgeom.Point2) {
+	r.SetPos(p.X(), p.Y())
+	cs.Append(r)
 }
 
-//Append adds a new renderable to CompositeR
+// AddOffset adds an offset to a given renderable of the slice
+func (cs *CompositeR) AddOffset(i int, p floatgeom.Point2) {
+	if i < len(cs.rs) {
+		cs.rs[i].SetPos(p.X(), p.Y())
+	}
+}
+
+// Append adds a new renderable to the end of the CompositeR.
 func (cs *CompositeR) Append(r Renderable) {
 	cs.rs = append(cs.rs, r)
 }
 
-//Add stages a renderable to be added to CompositeR at a give position in the slice
-func (cs *CompositeR) Add(r Renderable, i int) Renderable {
+// Prepend adds a new renderable to the front of the CompositeR.
+func (cs *CompositeR) Prepend(r Renderable) {
+	cs.rs = append([]Renderable{r}, cs.rs...)
+}
+
+// Len returns the number of renderables in this composite.
+func (cs *CompositeR) Len() int {
+	return len(cs.rs)
+}
+
+// SetIndex places a renderable at a certain point in the composites renderable slice
+func (cs *CompositeR) SetIndex(i int, r Renderable) {
+	cs.rs[i] = r
+}
+
+// SetOffsets sets all renderables in CompositeR to the passed in Vector positions positions
+func (cs *CompositeR) SetOffsets(ps ...floatgeom.Point2) {
+	for i, p := range ps {
+		if i < len(cs.rs) {
+			cs.rs[i].SetPos(p.X(), p.Y())
+		}
+	}
+}
+
+// DrawOffset Draws the CompositeR with an offset from its logical location.
+func (cs *CompositeR) DrawOffset(buff draw.Image, xOff, yOff float64) {
+	for _, c := range cs.rs {
+		c.DrawOffset(buff, cs.X()+xOff, cs.Y()+yOff)
+	}
+}
+
+// Draw draws the CompositeR at its logical location and therefore its consituent renderables as well
+func (cs *CompositeR) Draw(buff draw.Image) {
+	for _, c := range cs.rs {
+		c.DrawOffset(buff, cs.X(), cs.Y())
+	}
+}
+
+// Undraw undraws the CompositeR and its consituent renderables
+func (cs *CompositeR) Undraw() {
+	cs.layer = Undraw
+	for _, c := range cs.rs {
+		c.Undraw()
+	}
+}
+
+// GetRGBA always returns nil from Composites
+func (cs *CompositeR) GetRGBA() *image.RGBA {
+	return nil
+}
+
+// Get returns renderable from a given index in CompositeR
+func (cs *CompositeR) Get(i int) Renderable {
+	return cs.rs[i]
+}
+
+// Add stages a renderable to be added to the Composite at the next PreDraw
+func (cs *CompositeR) Add(r Renderable, _ ...int) Renderable {
 	cs.toPush = append(cs.toPush, r)
 	return r
 }
 
-//Replace updates a renderable in the CompositeR to the new Renderable
+// Replace updates a renderable in the CompositeR to the new Renderable
 func (cs *CompositeR) Replace(r1, r2 Renderable, i int) {
 	cs.Add(r2, i)
-	r1.UnDraw()
+	r1.Undraw()
 }
 
-//AddOffset adds an offset to a given renderable of the slice
-func (cs *CompositeR) AddOffset(i int, v physics.Vector) {
-	if i < len(cs.rs) {
-		cs.rs[i].SetPos(v.X(), v.Y())
-	}
-}
-
-//PreDraw updates the CompositeR with the new renderables to add. This helps keep consistency and mitigates the threat of unsafe operations.
+// PreDraw updates the CompositeR with the new renderables to add. This helps keep consistency and mitigates the threat of unsafe operations.
 func (cs *CompositeR) PreDraw() {
 	push := cs.toPush
 	cs.toPush = []Renderable{}
@@ -178,33 +238,13 @@ func (cs *CompositeR) PreDraw() {
 // Copy returns a new composite with the same length slice of renderables but no actual renderables...
 // CompositeRs cannot have their internal elements copied,
 // as renderables cannot be copied.
-func (cs *CompositeR) Copy() Addable {
+func (cs *CompositeR) Copy() Stackable {
 	cs2 := new(CompositeR)
 	cs2.LayeredPoint = cs.LayeredPoint
 	cs2.rs = make([]Renderable, len(cs.rs))
 	return cs2
 }
 
-//SetOffsets sets all renderables in CompositeR to the passed in Vector positions positions
-func (cs *CompositeR) SetOffsets(ps []physics.Vector) {
-	for i, p := range ps {
-		if i < len(cs.rs) {
-			cs.rs[i].SetPos(p.X(), p.Y())
-		}
-	}
-}
-
-//Get returns renderable at given location in CompositeR
-func (cs *CompositeR) Get(i int) Renderable {
-	return cs.rs[i]
-}
-
-//DrawOffset Draws the CompositeR with an offset from its logical location.
-func (cs *CompositeR) DrawOffset(buff draw.Image, xOff, yOff float64) {
-	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X()+xOff, cs.Y()+yOff)
-	}
-}
 func (cs *CompositeR) draw(world draw.Image, viewPos image.Point, screenW, screenH int) {
 	realLength := len(cs.rs)
 	for i := 0; i < realLength; i++ {
@@ -217,8 +257,8 @@ func (cs *CompositeR) draw(world draw.Image, viewPos image.Point, screenW, scree
 		if realLength == i {
 			break
 		}
-		x := int(r.GetX())
-		y := int(r.GetY())
+		x := int(r.X())
+		y := int(r.Y())
 		x2 := x
 		y2 := y
 		w, h := r.GetDims()
@@ -233,38 +273,4 @@ func (cs *CompositeR) draw(world draw.Image, viewPos image.Point, screenW, scree
 		}
 	}
 	cs.rs = cs.rs[0:realLength]
-}
-
-//Draw draws the CompositeR at its logical location and therefore its consituent renderables as well
-func (cs *CompositeR) Draw(buff draw.Image) {
-	for _, c := range cs.rs {
-		c.DrawOffset(buff, cs.X(), cs.Y())
-	}
-}
-
-//UnDraw undraws the CompositeR and therefore its consituent renderables as well
-func (cs *CompositeR) UnDraw() {
-	cs.layer = Undraw
-	for _, c := range cs.rs {
-		c.UnDraw()
-	}
-}
-
-//GetRGBA does not work on composites and returns nil
-func (cs *CompositeR) GetRGBA() *image.RGBA {
-	return nil
-}
-
-//AlwaysDirty notes that CompositeR is alwaysdirty
-func (cs *CompositeR) AlwaysDirty() bool {
-	return true
-}
-
-func (cs *CompositeR) String() string {
-	s := "CompositeR{"
-	for _, v := range cs.rs {
-		s += v.String() + "\n"
-	}
-	s += "}"
-	return s
 }

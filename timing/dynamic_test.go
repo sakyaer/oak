@@ -38,6 +38,7 @@ func TestDynamicTickerFns(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	dt.Step()
 	dt.SetTick(2 * time.Second)
+	dt.ForceStep()
 }
 
 func TestDynamicTickerStop(t *testing.T) {

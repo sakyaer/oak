@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/oakmound/oak/event"
-	"github.com/oakmound/oak/physics"
+	"github.com/oakmound/oak/render/mod"
 	"github.com/oakmound/oak/timing"
 )
 
@@ -25,11 +25,9 @@ type Sequence struct {
 
 // NewSequence returns a new sequence from the input modifiables, playing at
 // fps rate
-func NewSequence(mods []Modifiable, fps float64) *Sequence {
+func NewSequence(fps float64, mods ...Modifiable) *Sequence {
 	return &Sequence{
-		LayeredPoint: LayeredPoint{
-			Vector: physics.NewVector(0, 0),
-		},
+		LayeredPoint: NewLayeredPoint(0, 0, 0),
 		pauseBool: pauseBool{
 			playing: true,
 		},
@@ -55,6 +53,7 @@ func (sq *Sequence) Copy() Modifiable {
 	}
 
 	newSq.rs = newRs
+	newSq.LayeredPoint = sq.LayeredPoint.Copy()
 	return newSq
 }
 
@@ -69,15 +68,17 @@ func (sq *Sequence) update() {
 		sq.lastChange = time.Now()
 		sq.sheetPos = (sq.sheetPos + 1) % len(sq.rs)
 		if sq.sheetPos == (len(sq.rs)-1) && sq.cID != 0 {
-			sq.cID.Trigger("AnimationEnd", nil)
+			sq.cID.Trigger(event.AnimationEnd, nil)
 		}
 	}
 }
 
-// Get returns the Modifiable stored at this sequence's ith index. If the
-// sequence does not have an ith index this panics
-// todo: don't panic, return an error
+// Get returns the Modifiable stored at this sequence's ith index. If the sequence
+// does not have an ith index this returns nil
 func (sq *Sequence) Get(i int) Modifiable {
+	if i < 0 || i >= len(sq.rs) {
+		return nil
+	}
 	return sq.rs[i]
 }
 
@@ -100,11 +101,18 @@ func (sq *Sequence) GetRGBA() *image.RGBA {
 
 // Modify alters each renderable in this sequence by the given
 // modifications
-func (sq *Sequence) Modify(ms ...Modification) Modifiable {
+func (sq *Sequence) Modify(ms ...mod.Mod) Modifiable {
 	for _, r := range sq.rs {
 		r.Modify(ms...)
 	}
 	return sq
+}
+
+// Filter filters each element in the sequence by the inputs
+func (sq *Sequence) Filter(fs ...mod.Filter) {
+	for _, r := range sq.rs {
+		r.Filter(fs...)
+	}
 }
 
 // IsStatic returns false for sequences
@@ -120,5 +128,5 @@ func TweenSequence(a, b image.Image, frames int, fps float64) *Sequence {
 	for i, v := range images {
 		ms[i] = NewSprite(0, 0, v)
 	}
-	return NewSequence(ms, fps)
+	return NewSequence(fps, ms...)
 }

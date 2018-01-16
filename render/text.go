@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/oakmound/oak/alg"
-	"github.com/oakmound/oak/physics"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -21,12 +20,34 @@ type Text struct {
 // object with the associated font and screen position
 func (f *Font) NewText(str fmt.Stringer, x, y float64) *Text {
 	return &Text{
-		LayeredPoint: LayeredPoint{
-			Vector: physics.NewVector(x, y),
-		},
-		text: str,
-		d:    f,
+		LayeredPoint: NewLayeredPoint(x, y, 0),
+		text:         str,
+		d:            f,
 	}
+}
+
+type stringerIntPointer struct {
+	v *int
+}
+
+func (sip stringerIntPointer) String() string {
+	return strconv.Itoa(*sip.v)
+}
+
+// NewIntText wraps the given int pointer in a stringer interface
+func (f *Font) NewIntText(str *int, x, y float64) *Text {
+	return f.NewText(stringerIntPointer{str}, x, y)
+}
+
+type stringStringer string
+
+func (ss stringStringer) String() string {
+	return string(ss)
+}
+
+// NewStrText is a helper to take in a string instead of a stringer for NewText
+func (f *Font) NewStrText(str string, x, y float64) *Text {
+	return f.NewText(stringStringer(str), x, y)
 }
 
 // DrawOffset for a text object draws the text at t.(X,Y) + (xOff,yOff)
@@ -46,6 +67,15 @@ func (t *Text) Draw(buff draw.Image) {
 // SetFont sets the drawer which renders the text each frame
 func (t *Text) SetFont(f *Font) {
 	t.d = f
+}
+
+// GetDims reports the width and height of a text renderable
+func (t *Text) GetDims() (int, int) {
+	// BUG: reported height is too low, test this impl:
+	// bounds, adv := t.d.BoundString(t.text.String())
+	// return adv.Round(), bounds.Max.Y.Round()
+	textWidth := t.d.MeasureString(t.text.String()).Round()
+	return textWidth, alg.RoundF64(t.d.Size)
 }
 
 // Center will shift the text so that the existing leftmost point
@@ -74,6 +104,12 @@ func (t *Text) SetInt(i int) {
 // the value is behind the pointer when it is drawn
 func (t *Text) SetIntP(i *int) {
 	t.text = stringerIntPointer{i}
+}
+
+// StringLiteral returns what text is currently rendering.
+// Note this avoids the pretty print addtions that the String function adds.
+func (t *Text) StringLiteral() string {
+	return t.text.String()
 }
 
 // Todo: more SetX methods like float, floatP
@@ -112,32 +148,8 @@ func (t *Text) Wrap(charLimit int, vertInc float64) []*Text {
 // of Modifications.
 func (t *Text) ToSprite() *Sprite {
 	width := t.d.MeasureString(t.text.String()).Round()
-	height := alg.RoundF64(t.d.Size)
-	s := NewEmptySprite(t.X(), t.Y()-float64(height), width, height)
-	t.DrawOffset(s.GetRGBA(), -t.X(), (-t.Y())+float64(height))
+	height := t.d.bounds.Max.Y
+	s := NewEmptySprite(t.X(), t.Y()-float64(height), width, height+5)
+	t.DrawOffset(s.GetRGBA(), -t.X(), -t.Y()+float64(height))
 	return s
-}
-
-type stringerIntPointer struct {
-	v *int
-}
-
-func (sip stringerIntPointer) String() string {
-	return strconv.Itoa(*sip.v)
-}
-
-// NewIntText wraps the given int pointer in a stringer interface
-func (f *Font) NewIntText(str *int, x, y float64) *Text {
-	return f.NewText(stringerIntPointer{str}, x, y)
-}
-
-type stringStringer string
-
-func (ss stringStringer) String() string {
-	return string(ss)
-}
-
-// NewStrText is a helper to take in a string instead of a stringer for NewText
-func (f *Font) NewStrText(str string, x, y float64) *Text {
-	return f.NewText(stringStringer(str), x, y)
 }

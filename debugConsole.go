@@ -11,23 +11,35 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/oakmound/oak/oakerr"
+
 	"github.com/davecgh/go-spew/spew"
 	"github.com/oakmound/oak/collision"
+	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/oak/event"
 	"github.com/oakmound/oak/mouse"
 	"github.com/oakmound/oak/render"
+	"github.com/oakmound/oak/render/mod"
 )
 
 var (
-	viewportLocked  = true
-	commands        = make(map[string]func([]string))
-	builtinCommands = make(map[string]func([]string))
+	viewportLocked = true
+	commands       = make(map[string]func([]string))
 )
 
 // AddCommand adds a console command to call fn when
-// 'c <s> <args>' is input to the console
-func AddCommand(s string, fn func([]string)) {
+// '<s> <args>' is input to the console. fn will be called
+// with args split on whitespace.
+func AddCommand(s string, fn func([]string)) error {
+	if _, ok := commands[s]; ok {
+		return oakerr.ExistingElement{
+			InputName:   "s",
+			InputType:   "string",
+			Overwritten: false,
+		}
+	}
 	commands[s] = fn
+	return nil
 }
 
 func defaultDebugConsole() {
@@ -39,64 +51,16 @@ func debugConsole(resetCh, skipScene chan bool, input io.Reader) {
 	spew.Config.DisableMethods = true
 	spew.Config.MaxDepth = 2
 
-	builtinCommands = map[string]func([]string){
-		"viewport": func(tokenString []string) {
-			switch tokenString[0] {
-			case "unlock":
-				if viewportLocked {
-					speed := parseTokenAsInt(tokenString, 1, 5)
-					viewportLocked = false
-					event.GlobalBind(moveViewportBinding(speed), "EnterFrame")
-				} else {
-					fmt.Println("Viewport is already unbound")
-				}
-			case "lock":
-				if viewportLocked {
-					fmt.Println("Viewport is already locked")
-				} else {
-					viewportLocked = true
-				}
-			default:
-				fmt.Println("Unrecognized command for viewport")
-			}
-		},
-		"fade": func(tokenString []string) {
-			toFade, ok := render.GetDebugRenderable(tokenString[0])
-			fadeVal := parseTokenAsInt(tokenString, 1, 255)
-			if ok {
-				toFade.(render.Modifiable).Modify(render.Fade(fadeVal))
-			} else {
-				fmt.Println("Could not fade input")
-			}
-		},
-		"skip": func(tokenString []string) {
-			switch tokenString[0] {
-			case "scene":
-				skipScene <- true
-			default:
-				fmt.Println("Bad Skip Input")
-			}
-		},
-		"print": func(tokenString []string) {
-			if i, err := strconv.Atoi(tokenString[0]); err == nil {
-				if i > 0 && event.HasEntity(i) {
-					e := event.GetEntity(i)
-					fmt.Println(reflect.TypeOf(e), e)
-				} else {
-					fmt.Println("No entity ", i)
-				}
-			} else {
-				fmt.Println("Unable to parse", tokenString[0])
-			}
-		},
-		"mouse": func(tokenString []string) {
-			switch tokenString[0] {
-			case "details":
-				event.GlobalBind(mouseDetails, "MouseRelease")
-			default:
-				fmt.Println("Bad Mouse Input")
-			}
-		},
+	// built in commands
+	if conf.LoadBuiltinCommands {
+		dlog.ErrorCheck(AddCommand("viewport", viewportCommands))
+		dlog.ErrorCheck(AddCommand("fade", fadeCommands))
+		dlog.ErrorCheck(AddCommand("skip", skipCommands(skipScene)))
+		dlog.ErrorCheck(AddCommand("print", printCommands))
+		dlog.ErrorCheck(AddCommand("mouse", mouseCommands))
+		dlog.ErrorCheck(AddCommand("move", moveWindow))
+		dlog.ErrorCheck(AddCommand("fullscreen", fullScreen))
+		dlog.ErrorCheck(AddCommand("quit", func([]string) { Quit() }))
 	}
 
 	for {
@@ -106,29 +70,14 @@ func debugConsole(resetCh, skipScene chan bool, input io.Reader) {
 		default:
 		}
 		for scanner.Scan() {
-			//Parse the Input
 			tokenString := strings.Fields(scanner.Text())
-			if len(tokenString) < 2 {
+			if len(tokenString) == 0 {
 				continue
 			}
-
-			// These different commands should probably be split off, so that
-			// they aren't on by default always. It's worth considering making
-			// all commands through the AddCommand function and removing the
-			// requirement to precede custom commands with 'c', which would
-			// then require that we return an error for overwriting old command
-			// names with new commands.
-			if tokenString[0] == "c" || tokenString[0] == "cheat" {
-				// Requires that cheats are all one word! <-- don't forget
-				if fn, ok := commands[tokenString[1]]; ok {
-					fn(tokenString[1:])
-				} else {
-					fmt.Println("Unknown command", tokenString[1])
-				}
-			} else if fn, ok := builtinCommands[tokenString[0]]; ok {
+			if fn, ok := commands[tokenString[0]]; ok {
 				fn(tokenString[1:])
 			} else {
-				fmt.Println("Unrecognized Input")
+				fmt.Println("Unknown command", tokenString[0])
 			}
 		}
 	}
@@ -146,11 +95,11 @@ func parseTokenAsInt(tokenString []string, arrIndex int, defaultVal int) int {
 
 func mouseDetails(nothing int, mevent interface{}) int {
 	me := mevent.(mouse.Event)
-	x := int(me.X) + ViewPos.X
-	y := int(me.Y) + ViewPos.Y
+	x := int(me.X()) + ViewPos.X
+	y := int(me.Y()) + ViewPos.Y
 	loc := collision.NewUnassignedSpace(float64(x), float64(y), 16, 16)
 	results := collision.Hits(loc)
-	fmt.Println("Mouse at:", x, y, "rel:", me.X, me.Y)
+	fmt.Println("Mouse at:", x, y, "rel:", me.X(), me.Y())
 	if len(results) == 0 {
 		results = mouse.Hits(loc)
 	}
@@ -165,4 +114,101 @@ func mouseDetails(nothing int, mevent interface{}) int {
 	}
 
 	return 0
+}
+
+func viewportCommands(tokenString []string) {
+	switch tokenString[0] {
+	case "unlock":
+		if viewportLocked {
+			speed := parseTokenAsInt(tokenString, 1, 5)
+			viewportLocked = false
+			event.GlobalBind(moveViewportBinding(speed), event.Enter)
+		} else {
+			fmt.Println("Viewport is already unbound")
+		}
+	case "lock":
+		if viewportLocked {
+			fmt.Println("Viewport is already locked")
+		} else {
+			viewportLocked = true
+		}
+	default:
+		fmt.Println("Unrecognized command for viewport")
+	}
+}
+
+func fadeCommands(tokenString []string) {
+	toFade, ok := render.GetDebugRenderable(tokenString[0])
+	fadeVal := parseTokenAsInt(tokenString, 1, 255)
+	if ok {
+		toFade.(render.Modifiable).Filter(mod.Fade(fadeVal))
+	} else {
+		fmt.Println("Could not fade input")
+	}
+}
+
+func skipCommands(skipScene chan bool) func(tokenString []string) {
+	return func(tokenString []string) {
+		switch tokenString[0] {
+		case "scene":
+			skipScene <- true
+		default:
+			fmt.Println("Bad Skip Input")
+		}
+	}
+}
+
+func printCommands(tokenString []string) {
+	if i, err := strconv.Atoi(tokenString[0]); err == nil {
+		if i > 0 && event.HasEntity(i) {
+			e := event.GetEntity(i)
+			fmt.Println(reflect.TypeOf(e), e)
+		} else {
+			fmt.Println("No entity ", i)
+		}
+	} else {
+		fmt.Println("Unable to parse", tokenString[0])
+	}
+}
+
+func mouseCommands(tokenString []string) {
+	switch tokenString[0] {
+	case "details":
+		event.GlobalBind(mouseDetails, "MouseRelease")
+	default:
+		fmt.Println("Bad Mouse Input")
+	}
+}
+
+func moveWindow(in []string) {
+	if len(in) < 4 {
+		dlog.Error("Insufficient integer arguments for moving window")
+		return
+	}
+	ints := make([]int, 4)
+	var err error
+	for i := range ints {
+		ints[i], err = strconv.Atoi(in[i])
+		if err != nil {
+			dlog.Error(err)
+			return
+		}
+	}
+	err = MoveWindow(ints[0], ints[1], ints[2], ints[3])
+	if err != nil {
+		dlog.Error(err)
+	}
+}
+
+func fullScreen(sub []string) {
+	on := true
+	if len(sub) > 0 {
+		if sub[0] == "off" {
+			on = false
+		}
+	}
+	err := SetFullScreen(on)
+	if err != nil {
+		dlog.Error(err)
+	}
 }

@@ -10,7 +10,9 @@ import (
 	"github.com/oakmound/oak/collision"
 	"github.com/oakmound/oak/entities"
 	"github.com/oakmound/oak/event"
+	"github.com/oakmound/oak/key"
 	"github.com/oakmound/oak/render"
+	"github.com/oakmound/oak/scene"
 	"github.com/oakmound/oak/timing"
 )
 
@@ -30,8 +32,12 @@ const (
 )
 
 func main() {
+<<<<<<< HEAD
 
 	oak.AddScene("bounce", func(string, interface{}) {
+=======
+	oak.Add("bounce", func(string, interface{}) {
+>>>>>>> release/2.0.0
 		score = 0
 		// 1. Make Player
 		newFlappy(90, 140)
@@ -60,7 +66,7 @@ func main() {
 			return false
 		}
 		return true
-	}, func() (string, *oak.SceneResult) {
+	}, func() (string, *scene.Result) {
 		return "bounce", nil
 	})
 	render.SetDrawStack(
@@ -84,7 +90,7 @@ func (f *Flappy) Init() event.CID {
 func newFlappy(x, y float64) *Flappy {
 	f := new(Flappy)
 	f.Init()
-	f.Interactive = entities.NewInteractive(x, y, 32, 32, render.NewColorBox(32, 32, color.RGBA{0, 255, 255, 255}), f.CID, 1)
+	f.Interactive = entities.NewInteractive(x, y, 32, 32, render.NewColorBox(32, 32, color.RGBA{0, 255, 255, 255}), nil, f.CID, 1)
 
 	f.RSpace.Add(pillar, func(s1, s2 *collision.Space) {
 		playerHitPillar = true
@@ -120,11 +126,11 @@ func newFlappy(x, y float64) *Flappy {
 			f.Delta.SetY(0)
 		}
 		return 0
-	}, "EnterFrame")
+	}, event.Enter)
 	f.Bind(func(int, interface{}) int {
 		f.Delta.ShiftY(-4)
 		return 0
-	}, "KeyDownW")
+	}, key.Down+key.W)
 	return f
 }
 
@@ -143,10 +149,10 @@ func (p *Pillar) Init() event.CID {
 func newPillar(x, y, h float64, isAbove bool) {
 	p := new(Pillar)
 	p.Init()
-	p.Solid = entities.NewSolid(x, y, 64, h, render.NewColorBox(64, int(h), color.RGBA{0, 255, 0, 255}), p.CID)
+	p.Solid = entities.NewSolid(x, y, 64, h, render.NewColorBox(64, int(h), color.RGBA{0, 255, 0, 255}), nil, p.CID)
 	p.Space.Label = pillar
 	collision.Add(p.Space)
-	p.Bind(enterPillar, "EnterFrame")
+	p.Bind(enterPillar, event.Enter)
 	p.R.SetLayer(1)
 	render.Draw(p.R, 0)
 }
