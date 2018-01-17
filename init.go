@@ -112,5 +112,8 @@ func Init(firstScene string) {
 		conf.Assets.AssetPath,
 		conf.Assets.AudioPath)
 
+	dlog.Info("Init asset load")
+	go loadAssets(imageDir, audioDir)
+
 	initDriver(firstScene, imageDir, audioDir)
 }

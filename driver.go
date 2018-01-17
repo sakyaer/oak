@@ -3,21 +3,9 @@
 package oak
 
 import (
-	"github.com/oakmound/oak/dlog"
 	"github.com/oakmound/shiny/driver"
 	"github.com/oakmound/shiny/screen"
 )
-
-func initDriver(firstScene, imageDir, audioDir string) {
-	dlog.Info("Init Scene Loop")
-	go sceneLoop(firstScene)
-	dlog.Info("Init asset load")
-	go loadAssets(imageDir, audioDir)
-	dlog.Info("Init Console")
-	go defaultDebugConsole()
-	dlog.Info("Init Main Driver")
-	driver.Main(lifecycleLoop)
-}
 
 // A Driver is a function which can take in our lifecycle function
 // and initialize oak with the OS interfaces it needs.

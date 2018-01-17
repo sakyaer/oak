@@ -21,8 +21,10 @@ var (
 	windowControl screen.Window
 )
 
-func lifecycleLoop(inScreen screen.Screen, firstScene string) {
+func lifecycleLoop(inScreen screen.Screen) {
 	dlog.Info("Init Lifecycle")
+
+	firstScene = firstSceneJs
 
 	screenControl = inScreen
 	var err error
